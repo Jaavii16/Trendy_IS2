@@ -1,16 +1,15 @@
 package view;
 
+import model.articulo.Articulo;
 import model.articulo.ArticuloAbstracto;
 
-public class Productos  {
-    public void imprimirProducto(String nombre, int id, boolean tipo, String categoria, String color, double precio, int stock){
-        String exclusivo;
-        if(tipo) {
-            exclusivo="EXCLUSIVO";
-        }
-        else {
-            exclusivo="ESTANDAR";
-        }
+import java.util.Date;
+
+public class View  {
+    public void imprimirProducto(String nombre, int id, Articulo.Categoria categoria, Articulo.Color color,
+                                 double precio, int stock, Articulo.Subcategoria subcat, double desc, String fechaLanz){
+
+
         System.out.println("_______________________");
         System.out.println("*** PRODUCTOS ***");
         System.out.println(nombre + "     " +precio+" €");

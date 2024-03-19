@@ -5,12 +5,10 @@ import java.time.LocalDate;
 public class ArticuloExclusivo extends ArticuloAbstracto {
 
     private String fechaLanzamiento;
-    private boolean lanzado;
     //Aqui iria la lista de reservas
 
-    public ArticuloExclusivo(){
-
-
+    public ArticuloExclusivo(int id, double precio, Color color, int stock, Categoria cat, Subcategoria subcat, double desc){
+        super(id, precio, color, stock, cat, subcat, desc);
     }
 
     @Override

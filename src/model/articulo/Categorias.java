@@ -22,7 +22,10 @@ public class Categorias {
             case MUJER -> listaMujer.add(art);
             case HOMBRE -> listaHombre.add(art);
             case EXCLUSIVOS -> listaExclusivos.add(art);
-            case PROMOCIONES -> listaPromociones.add(art);
+        }
+
+        if(art.getDescuento() > 0){
+            listaPromociones.add(art);
         }
     }
 
