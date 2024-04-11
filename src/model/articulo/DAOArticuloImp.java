@@ -18,10 +18,9 @@ public class DAOArticuloImp implements DAOArticulo{
             tArticulo a = null;
             while (rs.next()) {
                 a = new tArticulo(rs.getInt("ID"), rs.getString("Nombre"),
-                        rs.getString("Categoría"),rs.getString("Subcategoría") ,
+                        rs.getString("Subcategoría") ,
                         rs.getDouble("Precio"), rs.getString("Color"),
-                        rs.getInt("Stock"), rs.getString("Fecha lanzamiento"),
-                        rs.getDouble("Descuento"));
+                        rs.getInt("Stock"));
             }
             return a;
         } catch (SQLException e) {
@@ -36,8 +35,8 @@ public class DAOArticuloImp implements DAOArticulo{
              Statement st = c.createStatement();
 
              ResultSet rs = st.executeQuery("insert into Artículo values (" + a.getID() + ", "+
-                     a.getNombre() +", "+ a.getCat() +", "+a.getSubcat()+", "+a.getPrecio()+" , "+
-                     a.getColor() +", "+a.getStock()+", "+a.getFechaLanz()+", "+a.getDescuento()+")")) {
+                     a.getNombre() +", "+a.getSubcat()+", "+a.getPrecio()+" , "+
+                     a.getColor() +", "+a.getStock()+"")) {
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -62,9 +61,21 @@ public class DAOArticuloImp implements DAOArticulo{
              Statement st = c.createStatement();
 
              ResultSet rs = st.executeQuery("update Artículo set  (" + a.getID() + ", "+
-                     a.getNombre() +", "+ a.getCat() +", "+a.getSubcat()+", "+a.getPrecio()+" , "+
-                     a.getColor() +", "+a.getStock()+", "+a.getFechaLanz()+", "+a.getDescuento()+")")) {
+                     a.getNombre() +", "+a.getSubcat()+", "+a.getPrecio()+" , "+
+                     a.getColor() +", "+a.getStock()+")")) {
 
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public boolean existeArticulo(int id) {
+        try (Connection c = DBConnection.connect();
+             Statement st = c.createStatement();
+
+             ResultSet rs = st.executeQuery("select id from Artículo where ID = id")) {
+             return rs != null;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

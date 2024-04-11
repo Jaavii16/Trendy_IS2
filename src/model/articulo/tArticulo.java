@@ -9,31 +9,15 @@ public class tArticulo implements Serializable {
     private double precio;
     private String color;
     private int stock;
-    private String cat;
     private String subcat;
-    private double descuento;
 
-    private String fechaLanz;
-
-    public tArticulo(int id, String nombre, String cat, String subcat, double precio, String color, int stock,
-        String fechalanz, double desc){
+    public tArticulo(int id, String nombre,  String subcat, double precio, String color, int stock){
         this.ID = id;
         this.nombre = nombre;
-        this.cat = cat;
         this.subcat = subcat;
         this.precio = precio;
         this.stock = stock;
         this.color = color;
-        this.fechaLanz = fechalanz;
-        this.descuento = desc;
-    }
-
-    public String getFechaLanz(){
-        return this.fechaLanz;
-    }
-
-    public void setFechaLanz(String s){
-        this.fechaLanz = s;
     }
 
     public int getID() {
@@ -76,13 +60,6 @@ public class tArticulo implements Serializable {
         this.stock = stock;
     }
 
-    public String getCat() {
-        return cat;
-    }
-
-    public void setCat(String cat) {
-        this.cat = cat;
-    }
 
     public String getSubcat() {
         return subcat;
@@ -92,12 +69,5 @@ public class tArticulo implements Serializable {
         this.subcat = subcat;
     }
 
-    public double getDescuento() {
-        return descuento;
-    }
-
-    public void setDescuento(double descuento) {
-        this.descuento = descuento;
-    }
 
 }

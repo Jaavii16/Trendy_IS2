@@ -10,6 +10,8 @@ public class Categorias {
     List<Articulo> listaExclusivos;
     List<Articulo> listaPromociones;
 
+
+
     public Categorias(){
         listaMujer=new ArrayList<>();
         listaHombre=new ArrayList<>();

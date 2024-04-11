@@ -1,5 +1,7 @@
 package model.articulo;
 
+import java.sql.SQLException;
+
 public class SAArticuloImp implements SAArticulo{
 
     //AQUI VAN ATRIBUTOS Y EL OBJETO EN SI  DE ARTICULOS CON LAS FUNCIONES QUE HAYA QUE PONER
@@ -12,6 +14,8 @@ public class SAArticuloImp implements SAArticulo{
     lanzamiento de un articulo y la categoria en si (mujer hombre) y el descuento
      */
 
+    DAOArticulo dao = new DAOArticuloImp();
+
     private int ID;
     private String name;
     private double precio;
@@ -19,6 +23,38 @@ public class SAArticuloImp implements SAArticulo{
     private int stock;
     private Categoria cat;
     private Subcategoria subcat;
+
+    @Override
+    public tArticulo buscarArticulo(int id) {
+        if(dao.existeArticulo(id)){
+            return dao.buscarArticulo(id);
+        }
+        else return null;
+    }
+
+    @Override
+    public void altaArticulo(tArticulo a) {
+        //Que le llegue la fecha y el desceunto del controlador
+        if(!dao.existeArticulo(a.getID())){
+            dao.altaArticulo(a);
+            //llamamos a una función de categorias con la fecha descuento id y el dao
+            //que añadira el id a la tabla con su categoria
+        }
+    }
+
+    @Override
+    public void bajaArticulo(tArticulo a) {
+        if(dao.existeArticulo(a.getID())){
+            dao.bajaArticulo(a);
+        }
+    }
+
+    @Override
+    public void modificarArticulo(tArticulo a) {
+        if(dao.existeArticulo(a.getID())){
+            dao.modificarArticulo(a);
+        }
+    }
 
     enum Color{
         BLANCO, NEGRO, MARRON, ROJO, NARANJA, AMARILLO, BEIGE, VERDE, AZUL, ROSA, VIOLETA, GRIS;
