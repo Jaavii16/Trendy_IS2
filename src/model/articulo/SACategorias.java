@@ -1,5 +1,7 @@
 package model.articulo;
 
+import java.util.List;
+
 public interface SACategorias {
 
     public void altaArticuloCat(int id, String fechal, int descuento, String genero);

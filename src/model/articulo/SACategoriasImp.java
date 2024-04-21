@@ -1,5 +1,7 @@
 package model.articulo;
 
+import java.util.List;
+
 public class SACategoriasImp implements SACategorias{
 
     DAOCategorias dao = new DAOCategoriasImp();
@@ -34,4 +36,5 @@ public class SACategoriasImp implements SACategorias{
             dao.modificarArticulo(id, fechal, descuento, genero);
         }
     }
+
 }
