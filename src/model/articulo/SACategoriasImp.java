@@ -4,7 +4,7 @@ import java.util.List;
 
 public class SACategoriasImp implements SACategorias{
 
-    NCategorias ncat = new NCategoriasImp();
+    NCategoriasImp ncat = new NCategoriasImp();
 
     @Override
     public void altaArticuloCat(int id, String fechal, int descuento, String genero) {

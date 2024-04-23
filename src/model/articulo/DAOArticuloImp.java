@@ -24,7 +24,7 @@ public class DAOArticuloImp implements DAOArticulo{
             }
             return a;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error SQL" + e.getErrorCode(), e);
         }
 
     }
@@ -32,14 +32,15 @@ public class DAOArticuloImp implements DAOArticulo{
     @Override
     public void altaArticulo(tArticulo a) {
         try (Connection c = DBConnection.connect();
-             Statement st = c.createStatement();
+             Statement st = c.createStatement())
 
-             ResultSet rs = st.executeQuery("insert into Artículo values (" + a.getID() + ", "+
-                     a.getNombre() +", "+a.getSubcat()+", "+a.getPrecio()+" , "+
-                     a.getColor() +", "+a.getStock()+"")) {
+             {
+                 st.executeUpdate("insert into Artículo values (" + a.getID() + ", "+
+                         a.getNombre() +", "+a.getSubcat()+", "+a.getPrecio()+" , "+
+                         a.getColor() +", "+a.getStock()+"");
 
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+             } catch (SQLException e) {
+            throw new RuntimeException("Error SQL" + e.getErrorCode(), e);
         }
     }
 
@@ -48,10 +49,10 @@ public class DAOArticuloImp implements DAOArticulo{
         try (Connection c = DBConnection.connect();
              Statement st = c.createStatement();
 
-             ResultSet rs = st.executeQuery("delete from Artículo where ID = "+a.getID()+"")) {
-
+             ) {
+            st.executeUpdate("delete from Artículo where ID = "+a.getID()+"");
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error SQL" + e.getErrorCode(), e);
         }
     }
 
@@ -60,12 +61,14 @@ public class DAOArticuloImp implements DAOArticulo{
         try (Connection c = DBConnection.connect();
              Statement st = c.createStatement();
 
-             ResultSet rs = st.executeQuery("update Artículo set  (" + a.getID() + ", "+
-                     a.getNombre() +", "+a.getSubcat()+", "+a.getPrecio()+" , "+
-                     a.getColor() +", "+a.getStock()+")")) {
+             ) {
+
+            st.executeUpdate("update Artículo set  (" + a.getID() + ", "+
+                    a.getNombre() +", "+a.getSubcat()+", "+a.getPrecio()+" , "+
+                    a.getColor() +", "+a.getStock()+")");
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error SQL" + e.getErrorCode(), e);
         }
     }
 
@@ -77,7 +80,7 @@ public class DAOArticuloImp implements DAOArticulo{
              ResultSet rs = st.executeQuery("select id from Artículo where ID = id")) {
              return rs != null;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error SQL" + e.getErrorCode(), e);
         }
     }
 }

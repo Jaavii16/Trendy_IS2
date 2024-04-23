@@ -11,7 +11,7 @@ public class SAListasImp implements SAListas{
      */
 
 
-    NListas nlistas = new NListasImp();
+    NListasImp nlistas = new NListasImp();
 
     @Override
     public List<Articulo> buscaArticulosCategoria(String cat) {

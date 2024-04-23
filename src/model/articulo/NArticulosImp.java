@@ -1,10 +1,10 @@
 package model.articulo;
 
-public class NArticulosImp implements NArticulos{
+public class NArticulosImp {
 
     DAOArticulo dao = new DAOArticuloImp();
-    private SACategorias cats = new SACategoriasImp();
-    @Override
+    private NCategoriasImp cats = new NCategoriasImp();
+
     public tArticulo buscarArticulo(int id) {
         if(dao.existeArticulo(id)){
             return dao.buscarArticulo(id);
@@ -12,7 +12,6 @@ public class NArticulosImp implements NArticulos{
         else return null;
     }
 
-    @Override
     public void altaArticulo(tArticulo a, String fechal, String genero, int descuento) {
         if(!dao.existeArticulo(a.getID())){
             dao.altaArticulo(a);
@@ -20,7 +19,6 @@ public class NArticulosImp implements NArticulos{
         }
     }
 
-    @Override
     public void bajaArticulo(tArticulo a) {
         if(dao.existeArticulo(a.getID())){
             cats.bajaArticuloCat(a.getID());
@@ -28,7 +26,7 @@ public class NArticulosImp implements NArticulos{
         }
     }
 
-    @Override
+
     public void modificarArticulo(tArticulo a) {
         if(dao.existeArticulo(a.getID())){
             dao.modificarArticulo(a);

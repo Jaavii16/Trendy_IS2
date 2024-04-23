@@ -1,10 +1,10 @@
 package model.articulo;
 
-public class NCategoriasImp implements NCategorias{
+public class NCategoriasImp {
 
     DAOCategorias dao = new DAOCategoriasImp();
 
-    @Override
+
     public void altaArticuloCat(int id, String fechal, int descuento, String genero) {
         if(descuento != 0){
             dao.altaArticuloCat(id, fechal, descuento, "Promociones");
@@ -17,12 +17,12 @@ public class NCategoriasImp implements NCategorias{
         }
     }
 
-    @Override
+
     public void bajaArticuloCat(int id) {
         dao.bajaArticuloCat(id);
     }
 
-    @Override
+
     public void modificarArticulo(int id, String fechal, int descuento, String genero) {
         //ver cuando eliminamos un articulo como exclusivo (mira las condiciones del if del genero)
         if(descuento != 0){

@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 public class SAArticuloImp implements SAArticulo{
 
-    NArticulos nart = new NArticulosImp();
+    NArticulosImp nart = new NArticulosImp();
 
     @Override
     public tArticulo buscarArticulo(int id) {

@@ -25,7 +25,7 @@ public class DAOListasImp implements DAOListas{
             }
             return l;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error SQL" + e.getErrorCode(), e);
         }
     }
 }

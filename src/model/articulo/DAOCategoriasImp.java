@@ -12,11 +12,9 @@ public class DAOCategoriasImp implements DAOCategorias{
     public void altaArticuloCat(int id, String fechal, int descuento, String cat) {
         try (Connection c = DBConnection.connect();
              Statement st = c.createStatement();
-
-             ResultSet rs = st.executeQuery("insert into ClasificacionArticulos values ("+id+", " +
-                     cat +", "+ descuento+", "+fechal+")")
         ) {
-
+            st.executeUpdate("insert into ClasificacionArticulos values ("+id+", " +
+                    cat +", "+ descuento+", "+fechal+")");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -27,10 +25,12 @@ public class DAOCategoriasImp implements DAOCategorias{
         try (Connection c = DBConnection.connect();
              Statement st = c.createStatement();
 
-             ResultSet rs = st.executeQuery("delete from Artículo where ID = "+id+"")) {
+             ) {
+
+            st.executeUpdate("delete from Artículo where ID = "+id+"");
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error SQL" + e.getErrorCode(), e);
         }
     }
 
@@ -39,12 +39,13 @@ public class DAOCategoriasImp implements DAOCategorias{
         try (Connection c = DBConnection.connect();
              Statement st = c.createStatement();
 
-             ResultSet rs = st.executeQuery("update Artículo set  (" + id + ", "+
-                      ", "+cat+", "+descuento+" , "+
-                     fechal+")")) {
+             ) {
+            st.executeUpdate("update Artículo set  (" + id + ", "+
+                    ", "+cat+", "+descuento+" , "+
+                    fechal+")");
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error SQL" + e.getErrorCode(), e);
         }
     }
 }
