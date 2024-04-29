@@ -6,6 +6,8 @@ import launcher.DAOFactory;
 import java.util.List;
 import java.util.function.Predicate;
 
+import integracion.DAOCestaimp;
+
 public class BusinessDelegate {
 
     DAOStock daostock = new DAOStockImp();
@@ -18,6 +20,10 @@ public class BusinessDelegate {
     BOArticulo boArticulo = new BOArticulo(daoart, daocat);
     BOCategorias boCategorias = new BOCategorias(daocat);
     BOListas boListas = new BOListas(daolistas);
+
+    DAOCesta daoCesta = new DAOCestaimp();
+
+    BOCesta boCesta = new BOCesta(daoCesta);
 
     private DAOFactory daoFactory;
 
@@ -69,4 +75,17 @@ public class BusinessDelegate {
     public List<Articulo> buscaFiltro(List<Articulo> lista, Predicate<Articulo> pred){
         return boListas.buscaFiltro(lista, pred);
     }
+
+    public void addArticuloACesta(TOArticuloEnCesta toArticuloEnCesta) {
+        boCesta.addArticuloACesta(toArticuloEnCesta);
+    }
+
+    public void actualizarArticuloEnCesta(TOArticuloEnCesta toArticuloEnCesta) {
+        boCesta.actualizarArticuloEnCesta(toArticuloEnCesta);
+    }
+
+    public void removeArticuloDeCesta(TOArticuloEnCesta toArticuloEnCesta) {
+        boCesta.removeArticuloEnCesta(toArticuloEnCesta);
+    }
+
 }
