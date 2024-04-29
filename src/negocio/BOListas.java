@@ -8,10 +8,11 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class BOListas {
+    DAOListas dao;
 
-    DAOListas dao = new DAOListasImp();
-
-
+    public BOListas(DAOListas dao){
+        this.dao = dao;
+    }
 
     public List<Articulo> buscaArticulosCategoria(String cat) {
         return dao.buscaArticulosCategoria(cat);

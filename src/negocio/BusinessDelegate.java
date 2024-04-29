@@ -1,12 +1,20 @@
 package negocio;
 
+import integracion.*;
+
 import java.util.List;
 import java.util.function.Predicate;
 
 public class BusinessDelegate {
 
+    DAOStock daostock = new DAOStockImp();
+    DAOCategorias daocat = new DAOCategoriasImp();
+    DAOArticulo daoart = new DAOArticuloImp();
+    DAOListas daolistas = new DAOListasImp();
+
+
     BOStock bostock = new BOStock(daostock);
-    BOArticulo boArticulo = new BOArticulo(daoart);
+    BOArticulo boArticulo = new BOArticulo(daoart, daocat);
     BOCategorias boCategorias = new BOCategorias(daocat);
     BOListas boListas = new BOListas(daolistas);
 

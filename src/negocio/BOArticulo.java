@@ -2,11 +2,18 @@ package negocio;
 
 import integracion.DAOArticulo;
 import integracion.DAOArticuloImp;
+import integracion.DAOCategorias;
 
 public class BOArticulo {
 
-    DAOArticulo dao = new DAOArticuloImp();
-    private BOCategorias cats = new BOCategorias();
+    DAOArticulo dao;
+    DAOCategorias daocat;
+    private BOCategorias cats = new BOCategorias(daocat);
+
+    public BOArticulo(DAOArticulo dao, DAOCategorias daocat ){
+        this.daocat = daocat;
+        this.dao = dao;
+    }
 
     public tArticulo buscarArticulo(int id) {
         if(dao.existeArticulo(id)){

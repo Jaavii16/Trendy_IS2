@@ -5,8 +5,11 @@ import integracion.DAOCategoriasImp;
 
 public class BOCategorias {
 
-    DAOCategorias dao = new DAOCategoriasImp();
+    DAOCategorias dao;
 
+    public BOCategorias(DAOCategorias dao){
+        this.dao = dao;
+    }
 
     public void altaArticuloCat(int id, String fechal, int descuento, String genero) {
         if(descuento != 0){
