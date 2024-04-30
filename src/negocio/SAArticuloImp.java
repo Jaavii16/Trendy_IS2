@@ -1,31 +1,29 @@
 package negocio;
 
-public class SAArticuloImp implements SAArticulo{
-
-    BusinessDelegate nart;
+public class SAArticuloImp extends AbstractSA implements SAArticulo{
 
     public SAArticuloImp(BusinessDelegate nart){
-        this.nart = nart;
+        super(nart);
     }
 
     @Override
     public tArticulo buscarArticulo(int id) {
-        return nart.buscarArticulo(id);
+        return businessDelegate.buscarArticulo(id);
     }
 
     @Override
     public void altaArticulo(tArticulo a, String fechal, String genero, int descuento) {
-        nart.altaArticulo(a, fechal, genero, descuento);
+        businessDelegate.altaArticulo(a, fechal, genero, descuento);
     }
 
     @Override
     public void bajaArticulo(tArticulo a) {
-        nart.bajaArticulo(a);
+        businessDelegate.bajaArticulo(a);
     }
 
     @Override
     public void modificarArticulo(tArticulo a) {
-        nart.modificarArticulo(a);
+        businessDelegate.modificarArticulo(a);
     }
 
 

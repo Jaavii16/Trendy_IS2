@@ -1,26 +1,24 @@
 package negocio;
 
-public class SACategoriasImp implements SACategorias{
-
-    BusinessDelegate ncat;
+public class SACategoriasImp extends AbstractSA implements SACategorias{
 
     public SACategoriasImp(BusinessDelegate b){
-        ncat = b;
+        super(b);
     }
 
     @Override
     public void altaArticuloCat(int id, String fechal, int descuento, String genero) {
-        ncat.altaArticuloCat(id, fechal, descuento, genero);
+        businessDelegate.altaArticuloCat(id, fechal, descuento, genero);
     }
 
     @Override
     public void bajaArticuloCat(int id) {
-        ncat.bajaArticuloCat(id);
+        businessDelegate.bajaArticuloCat(id);
     }
 
     @Override
     public void modificarArticulo(int id, String fechal, int descuento, String genero) {
-        ncat.modificarArticulo(id, fechal, descuento, genero);
+        businessDelegate.modificarArticulo(id, fechal, descuento, genero);
     }
 
 }

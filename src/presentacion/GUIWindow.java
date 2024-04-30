@@ -1,5 +1,8 @@
 package presentacion;
 
+import negocio.SAFacade;
+
+import negocio.TOPedido;
 import org.apache.commons.lang3.function.TriFunction;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -16,7 +19,7 @@ import java.util.function.BiConsumer;
 
 public class GUIWindow extends JFrame {
 
-    private final SAFacade saFachade;
+    private final SAFacade saFacade;
 
     private Thread introAnimationThread;
 
@@ -27,8 +30,8 @@ public class GUIWindow extends JFrame {
     private Pair<JButton, Integer> lastPressedButton;
     private JScrollPane lastPanel;
 
-    public GUIWindow(SAFacade saFachade) {
-        this.saFachade = saFachade;
+    public GUIWindow(SAFacade saFacade) {
+        this.saFacade = saFacade;
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
@@ -38,18 +41,35 @@ public class GUIWindow extends JFrame {
             }
         });
 
-        playIntroAnimation();
+        setIconAndPlayIntroAnimation();
         initPanels();
         waitForAnimation();
     }
 
-    private void playIntroAnimation() {
+    private void setIconAndPlayIntroAnimation() {
         try {
             Random random = new Random();
             int loadingTimeMs = random.nextInt(1000, 3000);
 
-            File img = new File("resources/imgs/trendy_logo.png");
+            File img = new File("resources/imgs/trendy_logo.png"); //TODO Usar getResource
             BufferedImage imgBuffered = ImageIO.read(img);
+
+            // Define los bordes a recortar
+            int margin = 130;
+
+            // Obtiene las dimensiones de la imagen original
+            int originalWidth = imgBuffered.getWidth();
+            int originalHeight = imgBuffered.getHeight();
+
+            // Define las dimensiones de la imagen recortada
+            int croppedWidth = originalWidth - 2 * margin;
+            int croppedHeight = originalHeight - 2 * margin;
+
+            // Crea la imagen recortada
+            BufferedImage croppedImage = imgBuffered.getSubimage(margin, margin, croppedWidth, croppedHeight);
+
+            setIconImage(croppedImage);
+
             ImageAnimation introAnimation = new ImageAnimation(imgBuffered, loadingTimeMs, 1.5);
 
             introAnimationThread = new Thread(introAnimation::play);
@@ -87,11 +107,11 @@ public class GUIWindow extends JFrame {
         controlPanel = new JPanel();
         controlPanel.setLayout(new BoxLayout(controlPanel, BoxLayout.X_AXIS));
 
-        MainGUIPanel homePanel = new HomePanel(this, saFachade);
-        MainGUIPanel userPanel = new GUIPerfil(saFachade);
-        MainGUIPanel cestaPanel = new GUICesta(saFachade);
-        MainGUIPanel searchPanel = new GUIPpalCategorias(saFachade);
-        GUILogin authDialog = new GUILogin(saFachade);
+        MainGUIPanel homePanel = new HomePanel(this, saFacade);
+        MainGUIPanel userPanel = new GUIPerfil(saFacade);
+        MainGUIPanel cestaPanel = new GUICesta(saFacade);
+        MainGUIPanel searchPanel = new GUIPpalCategorias(saFacade);
+        GUILogin authDialog = new GUILogin(saFacade);
 
         controlPanel.add(Box.createHorizontalGlue());
         JButton homeButton = buttonCreator.apply("Home", homePanel, buttonAction);
@@ -102,7 +122,7 @@ public class GUIWindow extends JFrame {
         buttonCreator.apply("Cesta", cestaPanel, buttonAction);
         controlPanel.add(Box.createHorizontalGlue());
         buttonCreator.apply("User", userPanel, (button, panel) -> {
-            if (!saFachade.isLogged()) {
+            if (!saFacade.getUsuario()) {
                 authDialog.open(this);
             } else {
                 buttonAction.accept(button, panel);
@@ -195,6 +215,7 @@ public class GUIWindow extends JFrame {
         }
     }
 
-    public void showPedido(PedidoView lastPedido) {
+    //TODO
+    public void showPedido(TOPedido lastPedido) {
     }
 }

@@ -1,12 +1,11 @@
 package negocio;
 
 
-public class SACestaimp implements SACesta {
+public class SACestaimp extends AbstractSA implements SACesta {
 
-    private final BusinessDelegate businessDelegate;
 
     public SACestaimp(BusinessDelegate businessDelegate) {
-        this.businessDelegate = businessDelegate;
+        super(businessDelegate);
     }
 
     @Override

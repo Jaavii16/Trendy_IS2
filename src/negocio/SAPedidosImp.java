@@ -3,12 +3,10 @@ package negocio;
 import java.util.Collection;
 import java.util.Date;
 
-public class SAPedidosImp implements SAPedidos {
-
-    private final BusinessDelegate businessDelegate;
+public class SAPedidosImp extends AbstractSA implements SAPedidos {
 
     public SAPedidosImp(BusinessDelegate businessDelegate) {
-        this.businessDelegate = businessDelegate;
+        super(businessDelegate);
     }
 
     @Override

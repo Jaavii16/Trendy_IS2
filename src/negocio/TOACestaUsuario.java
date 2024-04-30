@@ -2,9 +2,9 @@ package negocio;
 
 public class TOACestaUsuario {
     private TOCesta toCesta;
-    private TOUsuario toUsuario;
+    private TUsuario toUsuario;
 
-    public TOACestaUsuario(TOCesta toCesta, TOUsuario toUsuario){
+    public TOACestaUsuario(TOCesta toCesta, TUsuario toUsuario){
         this.toCesta = toCesta;
         this.toUsuario = toUsuario;
     }
@@ -13,7 +13,7 @@ public class TOACestaUsuario {
         return toCesta;
     }
 
-    public TOUsuario getToUsuario() {
+    public TUsuario getToUsuario() {
         return toUsuario;
     }
 }

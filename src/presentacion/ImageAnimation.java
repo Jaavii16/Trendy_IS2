@@ -1,10 +1,13 @@
 package presentacion;
 
+import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class ImageAnimation extends JPanel {
@@ -22,12 +25,15 @@ public class ImageAnimation extends JPanel {
     private double rotacion;
     private int fps;
     private double deltaTime;
+    private Clip clip;
 
     public ImageAnimation(BufferedImage image, int expectedEndTimeMs, double animationSpeed) {
         this.fullImage = image;
         this.expectedEndTimeMs = expectedEndTimeMs;
         this.initTime = Long.MAX_VALUE;
         this.animationSpeed = animationSpeed;
+
+        playSound("sounds/trendy.wav");
 
         setBackground(Color.decode("0xc0c9f4"));
         setFont(new Font("Arial", Font.BOLD, 20));
@@ -105,7 +111,10 @@ public class ImageAnimation extends JPanel {
             lastTime.set(System.currentTimeMillis());
 
             if (rotacion >= 359) rotacion = (rotacion + 0.1) % 360;
-            if (rotacion >= 359.9 && stop) timer.stop();
+            if (rotacion >= 359.9 && stop) {
+                timer.stop();
+                //clip.stop();
+            }
 
             updateFPS();
             timer.setDelay(1000 / fps);
@@ -113,6 +122,7 @@ public class ImageAnimation extends JPanel {
             repaint();
         });
         timer.start();
+
         while (timer.isRunning()) {
             try {
                 Thread.sleep(1);
@@ -121,6 +131,30 @@ public class ImageAnimation extends JPanel {
                 stop = true;
             }
         }
+    }
+
+    private void playSound(String s) {
+        try{
+            // Crea un objeto URL que apunta al archivo de audio
+            URL url = this.getClass().getClassLoader().getResource(s);
+            // Obtiene un AudioInputStream del archivo de audio
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
+            // Obtiene un Clip de línea de audio y lo abre
+            clip = AudioSystem.getClip();
+            clip.open(audioIn);
+
+            // Empieza la cancion en el microsegundo:
+            clip.setMicrosecondPosition(177_000_000);
+            // Inicia la reproducción del sonido
+            clip.start();
+        } catch (UnsupportedAudioFileException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (LineUnavailableException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void updateFPS() {

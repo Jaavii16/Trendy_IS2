@@ -1,5 +1,9 @@
 package presentacion;
 
+import negocio.SAFacade;
+import negocio.TOPedido;
+import negocio.TOStatusPedido;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -10,7 +14,7 @@ public class HomePanel extends MainGUIPanel {
     private final GUIWindow mainWindow;
     private JPanel contentPanel;
     private final SAFacade saFachade;
-    private PedidoView lastPedido;
+    private TOPedido lastPedido;
     private JPanel jpArticulosExclusivos;
 
     public HomePanel(GUIWindow mainWindow, SAFacade saFachade) {
@@ -28,8 +32,8 @@ public class HomePanel extends MainGUIPanel {
         contentPanel.add(Box.createVerticalGlue());
 
         JLabel jlWelcome;
-        if (saFachade.isLogged()) {
-            jlWelcome = new JLabel("Bonjour invité, " + saFachade.getLoggedUser().getUsername());
+        if (saFachade.getUsuario()) { //TODO Cambiar a español
+            jlWelcome = new JLabel("Bonjour invité, " + saFachade.getUsuario()); //TODO Añadir getUsername()
         } else {
             jlWelcome = new JLabel("Benvinguts");
         }
@@ -76,10 +80,12 @@ public class HomePanel extends MainGUIPanel {
 
     private void putArticulosExclusivos() {
         jpArticulosExclusivos.removeAll();
-        for (ArticuloView articulo : saFachade.getArticulosExclusivos()) {
+        /*for (ArticuloView articulo : saFachade.getArticulosExclusivos()) {
             jpArticulosExclusivos.add(articulo);
             jpArticulosExclusivos.add(Box.createHorizontalGlue());
         }
+
+         */
     }
 
     private void emptyLastPedido(JPanel jpLastPedido) {
@@ -101,12 +107,12 @@ public class HomePanel extends MainGUIPanel {
 
         JPanel jpLastPedidoStatus = new JPanel(new BorderLayout());
         jpLastPedidoStatus.add(new JLabel("Estat: " + lastPedido.getStatus().toString()), BorderLayout.WEST);
-        if (lastPedido.getStatus() == TOStatusPedido.REPARTO) {
+        if (lastPedido.getStatus().equals(TOStatusPedido.REPARTO.toString())) {
             JButton cancelarPedidoButton = new JButton("Cancelar pedido");
             cancelarPedidoButton.addActionListener(e -> {
                 int sel = JOptionPane.showConfirmDialog(this, "Estas seguro de que quieres cancelar el pedido?", "Cancelar pedido", JOptionPane.YES_NO_OPTION);
                 if (sel == JOptionPane.YES_OPTION) {
-                    saFachade.cancelarPedido(lastPedido);
+                    saFachade.cancelarPedido(lastPedido.getID());
                     jpLastPedidoStatus.remove(cancelarPedidoButton);
                     lastPedido = saFachade.getLastPedido();
                     if (lastPedido != null) {

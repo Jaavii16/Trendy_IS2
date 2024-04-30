@@ -1,6 +1,5 @@
 package integracion;
 
-import database.DBConnection;
 import negocio.TUsuario;
 
 import java.sql.Connection;

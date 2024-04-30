@@ -1,13 +1,15 @@
 package launcher;
 
-import negocio.AbstractSA;
-import negocio.BusinessDelegate;
+import negocio.*;
 
 public interface SAFactory {
 
     //TODO Hacer la fabrica de SA
-
-    AbstractSA getTestSA(BusinessDelegate businessDelegate);
-
-    //añadir get<nombre>SA() para cada SA
+    SAArticulo getArticuloSA(BusinessDelegate businessDelegate);
+    SACategorias getCategoriasSA(BusinessDelegate businessDelegate);
+    SACesta getCestaSA(BusinessDelegate businessDelegate);
+    SAListas getListaSA(BusinessDelegate businessDelegate);
+    SAPedidos getPedidosSA(BusinessDelegate businessDelegate);
+    SAStock getStockSA(BusinessDelegate businessDelegate);
+    SAUsuario getUsuarioSA(BusinessDelegate businessDelegate);
 }
