@@ -5,6 +5,7 @@ import negocio.TOPedido;
 import negocio.TOStatusPedido;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -33,12 +34,13 @@ public class HomePanel extends MainGUIPanel {
         JPanel jpTitle = new JPanel();
         JLabel jlWelcome = new JLabel();
         jlWelcome.setFont(new Font("Arial", Font.BOLD, 20));
-        if (saFachade.getUsuario()) {
+        if (!saFachade.getUsuario().isEmpty()) {
             jlWelcome.setText("Hola, " + saFachade.getUsuario()); //TODO Añadir getUsername()
         } else {
             jlWelcome.setText("Bienvenido!");
         }
         jpTitle.add(jlWelcome);
+        jpTitle.setBorder(BorderFactory.createTitledBorder("Home"));
         contentPanel.add(jpTitle);
 
         jpArticulosExclusivos = new JPanel();
@@ -47,18 +49,15 @@ public class HomePanel extends MainGUIPanel {
 
         JScrollPane jspArticulosExclusivos = new JScrollPane(jpArticulosExclusivos, VERTICAL_SCROLLBAR_NEVER, HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
+        jspArticulosExclusivos.setBorder(new TitledBorder("Articulos exclusivos"));
+
         contentPanel.add(jspArticulosExclusivos);
 
         jpLastPedido = new JPanel();
 
         updatePedido(jpLastPedido);
 
-        jpLastPedido.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                mainWindow.showPedido(lastPedido);
-            }
-        });
+        jpLastPedido.setBorder(new TitledBorder("Ultimo pedido"));
 
         contentPanel.add(jpLastPedido);
 
@@ -111,6 +110,14 @@ public class HomePanel extends MainGUIPanel {
         jpLastPedido.add(jpLastPedidoTitle);
 
         JPanel jpLastPedidoStatus = new JPanel(new BorderLayout());
+
+        jpLastPedidoStatus.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                mainWindow.showPedido(lastPedido);
+            }
+        });
+
         jpLastPedidoStatus.add(new JLabel("Estado: " + lastPedido.getStatus()), BorderLayout.WEST);
         if (lastPedido.getStatus().equals(TOStatusPedido.REPARTO.toString())) {
             JButton cancelarPedidoButton = new JButton("Cancelar pedido");

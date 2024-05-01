@@ -11,7 +11,9 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Random;
@@ -46,10 +48,30 @@ public class GUIWindow extends JFrame {
         });
 
         setIconAndPlayIntroAnimation();
+        autoLogin();
         initPanels();
         waitForAnimation();
     }
 
+    private void autoLogin() {
+        File login = new File("trendy-storage/login.txt");
+        if (login.exists()) {
+            String[] credentials = null;
+            try {
+                FileReader reader = new FileReader(login);
+                BufferedReader bufferedReader = new BufferedReader(reader);
+                credentials = new String[2];
+                credentials[0] = bufferedReader.readLine();
+                credentials[1] = bufferedReader.readLine();
+            } catch (IOException e) {
+            }
+
+            if (credentials != null) {
+                saFacade.login(credentials[0], credentials[1]);
+            }
+        }
+    }
+  
     private void setIconAndPlayIntroAnimation() {
         try {
             Random random = new Random();
@@ -145,7 +167,7 @@ public class GUIWindow extends JFrame {
         buttonCreator.apply(searchIcon, searchPanel, buttonAction);
         buttonCreator.apply(cestaIcon, cestaPanel, buttonAction);
         buttonCreator.apply(userIcon, userPanel, (panel) -> {
-            if (!saFacade.getUsuario()) {
+            if (saFacade.getUsuario().isEmpty()) {
                 authDialog.open(this);
             } else {
                 buttonAction.accept(panel);
@@ -179,12 +201,10 @@ public class GUIWindow extends JFrame {
     }
 
     private Consumer<JScrollPane> changePanelAction() {
-        return (panel) -> {
-            Transitions.makeWhiteFadeTransition(lastPanel.getLeft(), panel, 1, (from, to) -> {
-                mainPanel.remove(from);
-                mainPanel.add(to, BorderLayout.CENTER);
-            });
-        };
+        return (panel) -> Transitions.makeWhiteFadeTransition(lastPanel.getLeft(), panel, 1, (from, to) -> {
+            mainPanel.remove(from);
+            mainPanel.add(to, BorderLayout.CENTER);
+        });
     }
 
     private void waitForAnimation() {

@@ -6,4 +6,8 @@ public interface SACesta {
     void actualizarArticuloEnCesta(TOArticuloEnCesta toArticuloEnCesta);
 
     void removeArticuloDeCesta(TOArticuloEnCesta toArticuloEnCesta);
+
+    void addArticuloAFavoritos(TOArticuloEnFavoritos toArticuloEnFavoritos);
+
+    void removeArticuloDeFavoritos(TOArticuloEnFavoritos toArticuloEnFavoritos);
 }

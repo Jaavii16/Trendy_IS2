@@ -35,6 +35,7 @@ public class VolumeShifter implements Runnable {
         value = (value <= 0.0) ? 0.001 : ((value > 1.0) ? 1.0 : value);
         targetDB = (float) (Math.log(value) / Math.log(10.0) * 20.0);
         if (!fading) {
+            currDB = gainControl.getValue();
             Thread t = new Thread(this);  // start a thread to fade volume
             t.start();  // calls run() below
         }

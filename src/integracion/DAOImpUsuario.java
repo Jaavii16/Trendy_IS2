@@ -12,24 +12,24 @@ import java.util.List;
 public class DAOImpUsuario implements DAOUsuario {
     @Override
     public List<TUsuario> buscarUsuarios() {
-        List<TUsuario>list = new ArrayList<>();
+        List<TUsuario> list = new ArrayList<>();
         try (Connection connection = DBConnection.connect()) {
             String sql = "SELECT * FROM Usuarios";
             try (Statement statement = connection.createStatement();
                  ResultSet rS = statement.executeQuery(sql)
             ) {
-                while(rS.next()){
-                    list.add(new TUsuario( rS.getInt("ID"))
+                while (rS.next()) {
+                    list.add(new TUsuario(rS.getInt("ID"))
                             .setCorreo_e(rS.getString("correo"))
                             .setContrasenya(rS.getString("contraseña"))
                             .setNombre(rS.getString("nombre"))
                             .setApellidos(rS.getString("apellidos"))
                             .setPais(rS.getString("pais"))
                             .setAnyoNacimiento(rS.getInt("anyo_nacimiento"))
-                            .setSexo((char) rS.getString("sexo").getBytes()[0])//TODO revisar si funciona
-                            .setSuscripcion(rS.getInt("suscripcion_id"))
+                            .setSexo((char) rS.getByte("sexo"))//TODO revisar si funciona
+                            .setSuscripcion(rS.getString("suscripcion_id"))
                             .setDireccion(rS.getString("Dirección"))
-                            .setSaldo(rS.getInt("saldo")));
+                            .setSaldo(rS.getDouble("saldo")));
                 }
                 return list;
             } catch (SQLException e) {
@@ -45,9 +45,9 @@ public class DAOImpUsuario implements DAOUsuario {
         try (Connection connection = DBConnection.connect()) {
             String sql = "SELECT * FROM Usuarios WHERE correo = '" + correo + "' AND contraseña = '" + contrasenya + "'";
             try (Statement statement = connection.createStatement();
-                ResultSet rS = statement.executeQuery(sql)
+                 ResultSet rS = statement.executeQuery(sql)
             ) {
-                if(rS.next()){
+                if (rS.next()) {
                     return new TUsuario(rS.getInt("ID"))
                             .setCorreo_e(rS.getString("correo"))
                             .setContrasenya(rS.getString("contraseña"))
@@ -55,11 +55,11 @@ public class DAOImpUsuario implements DAOUsuario {
                             .setApellidos(rS.getString("apellidos"))
                             .setPais(rS.getString("pais"))
                             .setAnyoNacimiento(rS.getInt("anyo_nacimiento"))
-                            .setSexo((char) rS.getString("sexo").getBytes()[0])//TODO revisar q funcione esa funcion
-                            .setSuscripcion(rS.getInt("suscripcion_id"))
+                            .setSexo((char) rS.getByte("sexo"))//TODO revisar q funcione esa funcion
+                            .setSuscripcion(rS.getString("suscripcion_id"))
                             .setDireccion(rS.getString("Dirección"))
-                            .setSaldo(rS.getInt("saldo"));
-                }else{
+                            .setSaldo(rS.getDouble("saldo"));
+                } else {
                     return null;
                 }
             } catch (SQLException e) {
@@ -144,7 +144,7 @@ public class DAOImpUsuario implements DAOUsuario {
             try (Statement statement = connection.createStatement();
                  ResultSet rS = statement.executeQuery(sql)
             ) {
-                if(rS.next()){
+                if (rS.next()) {
                     nuevoId = rS.getInt("max_id") + 1;
                 }
             } catch (SQLException e) {
@@ -175,7 +175,7 @@ public class DAOImpUsuario implements DAOUsuario {
     public void actualizarSaldo(int idUsuario, int cantidad) {
         try (Connection connection = DBConnection.connect()) {
             String sql = "UPDATE Usuarios SET " +
-                    "saldo = saldo +" + cantidad  + "WHERE ID = " + idUsuario + ";";
+                    "saldo = saldo +" + cantidad + "WHERE ID = " + idUsuario + ";";
             try {
                 connection.createStatement().executeUpdate(sql);
             } catch (SQLException e) {
@@ -190,7 +190,7 @@ public class DAOImpUsuario implements DAOUsuario {
     public void actualizarSuscripcion(int idUsuario, int susc) {
         try (Connection connection = DBConnection.connect()) {
             String sql = "UPDATE Usuarios SET " +
-                    "suscripcion_id =  '+" + susc  + "' WHERE ID = " + idUsuario + ";";
+                    "suscripcion_id =  '+" + susc + "' WHERE ID = " + idUsuario + ";";
             try {
                 connection.createStatement().executeUpdate(sql);
             } catch (SQLException e) {

@@ -144,7 +144,12 @@ public class ImageAnimation extends JPanel {
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(url);
             // Obtiene un Clip de línea de audio y lo abre
             audio = AudioSystem.getClip();
+
             audio.open(audioIn);
+
+            FloatControl gainControl = (FloatControl) audio.getControl(FloatControl.Type.MASTER_GAIN);
+            VolumeShifter volumeShifter = new VolumeShifter(gainControl);
+            volumeShifter.setVolume(0.05F);
 
             // Empieza la cancion en el microsegundo:
             audio.setMicrosecondPosition(177_000_000);

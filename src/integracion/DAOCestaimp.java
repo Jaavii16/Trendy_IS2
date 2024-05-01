@@ -1,10 +1,13 @@
 package integracion;
 
 import negocio.TOArticuloEnCesta;
+import negocio.TOArticuloEnFavoritos;
 import negocio.TOCesta;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.TreeSet;
 
 public class DAOCestaimp implements DAOCesta {
@@ -61,6 +64,45 @@ public class DAOCestaimp implements DAOCesta {
                         .setCantidad(resultSet.getInt("Cantidad")));
             }
             return new TOCesta().setIdCesta(resultSet.getInt("ID")).setIdUsuario(idUsuario).setListaArticulos(listaArticulos);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Set<TOArticuloEnFavoritos> getFavoritos(int idUsuario) {
+        try (Connection connection = DBConnection.connect()) {
+            String sql = "SELECT ID_Articulo FROM ArtículosEnFavoritos WHERE ID_usuario = " + idUsuario;
+            var resultSet = connection.createStatement().executeQuery(sql);
+            Set<TOArticuloEnFavoritos> favoritos = new HashSet<>();
+            while (resultSet.next()) {
+                favoritos.add(new TOArticuloEnFavoritos(resultSet.getInt("ID_Artículo"), idUsuario));
+            }
+            return favoritos;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void añadirArticuloAFavoritos(TOArticuloEnFavoritos toArticuloEnFavoritos) {
+        try (Connection connection = DBConnection.connect()) {
+            String sql = "INSERT INTO ArtículosEnFavoritos (ID_usuario, ID_Articulo) VALUES (" +
+                    toArticuloEnFavoritos.getIdUsuario() + ", " +
+                    toArticuloEnFavoritos.getIdArticulo() +
+                    ")";
+            connection.createStatement().executeUpdate(sql);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void eliminarArticuloDeFavoritos(TOArticuloEnFavoritos toArticuloEnFavoritos) {
+        try (Connection connection = DBConnection.connect()) {
+            String sql = "DELETE FROM ArtículosEnFavoritos WHERE ID_usuario = " + toArticuloEnFavoritos.getIdUsuario() + " AND ID_Articulo = " +
+                    toArticuloEnFavoritos.getIdArticulo();
+            connection.createStatement().executeUpdate(sql);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

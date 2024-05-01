@@ -56,7 +56,7 @@ public class Transitions {
         printPanel.add(from);
 
         for (int i = 0; i <= 150; i++) {
-            printPanel.setBackground(new Color(255, 255, 255, i));
+            printPanel.setBackground(new Color(204, 204, 204, i));
             try {
                 Thread.sleep(delay * 2L);
             } catch (InterruptedException e) {
@@ -70,7 +70,7 @@ public class Transitions {
         printPanel.add(to);
 
         for (int i = 150; i >= 0; i--) {
-            printPanel.setBackground(new Color(255, 255, 255, i));
+            printPanel.setBackground(new Color(204, 204, 204, i));
             try {
                 Thread.sleep(delay);
             } catch (InterruptedException e) {

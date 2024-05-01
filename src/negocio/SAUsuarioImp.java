@@ -2,7 +2,8 @@ package negocio;
 
 import java.util.Collection;
 
-public class SAUsuarioImp extends AbstractSA implements SAUsuario{
+
+public class SAUsuarioImp extends AbstractSA implements SAUsuario {
 
     public SAUsuarioImp(BusinessDelegate bdUsuario) {
         super(bdUsuario);
@@ -14,8 +15,8 @@ public class SAUsuarioImp extends AbstractSA implements SAUsuario{
     }
 
     @Override
-    public boolean getUsuario() {
-        return (businessDelegate.read() != null);
+    public String getUsuario() {
+        return businessDelegate.read().getNombre();
     }
 
     @Override
@@ -24,11 +25,13 @@ public class SAUsuarioImp extends AbstractSA implements SAUsuario{
     }
 
     @Override
-    public void update(TUsuario tUsuario) {businessDelegate.update(tUsuario);
+    public void update(TUsuario tUsuario) {
+        businessDelegate.update(tUsuario);
     }
 
     @Override
-    public void delete(int id) {businessDelegate.delete(id);
+    public void delete(int id) {
+        businessDelegate.delete(id);
     }
 
     @Override
@@ -39,5 +42,15 @@ public class SAUsuarioImp extends AbstractSA implements SAUsuario{
     @Override
     public void actualizarSuscr(int id) {
         businessDelegate.actualizarSusc(id);
+    }
+
+    @Override
+    public void login(String correo, String contraseña) {
+        businessDelegate.login(correo, contraseña);
+    }
+
+    @Override
+    public void logout() {
+        businessDelegate.logout();
     }
 }

@@ -5,6 +5,7 @@ import javax.swing.*;
 public abstract class MainGUIPanel extends JScrollPane {
     protected MainGUIPanel() {
         super(null, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        setBorder(BorderFactory.createEmptyBorder());
     }
 
     public abstract void update();
