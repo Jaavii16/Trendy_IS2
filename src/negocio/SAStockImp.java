@@ -7,8 +7,8 @@ public class SAStockImp extends AbstractSA implements SAStock{
     }
 
     @Override
-    public void altaArticuloStock(tStock s) {
-        businessDelegate.altaArticuloStock(s);
+    public void altaArticuloStock(int id, int s) {
+        businessDelegate.altaArticuloStock(id, s);
     }
 
     @Override

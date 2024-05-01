@@ -12,8 +12,8 @@ public class SAArticuloImp extends AbstractSA implements SAArticulo{
     }
 
     @Override
-    public void altaArticulo(tArticulo a, String fechal, String genero, int descuento) {
-        businessDelegate.altaArticulo(a, fechal, genero, descuento);
+    public void altaArticulo(tArticulo a, String fechal, String genero, int descuento, int s) {
+        businessDelegate.altaArticulo(a, fechal, genero, descuento, s);
     }
 
     @Override

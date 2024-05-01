@@ -80,8 +80,13 @@ public class BOStock {
         this.daoStock = d;
     }
 
-    public void altaArticuloStock(tStock s){
-        daoStock.altaArticuloStock(s);
+    public void altaArticuloStock(int id, int s){
+        for(Color c : Color.values()){
+            for(Talla t: Talla.values()){
+                daoStock.altaArticuloStock(new tStock(id, colorToString(c), tallatoString(t), s));
+            }
+        }
+
     }
     public void bajaArticuloStock(int id){
         daoStock.bajaArticuloStock(id);

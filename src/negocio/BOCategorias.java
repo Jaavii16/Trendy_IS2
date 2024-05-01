@@ -41,4 +41,8 @@ public class BOCategorias {
             dao.modificarArticulo(id, fechal, descuento, genero);
         }
     }
+
+    public void actualizaExclusivos(){
+        dao.actualizaExclusivos();
+    }
 }

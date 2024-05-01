@@ -21,4 +21,9 @@ public class SACategoriasImp extends AbstractSA implements SACategorias{
         businessDelegate.modificarArticulo(id, fechal, descuento, genero);
     }
 
+    @Override
+    public void actualizaExclusivos() {
+        businessDelegate.actualizaExclusivos();
+    }
+
 }
