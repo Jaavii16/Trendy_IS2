@@ -16,21 +16,27 @@ public class GUIPpalCategorias extends MainGUIPanel implements ActionListener {
     private SAFacade sa;
 
     GUIPpalCategorias(SAFacade sa) {
+        super();
         this.sa = sa;
         lcat = this.sa.getCategorias();
         initGUI();
     }
 
     private void initGUI() {
-        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        this.setAlignmentX(JComponent.LEFT_ALIGNMENT);
 
-        for (int i = 0; i < this.lcat.size(); i++) {
-            JButton cat = new JButton(lcat.get(i));
+        JPanel categorias = new JPanel();
+
+        categorias.setLayout(new BoxLayout(categorias, BoxLayout.Y_AXIS));
+        categorias.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+
+        for (String s : this.lcat) {
+            JButton cat = new JButton(s);
             cat.addActionListener(this);
             categorias.add(cat);
-            this.add(cat);
+            categorias.add(cat);
         }
+
+        this.setViewportView(categorias);
     }
 
     public void actionPerformed(ActionEvent e) {
