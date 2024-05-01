@@ -1,9 +1,13 @@
 package integracion;
 
+import negocio.tArticulo;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.LinkedList;
+import java.util.List;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -50,6 +54,17 @@ public class DAOCategoriasImp implements DAOCategorias {
     }
 
     @Override
+    public List<String> getCategorias() {
+        try (Connection c = DBConnection.connect();
+             Statement st = c.createStatement();
+             ResultSet rs = st.executeQuery("select Categoria from ClasificacionArticulos")) {
+            List<String> cat = new LinkedList<>();
+            while (rs.next()) {
+                if(!cat.contains(rs.getString("Categoria"))){
+                    cat.add(rs.getString("Categoria"));
+                }
+            }
+            return cat;
     public void actualizaExclusivos() {
         try (Connection c = DBConnection.connect();
              Statement st = c.createStatement();

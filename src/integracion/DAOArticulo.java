@@ -1,5 +1,6 @@
 package integracion;
 
+import negocio.Articulo;
 import negocio.tArticulo;
 
 public interface DAOArticulo {

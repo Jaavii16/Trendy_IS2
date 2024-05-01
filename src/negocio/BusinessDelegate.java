@@ -52,6 +52,9 @@ public class BusinessDelegate {
     public int getStock(int id, String color, String t){
         return bostock.getStock(id, color, t);
     }
+    public List<String> getCategorias(){
+        return this.boCategorias.getCategorias();
+    }
 
     public Collection<TOPedido> getAllPedidos() {
         return boPedido.getAllPedidos();

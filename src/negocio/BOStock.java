@@ -5,11 +5,11 @@ import integracion.DAOStockImp;
 
 public class BOStock {
 
-    enum Color{
+    public enum Color{
         BLANCO, NEGRO, MARRON, ROJO, NARANJA, AMARILLO, BEIGE, VERDE, AZUL, ROSA, VIOLETA, GRIS;
     }
 
-    public String colorToString(Color color){
+    public static String colorToString(Color color){
         String c = "";
         switch(color){
             case AZUL -> c = "Azul";
@@ -48,7 +48,7 @@ public class BOStock {
         return c;
     }
 
-    enum Talla{
+    public enum Talla{
         XS, S, M, L, XL;
     }
 
@@ -64,7 +64,7 @@ public class BOStock {
         return c;
     }
 
-    public Talla stringtoTalla(String talla){
+    public static Talla stringtoTalla(String talla){
         Talla c = null;
         switch(talla){
             case "XS" -> c = Talla.XS;

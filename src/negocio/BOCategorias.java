@@ -3,6 +3,8 @@ package negocio;
 import integracion.DAOCategorias;
 import integracion.DAOCategoriasImp;
 
+import java.util.List;
+
 public class BOCategorias {
 
     DAOCategorias dao;
@@ -42,6 +44,8 @@ public class BOCategorias {
         }
     }
 
+    public List<String> getCategorias() return dao.getCategorias();
+        
     public void actualizaExclusivos(){
         dao.actualizaExclusivos();
     }
