@@ -1,8 +1,10 @@
 package negocio;
 
-public class SACategoriasImp extends AbstractSA implements SACategorias{
+import java.util.List;
 
-    public SACategoriasImp(BusinessDelegate b){
+public class SACategoriasImp extends AbstractSA implements SACategorias {
+
+    public SACategoriasImp(BusinessDelegate b) {
         super(b);
     }
 
@@ -24,6 +26,11 @@ public class SACategoriasImp extends AbstractSA implements SACategorias{
     @Override
     public void actualizaExclusivos() {
         businessDelegate.actualizaExclusivos();
+    }
+
+    @Override
+    public List<String> getCategorias() {
+        return businessDelegate.getCategorias();
     }
 
 }

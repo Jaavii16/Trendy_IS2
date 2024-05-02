@@ -1,5 +1,6 @@
 package integracion;
 
+import database.DBConnection;
 import negocio.TUsuario;
 
 import java.sql.Connection;
@@ -12,14 +13,14 @@ import java.util.List;
 public class DAOImpUsuario implements DAOUsuario {
     @Override
     public List<TUsuario> buscarUsuarios() {
-        List<TUsuario> list = new ArrayList<>();
+        List<TUsuario>list = new ArrayList<>();
         try (Connection connection = DBConnection.connect()) {
             String sql = "SELECT * FROM Usuarios";
             try (Statement statement = connection.createStatement();
                  ResultSet rS = statement.executeQuery(sql)
             ) {
-                while (rS.next()) {
-                    list.add(new TUsuario(rS.getInt("ID"))
+                while(rS.next()){
+                    list.add(new TUsuario( rS.getInt("ID"))
                             .setCorreo_e(rS.getString("correo"))
                             .setContrasenya(rS.getString("contraseña"))
                             .setNombre(rS.getString("nombre"))
@@ -29,7 +30,8 @@ public class DAOImpUsuario implements DAOUsuario {
                             .setSexo((char) rS.getByte("sexo"))//TODO revisar si funciona
                             .setSuscripcion(rS.getString("suscripcion_id"))
                             .setDireccion(rS.getString("Dirección"))
-                            .setSaldo(rS.getDouble("saldo")));
+                            .setSaldo(rS.getDouble("saldo"))
+                            .setAdmin(rS.getBoolean("admin")));
                 }
                 return list;
             } catch (SQLException e) {
@@ -58,7 +60,9 @@ public class DAOImpUsuario implements DAOUsuario {
                             .setSexo((char) rS.getByte("sexo"))//TODO revisar q funcione esa funcion
                             .setSuscripcion(rS.getString("suscripcion_id"))
                             .setDireccion(rS.getString("Dirección"))
-                            .setSaldo(rS.getDouble("saldo"));
+                            .setSaldo(rS.getDouble("saldo"))
+                            .setAdmin(rS.getBoolean("admin"));
+
                 } else {
                     return null;
                 }
@@ -110,7 +114,7 @@ public class DAOImpUsuario implements DAOUsuario {
                     "', pais = '" + usuario.getPais() +
                     "', suscripcion_id = " + usuario.getSuscripcion() +
                     ", Dirección = '" + usuario.getDireccion() +
-                    "', saldo = " + usuario.getSaldo() + "WHERE ID = " + ID + ";";
+                    "', saldo = " + usuario.getSaldo() + " WHERE ID = " + ID;
             try {
                 connection.createStatement().executeUpdate(sql);
             } catch (SQLException e) {
@@ -144,7 +148,7 @@ public class DAOImpUsuario implements DAOUsuario {
             try (Statement statement = connection.createStatement();
                  ResultSet rS = statement.executeQuery(sql)
             ) {
-                if (rS.next()) {
+                if(rS.next()){
                     nuevoId = rS.getInt("max_id") + 1;
                 }
             } catch (SQLException e) {
@@ -172,10 +176,10 @@ public class DAOImpUsuario implements DAOUsuario {
     }
 
     @Override
-    public void actualizarSaldo(int idUsuario, int cantidad) {
+    public void actualizarSaldo(int idUsuario, double cantidad) {
         try (Connection connection = DBConnection.connect()) {
             String sql = "UPDATE Usuarios SET " +
-                    "saldo = saldo +" + cantidad + "WHERE ID = " + idUsuario + ";";
+                    "saldo = saldo +" + cantidad  + "WHERE ID = " + idUsuario + ";";
             try {
                 connection.createStatement().executeUpdate(sql);
             } catch (SQLException e) {
@@ -190,7 +194,7 @@ public class DAOImpUsuario implements DAOUsuario {
     public void actualizarSuscripcion(int idUsuario, int susc) {
         try (Connection connection = DBConnection.connect()) {
             String sql = "UPDATE Usuarios SET " +
-                    "suscripcion_id =  '+" + susc + "' WHERE ID = " + idUsuario + ";";
+                    "suscripcion_id =  '+" + susc  + "' WHERE ID = " + idUsuario + ";";
             try {
                 connection.createStatement().executeUpdate(sql);
             } catch (SQLException e) {

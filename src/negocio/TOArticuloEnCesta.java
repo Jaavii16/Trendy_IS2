@@ -12,6 +12,7 @@ public class TOArticuloEnCesta implements Comparable<TOArticuloEnCesta>, java.io
     private int idArticulo;
     private int cantidad;
     private Talla talla;
+    private BOStock.Color color;
 
     private Date fechaAñadido;
 
@@ -29,6 +30,10 @@ public class TOArticuloEnCesta implements Comparable<TOArticuloEnCesta>, java.io
 
     public Date getFechaAñadido() {
         return fechaAñadido;
+    }
+
+    public BOStock.Color getColor() {
+        return color;
     }
 
     public TOArticuloEnCesta setIdArticulo(int idArticulo) {
@@ -51,17 +56,22 @@ public class TOArticuloEnCesta implements Comparable<TOArticuloEnCesta>, java.io
         return this;
     }
 
+    public TOArticuloEnCesta setColor(BOStock.Color color) {
+        this.color = color;
+        return this;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         TOArticuloEnCesta that = (TOArticuloEnCesta) o;
-        return idArticulo == that.idArticulo && talla == that.talla;
+        return idArticulo == that.idArticulo && talla == that.talla && color == that.color;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idArticulo, talla);
+        return Objects.hash(idArticulo, talla, color);
     }
 
     @Override

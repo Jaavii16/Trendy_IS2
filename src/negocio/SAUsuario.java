@@ -17,7 +17,11 @@ public interface SAUsuario {
 
     public void actualizarSuscr(int id);
 
+    void actualizarSuscrAdmin(int userID, int id);
+
     void login(String correo, String contraseña);
 
     void logout();
+
+    void actualizarSaldoAdmin(int cantidad, int id);
 }

@@ -16,8 +16,11 @@ public class SAFacade {
     private final SAPedidos saPedidos;
     private final SAStock saStock;
     private final SAUsuario saUsuario;
+    private final BusinessDelegate businessDelegate;
 
     public SAFacade(BusinessDelegate businessDelegate, SAFactory saFactory) {
+        this.businessDelegate = businessDelegate;
+
         saCategorias = saFactory.getCategoriasSA(businessDelegate);
         saArticulo = saFactory.getArticuloSA(businessDelegate);
         saCesta = saFactory.getCestaSA(businessDelegate);
@@ -28,7 +31,7 @@ public class SAFacade {
     }
 
     public void registerObserver(Observer observer) {
-        //TODO Preguntar si registrar un observer hay que hacerlo a traves de businessDelegate o de los sa
+        businessDelegate.registerObserver(observer);
     }
 
     //FUNCIONES MÓDULO ARTÍCULOS
@@ -37,8 +40,8 @@ public class SAFacade {
         return saArticulo.buscarArticulo(id);
     }
 
-    public void altaArticulo(tArticulo a, String fechal, String genero, int descuento) {
-        saArticulo.altaArticulo(a, fechal, genero, descuento);
+    public void altaArticulo(tArticulo a, String fechal, String genero, int descuento, int stock) {
+        saArticulo.altaArticulo(a, fechal, genero, descuento, stock);
     }
 
     public void bajaArticulo(tArticulo a) {
@@ -69,8 +72,8 @@ public class SAFacade {
         return saLista.buscaFiltro(lista, pred);
     }
 
-    public void altaArticuloStock(tStock s) {
-        saStock.altaArticuloStock(s);
+    public void altaArticuloStock(int id, int s) {
+        saStock.altaArticuloStock(id, s);
     }
 
     public void bajaArticuloStock(int id) {
@@ -83,6 +86,10 @@ public class SAFacade {
 
     public int getStock(int id, String color, String t) {
         return saStock.getStock(id, color, t);
+    }
+
+    public List<String> getCategorias() {
+        return saCategorias.getCategorias();
     }
 
     //FUNCIONES MODULO PEDIDOS
@@ -147,12 +154,20 @@ public class SAFacade {
         saUsuario.actualizarSuscr(id);
     }
 
+    public void actualizarSuscrAdmin(int userID, int id) {
+        saUsuario.actualizarSuscrAdmin(userID, id);
+    }
+
     public void login(String correo, String contraseña) {
         saUsuario.login(correo, contraseña);
     }
 
     public void logout() {
         saUsuario.logout();
+    }
+
+    public void actualizarSaldoAdmin(int cantidad, int id) {
+        saUsuario.actualizarSaldoAdmin(cantidad, id);
     }
 
     //FUNCIONES MODULO CESTA
@@ -177,4 +192,5 @@ public class SAFacade {
         saCesta.removeArticuloDeFavoritos(toArticuloEnFavoritos);
 
     }
+
 }

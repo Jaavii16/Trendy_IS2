@@ -1,15 +1,12 @@
 package negocio;
 
-import java.util.Collection;
-import java.util.Date;
 import integracion.*;
 import launcher.DAOFactory;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
-
-import integracion.DAOCestaimp;
 
 public class BusinessDelegate {
 
@@ -17,6 +14,7 @@ public class BusinessDelegate {
     DAOCategorias daocat = new DAOCategoriasImp();
     DAOArticulo daoart = new DAOArticuloImp();
     DAOListas daolistas = new DAOListasImp();
+
 
     BOStock bostock = new BOStock(daostock);
     BOArticulo boArticulo = new BOArticulo(daoart, daocat, daostock);
@@ -32,25 +30,46 @@ public class BusinessDelegate {
     DAOUsuario daoUsuario = new DAOImpUsuario();
     BOUsuario boUsuario = new BOUsuario(daoUsuario);
 
-    private DAOFactory daoFactory;
+    private DAOFactory daoFactory; //TODO Usar daoFactory
 
-    public BusinessDelegate(DAOFactory daoFactory){
+    public BusinessDelegate(DAOFactory daoFactory) {
         this.daoFactory = daoFactory;
+        boUsuario.addObserver(boCesta);
     }
+
+    public void registerObserver(Observer observer) {
+        if (observer instanceof CestaObserver co)
+            boCesta.addObserver(co);
+        else if (observer instanceof FavsObserver fo)
+            boCesta.addObserver(fo);
+        else if (observer instanceof AuthObserver ao)
+            boUsuario.addObserver(ao);
+        else
+            throw new IllegalArgumentException("Observer no soportado");
+    }
+
     public void crearPedido() {
         //TODO Hacer cuando este el usuario y la cesta
     }
-    public void altaArticuloStock(int id, int s){
-        bostock.altaArticuloStock( id, s);
+
+    public void altaArticuloStock(int id, int s) {
+        bostock.altaArticuloStock(id, s);
     }
-    public void bajaArticuloStock(int id){
+
+    public void bajaArticuloStock(int id) {
         bostock.bajaArticuloStock(id);
     }
-    public void modificarArticuloStock(tStock s){
+
+    public void modificarArticuloStock(tStock s) {
         bostock.modificarArticuloStock(s);
     }
-    public int getStock(int id, String color, String t){
+
+    public int getStock(int id, String color, String t) {
         return bostock.getStock(id, color, t);
+    }
+
+    public List<String> getCategorias() {
+        return this.boCategorias.getCategorias();
     }
 
     public Collection<TOPedido> getAllPedidos() {
@@ -60,35 +79,43 @@ public class BusinessDelegate {
     public tArticulo buscarArticulo(int id) {
         return boArticulo.buscarArticulo(id);
     }
+
     public Collection<TOPedido> getPedidosUsuario(int idUsuario) {
         return boPedido.getPedidosUsuario(idUsuario);
     }
 
-    public void altaArticulo(tArticulo a, String fechal,String genero, int descuento, int s){
+    public void altaArticulo(tArticulo a, String fechal, String genero, int descuento, int s) {
         boArticulo.altaArticulo(a, fechal, genero, descuento, s);
     }
-    public void bajaArticulo(tArticulo a){
+
+    public void bajaArticulo(tArticulo a) {
         boArticulo.bajaArticulo(a);
     }
+
     public void modificarArticulo(tArticulo a) {
         boArticulo.modificarArticulo(a);
     }
+
     public Collection<TOPedido> getPedidosStatus(TOStatusPedido toStatusPedido) {
         return boPedido.getPedidosStatus(toStatusPedido);
     }
 
-    public void altaArticuloCat(int id, String fechal, int descuento, String genero){
+    public void altaArticuloCat(int id, String fechal, int descuento, String genero) {
         boCategorias.altaArticuloCat(id, fechal, descuento, genero);
     }
-    public void bajaArticuloCat(int id){
+
+    public void bajaArticuloCat(int id) {
         boCategorias.bajaArticuloCat(id);
     }
+
     public void modificarArticulo(int id, String fechal, int descuento, String genero) {
         boCategorias.modificarArticulo(id, fechal, descuento, genero);
     }
-    public void actualizaExclusivos(){
+
+    public void actualizaExclusivos() {
         boCategorias.actualizaExclusivos();
     }
+
     public Collection<TOPedido> getPedidosFecha(Date fecha) {
         return boPedido.getPedidosFecha(fecha);
     }
@@ -96,6 +123,7 @@ public class BusinessDelegate {
     public List<Articulo> buscaArticulosCategoria(String cat) {
         return boListas.buscaArticulosCategoria(cat);
     }
+
     public void cambiarStatus(int id, TOStatusPedido toStatusPedido) {
         boPedido.cambiarStatus(id, toStatusPedido);
     }
@@ -132,16 +160,23 @@ public class BusinessDelegate {
         return boUsuario.readAll();
     }
 
-    public void update(TUsuario tUsuario) {boUsuario.update(tUsuario);
+    public void update(TUsuario tUsuario) {
+        boUsuario.update(tUsuario);
     }
 
-    public void delete(int id) {boUsuario.delete(id);
+    public void delete(int id) {
+        boUsuario.delete(id);
     }
 
-    public void actualizarSaldo(int cantidad){boUsuario.actualizarCesta(cantidad);}
+    public void actualizarSaldo(double cantidad){boUsuario.actualizarSaldo(cantidad);}
+
 
     public void actualizarSusc(int id) {
         boUsuario.actualizarSuscr(id);
+    }
+
+    public void actualizarSuscAdmin(int userID, int id) {
+        boUsuario.actualizarSuscrAdmin(userID, id);
     }
 
     public void addArticuloAFavoritos(TOArticuloEnFavoritos toArticuloEnFavoritos) {
@@ -159,4 +194,9 @@ public class BusinessDelegate {
     public void logout() {
         boUsuario.logout();
     }
+
+    public void actualizarSaldoAdmin(int cantidad, int id) {
+        boUsuario.actualizarSaldoAdmin(cantidad, id);
+    }
+
 }
