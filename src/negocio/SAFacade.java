@@ -16,8 +16,11 @@ public class SAFacade {
     private final SAPedidos saPedidos;
     private final SAStock saStock;
     private final SAUsuario saUsuario;
+    private final BusinessDelegate businessDelegate;
 
     public SAFacade(BusinessDelegate businessDelegate, SAFactory saFactory) {
+        this.businessDelegate = businessDelegate;
+
         saCategorias = saFactory.getCategoriasSA(businessDelegate);
         saArticulo = saFactory.getArticuloSA(businessDelegate);
         saCesta = saFactory.getCestaSA(businessDelegate);
@@ -28,7 +31,7 @@ public class SAFacade {
     }
 
     public void registerObserver(Observer observer) {
-        //TODO Preguntar si registrar un observer hay que hacerlo a traves de businessDelegate o de los sa
+        businessDelegate.registerObserver(observer);
     }
 
     //FUNCIONES MÓDULO ARTÍCULOS
@@ -189,4 +192,5 @@ public class SAFacade {
         saCesta.removeArticuloDeFavoritos(toArticuloEnFavoritos);
 
     }
+
 }

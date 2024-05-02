@@ -56,6 +56,9 @@ public class DAOCestaimp implements DAOCesta {
             String sql = "SELECT ID FROM Cesta WHERE ID_usuario = " + idUsuario;
             var resultSet = connection.createStatement().executeQuery(sql);
             if (!resultSet.next()) return null; //TODO Pensar si lanzar excepcion o devolver null
+
+            TOCesta toCesta = new TOCesta().setIdCesta(resultSet.getInt("ID")).setIdUsuario(idUsuario);
+
             TreeSet<TOArticuloEnCesta> listaArticulos = new TreeSet<>();
             sql = "SELECT ID_Artículo, Talla, Cantidad, Color FROM ArtículosEnCesta WHERE ID_Cesta = " + resultSet.getInt("ID");
             resultSet = connection.createStatement().executeQuery(sql);
@@ -66,7 +69,7 @@ public class DAOCestaimp implements DAOCesta {
                         .setCantidad(resultSet.getInt("Cantidad"))
                         .setColor(BOStock.Color.valueOf(resultSet.getString("Color"))));
             }
-            return new TOCesta().setIdCesta(resultSet.getInt("ID")).setIdUsuario(idUsuario).setListaArticulos(listaArticulos);
+            return toCesta.setListaArticulos(listaArticulos);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

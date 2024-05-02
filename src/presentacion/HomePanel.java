@@ -34,7 +34,7 @@ public class HomePanel extends MainGUIPanel {
         JPanel jpTitle = new JPanel();
         JLabel jlWelcome = new JLabel();
         jlWelcome.setFont(new Font("Arial", Font.BOLD, 20));
-        if (!saFachade.getUsuario().isEmpty()) {
+        if (saFachade.getUsuario() != null) {
             jlWelcome.setText("Hola, " + saFachade.getUsuario()); //TODO Añadir getUsername()
         } else {
             jlWelcome.setText("Bienvenido!");

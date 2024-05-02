@@ -48,8 +48,8 @@ public class GUIWindow extends JFrame {
         });
 
         setIconAndPlayIntroAnimation();
-        autoLogin();
         initPanels();
+        autoLogin();
         waitForAnimation();
     }
 
@@ -167,7 +167,7 @@ public class GUIWindow extends JFrame {
         buttonCreator.apply(searchIcon, searchPanel, buttonAction);
         buttonCreator.apply(cestaIcon, cestaPanel, buttonAction);
         buttonCreator.apply(userIcon, userPanel, (panel) -> {
-            if (saFacade.getUsuario().isEmpty()) {
+            if (saFacade.getUsuario() == null) {
                 authDialog.open(this);
             } else {
                 buttonAction.accept(panel);

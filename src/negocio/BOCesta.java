@@ -82,7 +82,12 @@ public class BOCesta implements Observable<Observer>, AuthObserver {
         this.isAuth = isAuth;
         if (isAuth) {
             toCesta = daoCesta.getCesta(idUsuario);
+            if (toCesta == null) {
+                daoCesta.abrirCesta(idUsuario);
+                toCesta = daoCesta.getCesta(idUsuario);
+            }
             favoritos = daoCesta.getFavoritos(idUsuario);
+
         } else {
             toCesta = new TOCesta().setListaArticulos(new TreeSet<>());
             favoritos = null;
