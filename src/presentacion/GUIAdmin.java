@@ -5,6 +5,7 @@ import negocio.TOStatusPedido;
 import negocio.tArticulo;
 
 import javax.swing.*;
+import java.awt.*;
 
 
 public class GUIAdmin extends JPanel {
@@ -24,46 +25,73 @@ public class GUIAdmin extends JPanel {
 
     private void initGUI() {
 
+        setLayout(new BorderLayout());
+
+        initCrearArticulo();
+        initAñadirSaldo();
+        initCambiarSuscripcion();
+        initCambiarEstadoPedido();
+
+        JPanel paneles = new JPanel();
+        paneles.setLayout(new OverlayLayout(paneles));
+        paneles.add(crearArticulo);
+        paneles.add(añadirSaldo);
+        paneles.add(cambiarSuscripcion);
+        paneles.add(cambiarEstadoPedido);
+
+        this.add(paneles, BorderLayout.CENTER);
+
+        JPanel botones = new JPanel();
+
         bCrearArticulo = new JButton("Crear Articulo");
         bCrearArticulo.setAlignmentX(CENTER_ALIGNMENT);
         bCrearArticulo.addActionListener(e -> {
-            initCrearArticulo();
+            añadirSaldo.setVisible(false);
+            cambiarSuscripcion.setVisible(false);
+            cambiarEstadoPedido.setVisible(false);
+            this.crearArticulo.setVisible(true);
         });
-        this.add(bCrearArticulo);
+        botones.add(bCrearArticulo);
 
         bAñadirSaldo = new JButton("Añadir Saldo");
         bAñadirSaldo.setAlignmentX(CENTER_ALIGNMENT);
         bAñadirSaldo.addActionListener(e -> {
-            initAñadirSaldo();
+            crearArticulo.setVisible(false);
+            cambiarSuscripcion.setVisible(false);
+            cambiarEstadoPedido.setVisible(false);
+            this.añadirSaldo.setVisible(true);
         });
-        this.add(bAñadirSaldo);
+        botones.add(bAñadirSaldo);
 
         bCambiarSuscripcion = new JButton("Cambiar Suscripcion");
         bCambiarSuscripcion.setAlignmentX(CENTER_ALIGNMENT);
         bCambiarSuscripcion.addActionListener(e -> {
-            initCambiarSuscripcion();
+            crearArticulo.setVisible(false);
+            añadirSaldo.setVisible(false);
+            cambiarEstadoPedido.setVisible(false);
+            this.cambiarSuscripcion.setVisible(true);
         });
-        this.add(bCambiarSuscripcion);
+        botones.add(bCambiarSuscripcion);
 
         bCambiarEstadoPedido = new JButton("Cambiar Estado Pedido");
         bCambiarEstadoPedido.setAlignmentX(CENTER_ALIGNMENT);
         bCambiarEstadoPedido.addActionListener(e -> {
-            initCambiarEstadoPedido();
+            crearArticulo.setVisible(false);
+            añadirSaldo.setVisible(false);
+            cambiarSuscripcion.setVisible(false);
+            this.cambiarEstadoPedido.setVisible(true);
         });
-        this.add(bCambiarEstadoPedido);
+        botones.add(bCambiarEstadoPedido);
 
-        //crear articulo
-        //añadir saldo
-        //cambiar suscripcion
-        //cambiar estado pedido
+        add(botones, BorderLayout.NORTH);
     }
 
     private void initCrearArticulo() {
-        this.crearArticulo = new JPanel();
-        this.setVisible(false);
-        this.crearArticulo.setVisible(true);
 
         //TArticulo
+
+        crearArticulo = new JPanel();
+        crearArticulo.setLayout(new BoxLayout(crearArticulo, BoxLayout.Y_AXIS));
 
         JLabel lId = new JLabel("ID: ");
         this.crearArticulo.add(lId);
@@ -129,9 +157,8 @@ public class GUIAdmin extends JPanel {
     }
 
     private void initAñadirSaldo() {
-        this.añadirSaldo = new JPanel();
-        this.setVisible(false);
-        this.añadirSaldo.setVisible(true);
+
+        añadirSaldo = new JPanel();
 
         JLabel lId = new JLabel("ID: ");
         this.añadirSaldo.add(lId);
@@ -146,8 +173,7 @@ public class GUIAdmin extends JPanel {
         JButton bAñadir = new JButton("Añadir");
         this.añadirSaldo.add(bAñadir);
         bAñadir.addActionListener(e -> {
-            saFacade.actualizarSaldoAdmin(Integer.parseInt(tId.getText()), Integer.parseInt(tSaldo.getText()));
-
+            saFacade.actualizarSaldoAdmin(Double.parseDouble(tSaldo.getText()), Integer.parseInt(tId.getText()));
         });
 
         JButton bCancelar = new JButton("Cancelar");
@@ -159,9 +185,8 @@ public class GUIAdmin extends JPanel {
     }
 
     private void initCambiarSuscripcion() {
-        this.cambiarSuscripcion = new JPanel();
-        this.setVisible(false);
-        this.cambiarSuscripcion.setVisible(true);
+
+        cambiarSuscripcion = new JPanel();
 
         JLabel lId = new JLabel("ID: ");
         this.cambiarSuscripcion.add(lId);
@@ -189,9 +214,7 @@ public class GUIAdmin extends JPanel {
     }
 
     private void initCambiarEstadoPedido() {
-        this.cambiarEstadoPedido = new JPanel();
-        this.setVisible(false);
-        this.cambiarEstadoPedido.setVisible(true);
+        cambiarEstadoPedido = new JPanel();
 
         JLabel lId = new JLabel("ID: ");
         this.cambiarEstadoPedido.add(lId);

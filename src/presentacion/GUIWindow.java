@@ -34,7 +34,7 @@ public class GUIWindow extends JFrame {
     private MainGUIPanel userPanel;
     private MainGUIPanel cestaPanel;
     private MainGUIPanel searchPanel;
-    private GUILogin authDialog;
+    private GUILogIn authDialog;
 
     public GUIWindow(SAFacade saFacade) {
         this.saFacade = saFacade;
@@ -143,7 +143,7 @@ public class GUIWindow extends JFrame {
         userPanel = new GUIPerfil(saFacade);
         cestaPanel = new GUICesta(saFacade);
         searchPanel = new GUIPpalCategorias(saFacade);
-        authDialog = new GUILogin(saFacade);
+        authDialog = new GUILogIn(saFacade);
 
         mainPanel.add(homePanel, BorderLayout.CENTER);
         mainPanel.add(controlPanel, BorderLayout.SOUTH);

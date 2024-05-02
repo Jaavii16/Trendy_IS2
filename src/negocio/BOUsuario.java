@@ -1,19 +1,16 @@
 package negocio;
 
-import integracion.DAOImpUsuario;
 import integracion.DAOUsuario;
 
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class BOUsuario implements Observable<AuthObserver> {
+public class BOUsuario implements Observable<AuthObserver>, CestaObserver {
 
     Set<AuthObserver> observers;
-
-    private DAOUsuario daoUsuario = new DAOImpUsuario();
+    private DAOUsuario daoUsuario;
     private TUsuario tUsuario;
 
     public BOUsuario(DAOUsuario daoUsuario) {
@@ -25,12 +22,12 @@ public class BOUsuario implements Observable<AuthObserver> {
         this.tUsuario = daoUsuario.crearUsuario(tUsuario);
         observers.forEach(observer -> observer.onAuthChanged(true, this.tUsuario.getId()));
 
-        try (PrintStream out = new PrintStream("trendy-storage/login.txt")) {
+       /* try (PrintStream out = new PrintStream("trendy-storage/login.txt")) {
             out.println(tUsuario.getCorreo_e());
             out.println(tUsuario.getContrasenya());
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
-        }
+        }*/
 
         return this.tUsuario;
     }
@@ -53,8 +50,8 @@ public class BOUsuario implements Observable<AuthObserver> {
     }
 
     public void actualizarSaldo(double cantidad){ daoUsuario.actualizarSaldo(tUsuario.getId(), cantidad); }
-    public void OnHacerPedido(int idCesta){
-        daoUsuario.actualizarCesta(tUsuario.getId(), idCesta);
+    public void onHacerPedido(int idCesta){
+        daoUsuario.actualizarCesta(tUsuario.getId(), idCesta); //TODO Hacer con observer
     }
 
     public void actualizarSuscr(int id) {
@@ -62,7 +59,9 @@ public class BOUsuario implements Observable<AuthObserver> {
     }
 
     public void actualizarSuscrAdmin(int userID, int id) {
-        daoUsuario.actualizarSuscripcion(userID, id);
+        if(tUsuario.admin)
+            daoUsuario.actualizarSuscripcion(userID, id);
+        else throw new IllegalStateException("Tienes que ser admin para poder hacer esto");
     }
 
     @Override
@@ -83,27 +82,49 @@ public class BOUsuario implements Observable<AuthObserver> {
         }
         observers.forEach(observer -> observer.onAuthChanged(true, tUsuario.getId()));
 
-        try (PrintStream out = new PrintStream("trendy-storage/login.txt")) {
+        /* //TODO Arreglar
+        File outFile = new File("trendy-storage/login.txt");
+        try (OutputStream outStream = new FileOutputStream(outFile); PrintStream out = new PrintStream(outStream)) {
             out.println(tUsuario.getCorreo_e());
             out.println(tUsuario.getContrasenya());
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+         */
     }
 
     public void logout() {
         tUsuario = null;
         observers.forEach(observer -> observer.onAuthChanged(false, 0));
 
-        try (PrintStream out = new PrintStream("trendy-storage/login.txt")) {
-            out.println(); //TODO Comprobar que funciona
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        File file = new File("trendy-storage/login.txt");
+        file.delete();
     }
 
-    public void actualizarSaldoAdmin(int cantidad, int id) {
+    public void actualizarSaldoAdmin(double cantidad, int id) {
         if(tUsuario.admin)
             daoUsuario.actualizarSaldo(id, cantidad);
+        else throw new IllegalStateException("Tienes que ser admin para poder hacer esto");
+    }
+
+    @Override
+    public void onCestaChanged(TOCesta cesta) {
+        tUsuario.setIDCesta(cesta.getIdCesta());
+    }
+
+    @Override
+    public void onArticuloAdded(TOArticuloEnCesta articulo) {
+
+    }
+
+    @Override
+    public void onArticuloUpdated(TOArticuloEnCesta articulo) {
+
+    }
+
+    @Override
+    public void onArticuloRemoved(TOArticuloEnCesta articulo) {
+
     }
 }
