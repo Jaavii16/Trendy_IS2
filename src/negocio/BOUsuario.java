@@ -2,6 +2,7 @@ package negocio;
 
 import integracion.DAOUsuario;
 
+import java.awt.*;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -77,7 +78,7 @@ public class BOUsuario implements Observable<AuthObserver>, CestaObserver {
     public void login(String correo, String contraseña) {
         tUsuario = daoUsuario.getUsuario(correo, contraseña);
         if (tUsuario != null) {
-            observers.forEach(observer -> observer.onAuthChanged(true, tUsuario.getId()));
+            EventQueue.invokeLater(() -> observers.forEach(observer -> observer.onAuthChanged(true, tUsuario.getId())));
             saveLogin();
         } else
             throw new IllegalArgumentException("Usuario no encontrado con esas credenciales");

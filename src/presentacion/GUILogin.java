@@ -21,6 +21,7 @@ public class GUILogin extends JDialog implements AuthObserver {
     private GUIRegister guiUserRegister;
 
     public GUILogin(SAFacade saFacade) {
+
         this.saFacade = saFacade;
         this.guiUserRegister = new GUIRegister(this, saFacade);
         saFacade.registerObserver(this);
@@ -28,7 +29,7 @@ public class GUILogin extends JDialog implements AuthObserver {
     }
 
     public void initGUI() {
-
+        setTitle("Iniciar sesión");
         mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -40,6 +41,7 @@ public class GUILogin extends JDialog implements AuthObserver {
         this._user = new JTextField();
         this._user.setAlignmentX(CENTER_ALIGNMENT);
         this._user.setToolTipText("Introduzca su usuario");
+        this._user.setMaximumSize(new Dimension(200, 20));
         mainPanel.add(this._user);
 
         JLabel contrasenya = new JLabel("Contraseña: ");
@@ -49,6 +51,7 @@ public class GUILogin extends JDialog implements AuthObserver {
         this._contrasenya = new JTextField();
         this._contrasenya.setAlignmentX(CENTER_ALIGNMENT);
         this._contrasenya.setToolTipText("Introduzca su contraseña");
+        this._contrasenya.setMaximumSize(new Dimension(200, 20));
         mainPanel.add(this._contrasenya);
 
         this._enter = new JButton("Entrar");
@@ -74,11 +77,15 @@ public class GUILogin extends JDialog implements AuthObserver {
         this._cancel.addActionListener(e -> {
             setVisible(false);
             setContentPane(mainPanel);
+
         });
 
         this._register.addActionListener(e -> {
             Transitions.makeWhiteFadeTransition(mainPanel, guiUserRegister, 1, (from, to) -> {
                 this.setContentPane((Container) to);
+                revalidate();
+                repaint();
+                pack(); //TODO Hacer que funcione
             });
         });
 
@@ -124,12 +131,13 @@ public class GUILogin extends JDialog implements AuthObserver {
             }
         });
 
+        mainPanel.add(Box.createVerticalGlue());
 
         setContentPane(mainPanel);
-        pack();
 
-        int size = Math.max(Math.max(mainPanel.getWidth(), guiUserRegister.getWidth()), Math.max(mainPanel.getHeight(), guiUserRegister.getHeight()));
-        setSize(new Dimension(size, size));
+        pack();
+        revalidate();
+        repaint();
     }
 
     @Override

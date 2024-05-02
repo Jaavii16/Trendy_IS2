@@ -10,7 +10,7 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class HomePanel extends MainGUIPanel {
+public class GUIHome extends MainGUIPanel {
 
     private final GUIWindow mainWindow;
     private JPanel contentPanel;
@@ -19,7 +19,7 @@ public class HomePanel extends MainGUIPanel {
     private JPanel jpArticulosExclusivos;
     private JPanel jpLastPedido;
 
-    public HomePanel(GUIWindow mainWindow, SAFacade saFachade) {
+    public GUIHome(GUIWindow mainWindow, SAFacade saFachade) {
         super();
         this.mainWindow = mainWindow;
         this.saFachade = saFachade;
@@ -106,7 +106,7 @@ public class HomePanel extends MainGUIPanel {
 
         JPanel jpLastPedidoTitle = new JPanel(new BorderLayout());
         jpLastPedidoTitle.add(new JLabel("Ultimo pedido: + " + lastPedido.getID()), BorderLayout.WEST);
-        jpLastPedidoTitle.add(new JLabel(lastPedido.getFecha()), BorderLayout.EAST);
+        jpLastPedidoTitle.add(new JLabel(lastPedido.getFecha().toString()), BorderLayout.EAST);
         jpLastPedido.add(jpLastPedidoTitle);
 
         JPanel jpLastPedidoStatus = new JPanel(new BorderLayout());

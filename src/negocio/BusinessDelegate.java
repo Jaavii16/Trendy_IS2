@@ -1,6 +1,5 @@
 package negocio;
 
-import integracion.*;
 import launcher.DAOFactory;
 
 import java.util.Collection;
@@ -10,42 +9,42 @@ import java.util.function.Predicate;
 
 public class BusinessDelegate {
 
-    DAOStock daostock = new DAOStockImp();
-    DAOCategorias daocat = new DAOCategoriasImp();
-    DAOArticulo daoart = new DAOArticuloImp();
-    DAOListas daolistas = new DAOListasImp();
-
-
-    BOStock bostock = new BOStock(daostock);
-    BOArticulo boArticulo = new BOArticulo(daoart, daocat, daostock);
-    BOCategorias boCategorias = new BOCategorias(daocat);
-    BOListas boListas = new BOListas(daolistas);
-
-    DAOPedidos daoPedidos = new DAOPedidosImp();
-    BOPedido boPedido = new BOPedido(daoPedidos);
-    DAOCesta daoCesta = new DAOCestaimp();
-
-    BOCesta boCesta = new BOCesta(daoCesta);
-
-    DAOUsuario daoUsuario = new DAOUsuarioImp();
-    BOUsuario boUsuario = new BOUsuario(daoUsuario);
-
-    private DAOFactory daoFactory; //TODO Usar daoFactory
+    BOStock bostock;
+    BOArticulo boArticulo;
+    BOCategorias boCategorias;
+    BOListas boListas;
+    BOPedido boPedido;
+    BOCesta boCesta;
+    BOUsuario boUsuario;
 
     public BusinessDelegate(DAOFactory daoFactory) {
-        this.daoFactory = daoFactory;
+        bostock = new BOStock(daoFactory.getDAOStock());
+        boArticulo = new BOArticulo(daoFactory.getDAOArticulo(), daoFactory.getDAOCategorias(), daoFactory.getDAOStock());
+        boCategorias = new BOCategorias(daoFactory.getDAOCategorias());
+        boListas = new BOListas(daoFactory.getDAOListas());
+        boPedido = new BOPedido(daoFactory.getDAOPedidos());
+        boCesta = new BOCesta(daoFactory.getDAOCesta());
+        boUsuario = new BOUsuario(daoFactory.getDAOUsuario());
+
         boUsuario.addObserver(boCesta);
         boCesta.addObserver(boUsuario);
     }
 
     public void registerObserver(Observer observer) {
-        if (observer instanceof CestaObserver co)
+        boolean añadido = false;
+        if (observer instanceof CestaObserver co) {
             boCesta.addObserver(co);
-        else if (observer instanceof FavsObserver fo)
+            añadido = true;
+        }
+        if (observer instanceof FavsObserver fo) {
             boCesta.addObserver(fo);
-        else if (observer instanceof AuthObserver ao)
+            añadido = true;
+        }
+        if (observer instanceof AuthObserver ao) {
             boUsuario.addObserver(ao);
-        else
+            añadido = true;
+        }
+        if (!añadido)
             throw new IllegalArgumentException("Observer no soportado");
     }
 
@@ -81,11 +80,11 @@ public class BusinessDelegate {
         return boArticulo.buscarArticulo(id);
     }
 
-    public Collection<TOPedido> getPedidosUsuario(int idUsuario) {
-        return boPedido.getPedidosUsuario(idUsuario);
+    public Collection<TOPedido> getPedidosUsuario() {
+        return boPedido.getPedidosUsuario(boUsuario.read().getId());
     }
 
-    public void altaArticulo(tArticulo a, String fechal, String genero, int descuento, int s) {
+    public void altaArticulo(tArticulo a, String fechal, String genero, double descuento, int s) {
         boArticulo.altaArticulo(a, fechal, genero, descuento, s);
     }
 

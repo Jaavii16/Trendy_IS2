@@ -26,11 +26,16 @@ public class BOCesta implements Observable<Observer>, AuthObserver {
 
     @Override
     public void addObserver(Observer observer) {
-        if (observer instanceof CestaObserver co)
+        boolean añadido = false;
+        if (observer instanceof CestaObserver co) {
             cestaObservers.add(co);
-        else if (observer instanceof FavsObserver fo)
+            añadido = true;
+        }
+        if (observer instanceof FavsObserver fo) {
             favsObservers.add(fo);
-        else
+            añadido = true;
+        }
+        if (!añadido)
             throw new IllegalArgumentException("Observer no soportado");
     }
 

@@ -7,14 +7,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class DAOArticuloImp implements DAOArticulo {
+public class DAOArticuloMySQL implements DAOArticulo {
 
 
     @Override
     public tArticulo buscarArticulo(int id) {
         try (Connection c = DBConnection.connect();
              Statement st = c.createStatement();
-             ResultSet rs = st.executeQuery("select * from Artículo where ID = "+id)) {
+             ResultSet rs = st.executeQuery("select * from Artículo where ID = " + id)) {
             tArticulo a = null;
             while (rs.next()) {
                 a = new tArticulo(rs.getInt("ID"), rs.getString("Nombre"),
@@ -46,7 +46,7 @@ public class DAOArticuloImp implements DAOArticulo {
              Statement st = c.createStatement();
 
         ) {
-            st.executeUpdate("delete from Artículo where ID = "+ a.getID());
+            st.executeUpdate("delete from Artículo where ID = " + a.getID());
         } catch (SQLException e) {
             throw new RuntimeException("Error SQL" + e.getErrorCode(), e);
         }
@@ -60,7 +60,7 @@ public class DAOArticuloImp implements DAOArticulo {
                     "Nombre = '" + a.getNombre() +
                     "', Subcategoría = '" + a.getSubcat() +
                     "', Precio = " + a.getPrecio() +
-                     " WHERE ID = " + a.getID();
+                    " WHERE ID = " + a.getID();
             try {
                 c.createStatement().executeUpdate(sql);
             } catch (SQLException e) {
@@ -76,8 +76,8 @@ public class DAOArticuloImp implements DAOArticulo {
         try (Connection c = DBConnection.connect();
              Statement st = c.createStatement();
 
-             ResultSet rs = st.executeQuery("select id from Artículo where ID = "+ id)) {
-            return rs != null;
+             ResultSet rs = st.executeQuery("select id from Artículo where ID = " + id)) {
+            return rs.next();
         } catch (SQLException e) {
             throw new RuntimeException("Error SQL" + e.getErrorCode(), e);
         }

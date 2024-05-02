@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class DAOCestaimp implements DAOCesta {
+public class DAOCestaMySQL implements DAOCesta {
 
     @Override
     public void abrirCesta(int idUsuario) {

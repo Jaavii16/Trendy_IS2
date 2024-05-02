@@ -1,17 +1,16 @@
 package negocio;
 
 import integracion.DAOStock;
-import integracion.DAOStockImp;
 
 public class BOStock {
 
-    public enum Color{
+    public enum Color {
         BLANCO, NEGRO, MARRON, ROJO, NARANJA, AMARILLO, BEIGE, VERDE, AZUL, ROSA, VIOLETA, GRIS;
     }
 
-    public static String colorToString(Color color){
+    public static String colorToString(Color color) {
         String c = "";
-        switch(color){
+        switch (color) {
             case AZUL -> c = "Azul";
             case GRIS -> c = "Gris";
             case ROJO -> c = "Rojo";
@@ -24,13 +23,14 @@ public class BOStock {
             case NARANJA -> c = "Naranja";
             case VIOLETA -> c = "Violeta";
             case AMARILLO -> c = "Amarillo";
-            default-> c = "";
+            default -> c = "";
         }
         return c;
     }
-    public Color stringToColor(String color){
+
+    public Color stringToColor(String color) {
         Color c = null;
-        switch(color.toUpperCase()){
+        switch (color.toUpperCase()) {
             case "AZUL" -> c = Color.AZUL;
             case "GRIS" -> c = Color.GRIS;
             case "ROJO" -> c = Color.ROJO;
@@ -41,20 +41,20 @@ public class BOStock {
             case "BLANCO" -> c = Color.BLANCO;
             case "MARRON" -> c = Color.MARRON;
             case "NARANJA" -> c = Color.NARANJA;
-            case "VIOLETA" ->  c = Color.VIOLETA;
+            case "VIOLETA" -> c = Color.VIOLETA;
             case "AMARILLO" -> c = Color.AMARILLO;
         }
 
         return c;
     }
 
-    public enum Talla{
+    public enum Talla {
         XS, S, M, L, XL;
     }
 
-    public String tallatoString(Talla talla){
+    public String tallatoString(Talla talla) {
         String c = "";
-        switch (talla){
+        switch (talla) {
             case XS -> c = "XS";
             case S -> c = "S";
             case M -> c = "M";
@@ -64,9 +64,9 @@ public class BOStock {
         return c;
     }
 
-    public static Talla stringtoTalla(String talla){
+    public static Talla stringtoTalla(String talla) {
         Talla c = null;
-        switch(talla){
+        switch (talla) {
             case "XS" -> c = Talla.XS;
             case "S" -> c = Talla.S;
             case "M" -> c = Talla.M;
@@ -75,26 +75,31 @@ public class BOStock {
         }
         return c;
     }
-    DAOStock daoStock ;
-    public BOStock(DAOStock d){
+
+    DAOStock daoStock;
+
+    public BOStock(DAOStock d) {
         this.daoStock = d;
     }
 
-    public void altaArticuloStock(int id, int s){
-        for(Color c : Color.values()){
-            for(Talla t: Talla.values()){
+    public void altaArticuloStock(int id, int s) {
+        for (Color c : Color.values()) {
+            for (Talla t : Talla.values()) {
                 daoStock.altaArticuloStock(new tStock(id, colorToString(c), tallatoString(t), s));
             }
         }
 
     }
-    public void bajaArticuloStock(int id){
+
+    public void bajaArticuloStock(int id) {
         daoStock.bajaArticuloStock(id);
     }
-    public void modificarArticuloStock(tStock s){
+
+    public void modificarArticuloStock(tStock s) {
         daoStock.modificarArticuloStock(s);
     }
-    public int getStock(int id, String color, String t){
+
+    public int getStock(int id, String color, String t) {
         return daoStock.getStock(id, color, t);
     }
 }

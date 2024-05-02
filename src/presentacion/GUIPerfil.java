@@ -2,15 +2,21 @@ package presentacion;
 
 import negocio.*;
 import org.jdatepicker.JDatePicker;
+import org.jdatepicker.impl.DateComponentFormatter;
 import org.jdatepicker.impl.JDatePanelImpl;
 import org.jdatepicker.impl.JDatePickerImpl;
-import org.jdatepicker.impl.SqlDateModel;
+import org.jdatepicker.impl.UtilDateModel;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import javax.swing.text.DateFormatter;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.Collection;
+import java.util.Date;
 import java.util.Properties;
+import java.util.function.Consumer;
 
 public class GUIPerfil extends MainGUIPanel implements AuthObserver {
 
@@ -40,6 +46,12 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
     private boolean botonAdmin;
     private JButton goToAdmin;
     private JPanel buttonPanel;
+    private DefaultTableModel pedidosModel;
+    private JPanel mainPanel;
+    private JPanel panelIni;
+    private JLabel nombre;
+    private JLabel suscripcion;
+    private JLabel saldo;
 
     public GUIPerfil(SAFacade facade, GUIWindow guiWindow) {
         saFacade = facade;
@@ -56,12 +68,12 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
 
     @Override
     public void update() {
-
+        //TODO
     }
 
     @Override
     public void reset() {
-
+        //TODO
     }
 
     @Override
@@ -77,20 +89,43 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
                 botonAdmin = false;
             }
         }
+        TUsuario tUsu = saFacade.getUsuario();
+        if (tUsu != null) {
+//            if (panelIni.getComponentCount() > 1) {
+//                panelIni.remove(nombre);
+//                panelIni.remove(suscripcion);
+//                panelIni.remove(saldo);
+//            }
+            panelIni.removeAll();
+            nombre = new JLabel(tUsu.getNombre() + " " + (tUsu.getApellidos() != null ? tUsu.getApellidos() : " "));
+            nombre.setAlignmentX(Component.CENTER_ALIGNMENT);
+            suscripcion = new JLabel("Suscripcion actual: " + tUsu.getSuscripcion());
+            suscripcion.setAlignmentX(Component.CENTER_ALIGNMENT);
+            saldo = new JLabel("Saldo: " + tUsu.getSaldo());
+            saldo.setAlignmentX(Component.CENTER_ALIGNMENT);
+            panelIni.add(nombre);
+            panelIni.add(suscripcion);
+            panelIni.add(saldo);
+            panelIni.revalidate();
+            panelIni.repaint();
+        }
         //TODO mirar lo del panel inicial del label con el nombre
     }
 
     class VentanaMensaje extends JFrame {
         public VentanaMensaje(String mensaje) {
             JLabel etiqueta = new JLabel(mensaje);
+            etiqueta.setAlignmentX(Component.CENTER_ALIGNMENT);
             getContentPane().add(etiqueta);
-            setSize(200, 100);
+            setSize(300, 100);
+            setLocation(GUIPerfil.this.getWidth() / 2 + GUIPerfil.this.getLocation().x, GUIPerfil.this.getHeight() / 2 + GUIPerfil.this.getLocation().y);
             setVisible(true);
         }
     }
 
     private void initGUI() {
-        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setPreferredSize(window.getSize());
         cards = new JPanel(new CardLayout());
         setViewportView(mainPanel);
         //CREAMOS LOS PANELES
@@ -98,6 +133,7 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
         JPanel panelMod = new JPanel();
         panelMod.setLayout(new BoxLayout(panelMod, BoxLayout.Y_AXIS));
         panelMod.setVisible(false);
+        panelMod.setBorder(BorderFactory.createTitledBorder("Modificar datos"));
         configurarPanelMod(cards, panelMod);
 
         //PANEL DE VER MIS PEDIDOS
@@ -105,29 +141,28 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
         panelPedidos.setLayout(new BorderLayout());
         panelPedidos.setBorder(new TitledBorder("Pedidos"));
         panelPedidos.setVisible(false);
+        panelPedidos.setBorder(BorderFactory.createTitledBorder("Pedidos"));
         configurarPanelPedidos(panelPedidos);
 
         //PANEL DE ACTUALIZAR SUSCRIPCION
         JPanel panelSuscr = new JPanel();
         panelSuscr.setLayout(new BoxLayout(panelSuscr, BoxLayout.Y_AXIS));
         panelSuscr.setVisible(false);
+        panelSuscr.setBorder(BorderFactory.createTitledBorder("Actualizar suscripción"));
         configurarPanelSuscr(cards, panelSuscr);
 
         //PANEL DE AÑADIR SALDO
         JPanel panelSaldo = new JPanel();
         panelSaldo.setLayout(new BoxLayout(panelSaldo, BoxLayout.Y_AXIS));
         panelSaldo.setVisible(false);
+        panelSaldo.setBorder(BorderFactory.createTitledBorder("Añadir saldo"));
         configurarPanelSaldo(cards, panelSaldo);
 
         //PANEL QUE SE VA A MOSTRAR AL PRINCIPIO
-        JPanel panelIni = new JPanel();
+        panelIni = new JPanel();
         panelIni.setLayout(new BoxLayout(panelIni, BoxLayout.Y_AXIS));
-        TUsuario tUsu = saFacade.getUsuario();
-        if (tUsu != null) {
-            JLabel nombre = new JLabel(tUsu.getNombre() + " " + tUsu.getApellidos());
-            nombre.setAlignmentX(Component.CENTER_ALIGNMENT);
-            panelIni.add(nombre);
-        }
+        panelIni.setBorder(BorderFactory.createTitledBorder("Inicio"));
+
 
         //PANEL DE ADMIN
         JPanel panelAdmin = new GUIAdmin(saFacade);
@@ -237,36 +272,42 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
         addJLabel("Nombre", modPanel);
         _nombre = new JTextField();
         _nombre.setAlignmentX(Component.CENTER_ALIGNMENT);
+        _nombre.setMaximumSize(new Dimension(200, 20));
         _nombre.setToolTipText("Introduzca su nombre");
         modPanel.add(_nombre);
 
         addJLabel("Apellidos", modPanel);
         _apellidos = new JTextField();
         _apellidos.setAlignmentX(Component.CENTER_ALIGNMENT);
+        _apellidos.setMaximumSize(new Dimension(200, 20));
         _apellidos.setToolTipText("Intruduzca sus apellidos");
         modPanel.add(_apellidos);
 
         addJLabel("Contraseña", modPanel);
         _contrasenya = new JTextField();
         _contrasenya.setAlignmentX(Component.CENTER_ALIGNMENT);
+        _contrasenya.setMaximumSize(new Dimension(200, 20));
         _contrasenya.setToolTipText("Introduzca una contraseña");
         modPanel.add(_contrasenya);
 
         addJLabel("Correo", modPanel);
         _correo = new JTextField();
         _correo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        _correo.setMaximumSize(new Dimension(200, 20));
         _correo.setToolTipText("Introduzca su correo electronico");
         modPanel.add(_correo);
 
         addJLabel("Pais", modPanel);
         _pais = new JTextField();
         _pais.setAlignmentX(Component.CENTER_ALIGNMENT);
+        _pais.setMaximumSize(new Dimension(200, 20));
         _pais.setToolTipText("Intruduzca su pais");
         modPanel.add(_pais);
 
         addJLabel("Direccion", modPanel);
         _direccion = new JTextField();
         _direccion.setAlignmentX(Component.CENTER_ALIGNMENT);
+        _direccion.setMaximumSize(new Dimension(200, 20));
         _direccion.setToolTipText("Introduzca su direccion");
         modPanel.add(_direccion);
 
@@ -274,6 +315,7 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
         setComboBox();
         _sexo = new JComboBox<>(sexModel);
         _sexo.setAlignmentX(Component.CENTER_ALIGNMENT);
+        _sexo.setMaximumSize(new Dimension(200, 20));
         _sexo.setToolTipText("Elija su sexo");
         modPanel.add(_sexo);
 
@@ -304,21 +346,94 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
 
     private void configurarPanelPedidos(JPanel panelPedidos) {
 
+
         JPanel filtros = new JPanel(); //TODO Hacer PedidosObserver
 
+        filtros.setLayout(new GridLayout());
+
+        JLabel filtro = new JLabel("Filtros: ");
+        filtros.add(filtro);
+
+        JLabel statusLabel = new JLabel("Status");
+        filtros.add(statusLabel);
+
         JComboBox<TOStatusPedido> status = new JComboBox<>(new DefaultComboBoxModel<>(TOStatusPedido.values()));
+        filtros.add(status);
 
-        JDatePicker fechaInicio = new JDatePickerImpl(new JDatePanelImpl(new SqlDateModel(), new Properties()), new DateFormatter());
-        JDatePicker fechaFin = new JDatePickerImpl(new JDatePanelImpl(new SqlDateModel(), new Properties()), new DateFormatter());
+        JLabel fechaLabel = new JLabel("Fecha inicio");
+        filtros.add(fechaLabel);
+
+        JDatePicker fechaInicio = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel(), new Properties()), new DateComponentFormatter());
+        filtros.add((Component) fechaInicio);
+
+        JLabel fechaFinLabel = new JLabel("Fecha fin");
+        filtros.add(fechaFinLabel);
+
+        JDatePicker fechaFin = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel(), new Properties()), new DateComponentFormatter());
+        filtros.add((Component) fechaFin);
+
+        panelPedidos.add(filtros, BorderLayout.PAGE_START);
+
+        Consumer<Collection<TOPedido>> updateTable = (articulos) -> {
+            pedidosModel.setRowCount(0);
+            articulos.forEach(toPedido -> pedidosModel.addRow(new Object[]{toPedido.getID(), toPedido.getFecha(), toPedido.getStatus(), 0})); //TODO Poner precio
+        };
+
+        status.addActionListener(e -> {
+            TOStatusPedido toStatusPedido = (TOStatusPedido) status.getSelectedItem();
+            Date fechaInicioDate = (Date) fechaInicio.getModel().getValue();
+            Date fechaFinDate = (Date) fechaFin.getModel().getValue();
+            Collection<TOPedido> pedidos = saFacade.getAllPedidos();
+            pedidos = pedidos.stream().filter(toPedido -> fechaInicioDate == null || toPedido.getFecha().after(fechaInicioDate))
+                    .filter(toPedido -> fechaFinDate == null || toPedido.getFecha().before(fechaFinDate))
+                    .filter(toPedido -> toStatusPedido == null || toPedido.getStatus().equals(toStatusPedido.toString()))
+                    .toList();
+            updateTable.accept(pedidos);
+        });
 
 
-        //TODO creo que solo tengo que hacer una instancia de la tabla de pedidos que tienen
-        //que crear javi y ruben
-        /*JButton atras = new JButton("Atras");
+        pedidosModel = new DefaultTableModel();
+
+        pedidosModel.addColumn("ID");
+        pedidosModel.addColumn("Fecha");
+        pedidosModel.addColumn("Status");
+        pedidosModel.addColumn("Precio");
+
+        JTable tablaPedidos = new JTable(pedidosModel);
+
+        tablaPedidos.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int row = tablaPedidos.getSelectedRow();
+                int idPedido = (int) tablaPedidos.getValueAt(row, 0);
+                TOPedido toPedido = saFacade.getAllPedidos().stream().filter(toPedido1 -> toPedido1.getID() == idPedido).findFirst().orElse(null);
+
+                JButton backButton = new JButton("Atras");
+
+                GUIPedido guiPedido = new GUIPedido(toPedido, backButton);
+
+                backButton.addActionListener(e1 -> Transitions.makeWhiteFadeTransition(guiPedido, panelPedidos, 1, (from, to) -> {
+                    mainPanel.remove(from);
+                    mainPanel.add(to, BorderLayout.CENTER);
+                }));
+
+                Transitions.makeWhiteFadeTransition(panelPedidos, guiPedido, 1, (from, to) -> {
+                    mainPanel.remove(from);
+                    mainPanel.add(to, BorderLayout.CENTER);
+                });
+            }
+        });
+
+
+        JScrollPane scrollPane = new JScrollPane(tablaPedidos);
+        panelPedidos.add(scrollPane, BorderLayout.CENTER);
+        /*
+        JButton atras = new JButton("Atras");
         panelPedidos.add(atras);
         atras.addActionListener((e -> {
             cl.show(cards, "Panel_ini");
-        }));*/
+        }));
+        */
     }
 
     private void configurarPanelSaldo(JPanel cards, JPanel panelSaldo) {
@@ -327,6 +442,7 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
         panelSaldo.add(cant);
         SpinnerNumberModel spinnerModel = new SpinnerNumberModel(0, 0, 200, 5);
         JSpinner sumarASaldo = new JSpinner(spinnerModel);
+        sumarASaldo.setMaximumSize(panelSaldo.getMaximumSize());
         sumarASaldo.setAlignmentX(Component.CENTER_ALIGNMENT);
         panelSaldo.add(sumarASaldo);
 
@@ -337,9 +453,19 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
         panelSaldo.add(confirmar);
         confirmar.addActionListener((e -> {
             int cantidad = (int) sumarASaldo.getValue();
-            saFacade.actualizarSaldo(cantidad);
-            VentanaMensaje ventanaMensaje = new VentanaMensaje("Saldo añadido con éxito!");
-            cl.show(cards, "Panel_ini");
+            try {
+                saFacade.actualizarSaldo(cantidad);
+                this.tUsuario = saFacade.getUsuario();
+                if (this.tUsuario != null) {
+                    double nuevoSaldo = this.tUsuario.getSaldo() + cantidad;
+                    saldo.setText(nuevoSaldo + "");
+                }
+                VentanaMensaje ventanaMensaje = new VentanaMensaje("Saldo añadido con éxito!");
+            } catch (RuntimeException exception) {
+                VentanaMensaje ventanaMensaje = new VentanaMensaje("Algo ha fallado...");
+            } finally {
+                cl.show(cards, "Panel_ini");
+            }
         }));
 
         JButton atras = new JButton("Atras");
@@ -360,6 +486,7 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
             suscr.addElement(v.name());
         }
         JComboBox<String> comboBoxSusc = new JComboBox<>(suscr);
+        comboBoxSusc.setMaximumSize(panelSuscr.getMaximumSize());
         comboBoxSusc.setAlignmentX(Component.CENTER_ALIGNMENT);
         panelSuscr.add(comboBoxSusc);
 
@@ -368,6 +495,7 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
         JButton confirmar = new JButton("Confirmar");
         panelSuscr.add(confirmar);
         confirmar.addActionListener((e -> {
+            suscripcion.setText(comboBoxSusc.getSelectedItem() + "");
             saFacade.actualizarSuscr(comboBoxSusc.getSelectedIndex());
             VentanaMensaje ventanaMensaje = new VentanaMensaje("Suscripcion actualizada con éxito!");
             cl.show(cards, "Panel_ini");
@@ -381,6 +509,7 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
         int anyo;
         nombre = _nombre.getText();
         apellidos = _apellidos.getText();
+        this.nombre.setText(nombre + " " + apellidos);
         correo = _correo.getText();
         contrasenya = _contrasenya.getText();
         anyo = Integer.parseInt(_anyoNac.getText());

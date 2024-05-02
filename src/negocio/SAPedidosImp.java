@@ -20,8 +20,8 @@ public class SAPedidosImp extends AbstractSA implements SAPedidos {
     }
 
     @Override
-    public Collection<TOPedido> getPedidosUsuario(int IDUsuario) {
-        return businessDelegate.getPedidosUsuario(IDUsuario);
+    public Collection<TOPedido> getPedidosUsuario() {
+        return businessDelegate.getPedidosUsuario();
     }
 
     @Override

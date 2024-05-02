@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class DAOPedidosImp implements DAOPedidos {
+public class DAOPedidosMySQL implements DAOPedidos {
 
     @Override
     public void añadirPedido(TOACestaUsuario toaCestaUsuario) {
@@ -46,7 +46,7 @@ public class DAOPedidosImp implements DAOPedidos {
                             .setIDCesta(rS.getInt("id_cesta"))
                             .setIDUsuario(rS.getInt("id_usuario"))
                             .setStatus(rS.getString("status"))
-                            .setFecha(rS.getString("fecha"));
+                            .setFecha(rS.getDate("fecha"));
                 } else {
                     throw new RuntimeException("No se ha encontrado el pedido con ID " + ID);
                 }
@@ -83,7 +83,7 @@ public class DAOPedidosImp implements DAOPedidos {
                     .setIDCesta(rS.getInt("id_cesta"))
                     .setIDUsuario(rS.getInt("id_usuario"))
                     .setStatus(rS.getString("status"))
-                    .setFecha(rS.getString("fecha")));
+                    .setFecha(rS.getDate("fecha")));
         }
         return pedidos;
     }
@@ -132,7 +132,7 @@ public class DAOPedidosImp implements DAOPedidos {
                             .setIDCesta(rS.getInt("id_cesta"))
                             .setIDUsuario(rS.getInt("id_usuario"))
                             .setStatus(rS.getString("status"))
-                            .setFecha(rS.getString("fecha"));
+                            .setFecha(rS.getDate("fecha"));
                 } else {
                     throw new RuntimeException("No se ha podido encontrar el ultimo pedido de la base de datos");
                 }

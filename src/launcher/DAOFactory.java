@@ -1,9 +1,20 @@
 package launcher;
 
+import integracion.*;
+
 public interface DAOFactory {
+    DAOPedidos getDAOPedidos();
 
-    //TODO Hacer la fabrica de DAO
+    DAOArticulo getDAOArticulo();
 
-    //añadir getDAO<nombre>() para cada DAO
+    DAOCategorias getDAOCategorias();
+
+    DAOListas getDAOListas();
+
+    DAOCesta getDAOCesta();
+
+    DAOUsuario getDAOUsuario();
+
+    DAOStock getDAOStock();
 }
 

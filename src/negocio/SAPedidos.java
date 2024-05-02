@@ -8,7 +8,7 @@ public interface SAPedidos {
 
     Collection<TOPedido> getAllPedidos();
 
-    Collection<TOPedido> getPedidosUsuario(int IDUsuario);
+    Collection<TOPedido> getPedidosUsuario();
 
     Collection<TOPedido> getPedidosStatus(TOStatusPedido TOStatusPedido);
 

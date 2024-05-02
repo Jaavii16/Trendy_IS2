@@ -139,7 +139,7 @@ public class GUIWindow extends JFrame {
         controlPanel.setLayout(new GridLayout(1, 0));
         controlPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        homePanel = new HomePanel(this, saFacade);
+        homePanel = new GUIHome(this, saFacade);
         userPanel = new GUIPerfil(saFacade, this);
         cestaPanel = new GUICesta(saFacade);
         searchPanel = new GUIPpalCategorias(saFacade);
@@ -274,5 +274,6 @@ public class GUIWindow extends JFrame {
             revalidate();
             repaint();
         });
+        lastPanel = Pair.of(homePanel, 0);
     }
 }

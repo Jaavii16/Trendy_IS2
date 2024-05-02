@@ -1,6 +1,7 @@
 package negocio;
 
 import java.io.Serializable;
+import java.util.Date;
 
 public class TOPedido implements Serializable {
 
@@ -9,9 +10,10 @@ public class TOPedido implements Serializable {
     private int IDCesta;
     private int IDUsuario;
     private String status;
-    private String fecha;
+    private Date fecha;
 
-    public TOPedido(){}
+    public TOPedido() {
+    }
 
     public int getID() {
         return ID;
@@ -58,11 +60,11 @@ public class TOPedido implements Serializable {
         return this;
     }
 
-    public String getFecha() {
+    public Date getFecha() {
         return fecha;
     }
 
-    public TOPedido setFecha(String fecha) {
+    public TOPedido setFecha(Date fecha) {
         this.fecha = fecha;
         return this;
     }

@@ -142,7 +142,11 @@ public class GUIRegister extends JPanel {
         mainPanel.add(_createAccount);
 
         //setViewportView(mainPanel);
+
         add(mainPanel);
+
+        revalidate();
+        repaint();
     }
 
     private void setComboBox() {

@@ -9,14 +9,13 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-public class DAOCategoriasImp implements DAOCategorias {
+public class DAOCategoriasMySQL implements DAOCategorias {
     @Override
-    public void altaArticuloCat(int id, String fechal, int descuento, String cat) {
+    public void altaArticuloCat(int id, String fechal, double descuento, String cat) {
         try (Connection c = DBConnection.connect();
              Statement st = c.createStatement();
         ) {
-            st.executeUpdate("insert into ClasificacionArticulos values ("+ id +", '" +
-                    cat + "', " + descuento + ", '" + fechal + "')");
+            st.executeUpdate("insert into ClasificacionArticulos values (" + id + ",  " + descuento + " ,   '" + fechal + "','" + cat + "')");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
