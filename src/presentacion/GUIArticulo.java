@@ -7,7 +7,7 @@ import negocio.SAFacade;
 import javax.swing.*;
 import java.awt.*;
 
-public class GUIArticulo extends JPanel {
+public class GUIArticulo extends MainGUIPanel {
     //Al haberle dado a un artículo de una categoría
 
     private Articulo art;
@@ -160,4 +160,14 @@ public class GUIArticulo extends JPanel {
         this.add(end, BorderLayout.PAGE_END);
     }
 
+    @Override
+    public void update() {
+
+    }
+
+    @Override
+    public void reset() {
+        this.setVisible(false);
+        this.guicategoria.setVisible(false);
+    }
 }

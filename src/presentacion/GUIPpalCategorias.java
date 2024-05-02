@@ -6,6 +6,7 @@ import negocio.SAFacade;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.LinkedList;
 import java.util.List;
 
 public class GUIPpalCategorias extends MainGUIPanel implements ActionListener {
@@ -14,29 +15,25 @@ public class GUIPpalCategorias extends MainGUIPanel implements ActionListener {
     private List<JButton> categorias;
     private List<String> lcat;
     private SAFacade sa;
+    private JPanel pcategorias;
 
     GUIPpalCategorias(SAFacade sa) {
         super();
         this.sa = sa;
+        this.categorias = new LinkedList<>();
         lcat = this.sa.getCategorias();
         initGUI();
     }
 
     private void initGUI() {
 
-        JPanel categorias = new JPanel();
+        pcategorias = new JPanel();
+        pcategorias.setLayout(new BoxLayout(pcategorias, BoxLayout.Y_AXIS));
+        pcategorias.setAlignmentX(JComponent.LEFT_ALIGNMENT);
 
-        categorias.setLayout(new BoxLayout(categorias, BoxLayout.Y_AXIS));
-        categorias.setAlignmentX(JComponent.LEFT_ALIGNMENT);
+        añadeBotones();
 
-        for (String s : this.lcat) {
-            JButton cat = new JButton(s);
-            cat.addActionListener(this);
-            categorias.add(cat);
-            categorias.add(cat);
-        }
-
-        this.setViewportView(categorias);
+        this.setViewportView(pcategorias);
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -50,11 +47,24 @@ public class GUIPpalCategorias extends MainGUIPanel implements ActionListener {
 
     @Override
     public void update() {
-
+        lcat = this.sa.getCategorias();
+        for (JButton b : categorias) {
+            pcategorias.remove(b);
+        }
+        this.categorias.clear();
+        añadeBotones();
     }
 
     @Override
     public void reset() {
+    }
 
+    private void añadeBotones() {
+        for (String s : this.lcat) {
+            JButton cat = new JButton(s);
+            cat.addActionListener(this);
+            pcategorias.add(cat);
+            categorias.add(cat);
+        }
     }
 }

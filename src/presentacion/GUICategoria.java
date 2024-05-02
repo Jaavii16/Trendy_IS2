@@ -11,7 +11,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Map;
 
-public class GUICategoria extends JPanel implements ActionListener {
+public class GUICategoria extends MainGUIPanel implements ActionListener {
     //Después de haberle dado a una categoría en si
     //Map<JButton, String> articulos;
     //Boton ccon el nombre del artículo, precio del artículo
@@ -21,6 +21,7 @@ public class GUICategoria extends JPanel implements ActionListener {
     private JButton atras;
     private JMenu filtro;
     private GUIPpalCategorias guippal;
+    private JPanel art;
 
     GUICategoria(SAFacade sa, String cat, GUIPpalCategorias ppal) {
         this.sa = sa;
@@ -33,21 +34,12 @@ public class GUICategoria extends JPanel implements ActionListener {
         this.setLayout(new BorderLayout());
 
         //PANEL QUE TENDRÁ LA LISTA DE ARTICULOS DE LA CATEGORÍA
-        JPanel art = new JPanel();
+        art = new JPanel();
         art.setLayout(new BoxLayout(art, BoxLayout.Y_AXIS));
         art.setAlignmentX(JComponent.LEFT_ALIGNMENT);
 
-        List<Articulo> lista = this.sa.buscaArticulosCategoria(this.cat);
-        for (Articulo a : lista) {
-            JButton botonart = new JButton(a.getName());
-            botonart.setToolTipText("Muestra este articulo");
-            botonart.addActionListener(this);
-            articulos.put(botonart, a);
-        }
+        añadeBotones();
 
-        for (JButton b : this.articulos.keySet()) {
-            art.add(b);
-        }
         this.add(art, BorderLayout.CENTER);
 
         //Ahora hay que crear lo de arriba (el boton de atrás y el de filtrar)
@@ -119,5 +111,32 @@ public class GUICategoria extends JPanel implements ActionListener {
             GUIArticulo art = new GUIArticulo(a, cat, this, this.sa);
             this.setVisible(false);
         }
+    }
+
+    private void añadeBotones() {
+        List<Articulo> lista = this.sa.buscaArticulosCategoria(this.cat);
+        for (Articulo a : lista) {
+            JButton botonart = new JButton(a.getName());
+            botonart.setToolTipText("Muestra este articulo");
+            botonart.addActionListener(this);
+            articulos.put(botonart, a);
+        }
+        for (JButton b : this.articulos.keySet()) {
+            art.add(b);
+        }
+    }
+
+    @Override
+    public void update() {
+        for (JButton b : articulos.keySet()) {
+            art.remove(b);
+        }
+        articulos.clear();
+        añadeBotones();
+    }
+
+    @Override
+    public void reset() {
+        this.setVisible(false);
     }
 }
