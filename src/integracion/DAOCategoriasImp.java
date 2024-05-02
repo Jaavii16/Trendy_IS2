@@ -15,8 +15,8 @@ public class DAOCategoriasImp implements DAOCategorias {
         try (Connection c = DBConnection.connect();
              Statement st = c.createStatement();
         ) {
-            st.executeUpdate("insert into ClasificacionArticulos values ('" + id + "', '" + //TODO Quitar comillas en enteros
-                    cat + "', '" + descuento + "', '" + fechal + "')");
+            st.executeUpdate("insert into ClasificacionArticulos values ("+ id +", '" +
+                    cat + "', " + descuento + ", '" + fechal + "')");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -29,7 +29,7 @@ public class DAOCategoriasImp implements DAOCategorias {
 
         ) {
 
-            st.executeUpdate("delete from ClasificacionArticulos where ID = '" + id + "'");
+            st.executeUpdate("delete from ClasificacionArticulos where ID = " + id);
 
         } catch (SQLException e) {
             throw new RuntimeException("Error SQL" + e.getErrorCode(), e);
@@ -42,9 +42,16 @@ public class DAOCategoriasImp implements DAOCategorias {
              Statement st = c.createStatement();
 
         ) {
-            st.executeUpdate("update ClasificacionArticulos set  ('" + id + "', ''" +
-                    "', '" + cat + "'', '" + descuento + "' , '" +
-                    fechal + "')");
+            String sql = "UPDATE ClasificacionArticulos SET " +
+                    "Descuento = '" + descuento +
+                    "', FechaLanzamiento = '" + fechal +
+                    "', Categoria = " + cat +
+                    " WHERE ID = " + id;
+            try {
+                c.createStatement().executeUpdate(sql);
+            } catch (SQLException e) {
+                throw new RuntimeException("Error SQL " + e.getErrorCode(), e);
+            }
 
         } catch (SQLException e) {
             throw new RuntimeException("Error SQL" + e.getErrorCode(), e);
@@ -103,8 +110,8 @@ public class DAOCategoriasImp implements DAOCategorias {
         month2 = Character.toString(f2.charAt(5)) + Character.toString(f2.charAt(6));
         day2 = Character.toString(f2.charAt(8)) + Character.toString(f2.charAt(9));
 
-        return Integer.valueOf(year1) > Integer.valueOf(year2) || (Integer.valueOf(year1).equals(Integer.valueOf(year2))
-                && Integer.valueOf(month1) > Integer.valueOf(month2)) || (Integer.valueOf(year1).equals(Integer.valueOf(year2))
-                && Integer.valueOf(month1).equals(Integer.valueOf(month2)) && Integer.valueOf(day1) >= Integer.valueOf(day2));
+        return Integer.parseInt(year1) > Integer.parseInt(year2) || (Integer.valueOf(year1).equals(Integer.valueOf(year2))
+                && Integer.parseInt(month1) > Integer.parseInt(month2)) || (Integer.valueOf(year1).equals(Integer.valueOf(year2))
+                && Integer.valueOf(month1).equals(Integer.valueOf(month2)) && Integer.parseInt(day1) >= Integer.parseInt(day2));
     }
 }

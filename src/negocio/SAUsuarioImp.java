@@ -15,8 +15,8 @@ public class SAUsuarioImp extends AbstractSA implements SAUsuario {
     }
 
     @Override
-    public String getUsuario() {
-        return businessDelegate.read() != null ? businessDelegate.read().getNombre() : null;
+    public TUsuario getUsuario() {
+        return businessDelegate.read() != null ? businessDelegate.read(): null;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class SAUsuarioImp extends AbstractSA implements SAUsuario {
     }
 
     @Override
-    public void actualizarSaldoAdmin(int cantidad, int id) {
+    public void actualizarSaldoAdmin(double cantidad, int id) {
         businessDelegate.actualizarSaldoAdmin(cantidad, id);
     }
 }

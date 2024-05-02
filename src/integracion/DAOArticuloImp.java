@@ -14,7 +14,7 @@ public class DAOArticuloImp implements DAOArticulo {
     public tArticulo buscarArticulo(int id) {
         try (Connection c = DBConnection.connect();
              Statement st = c.createStatement();
-             ResultSet rs = st.executeQuery("select * from Artículo where ID = id")) {
+             ResultSet rs = st.executeQuery("select * from Artículo where ID = "+id)) {
             tArticulo a = null;
             while (rs.next()) {
                 a = new tArticulo(rs.getInt("ID"), rs.getString("Nombre"),
@@ -32,8 +32,8 @@ public class DAOArticuloImp implements DAOArticulo {
     public void altaArticulo(tArticulo a) {
         try (Connection c = DBConnection.connect();
              Statement st = c.createStatement()) {
-            st.executeUpdate("insert into Artículo values ( '" + a.getID() + "', '" +
-                    a.getNombre() + "', '" + a.getSubcat() + "', '" + a.getPrecio() + "')");
+            st.executeUpdate("insert into Artículo values ( " + a.getID() + ", '" +
+                    a.getNombre() + "', '" + a.getSubcat() + "', " + a.getPrecio() + ")");
 
         } catch (SQLException e) {
             throw new RuntimeException("Error SQL" + e.getErrorCode(), e);
@@ -46,7 +46,7 @@ public class DAOArticuloImp implements DAOArticulo {
              Statement st = c.createStatement();
 
         ) {
-            st.executeUpdate("delete from Artículo where ID = '" + a.getID() + "'");
+            st.executeUpdate("delete from Artículo where ID = "+ a.getID());
         } catch (SQLException e) {
             throw new RuntimeException("Error SQL" + e.getErrorCode(), e);
         }
@@ -54,14 +54,18 @@ public class DAOArticuloImp implements DAOArticulo {
 
     @Override
     public void modificarArticulo(tArticulo a) {
-        try (Connection c = DBConnection.connect();
-             Statement st = c.createStatement();
+        try (Connection c = DBConnection.connect()) {
 
-        ) {
-
-            st.executeUpdate("update Artículo set  ('" + a.getID() + "', '" +
-                    a.getNombre() + "', '" + a.getSubcat() + "', '" + a.getPrecio() + "')");
-
+            String sql = "UPDATE Artículo SET " +
+                    "Nombre = '" + a.getNombre() +
+                    "', Subcategoría = '" + a.getSubcat() +
+                    "', Precio = " + a.getPrecio() +
+                     " WHERE ID = " + a.getID();
+            try {
+                c.createStatement().executeUpdate(sql);
+            } catch (SQLException e) {
+                throw new RuntimeException("Error SQL " + e.getErrorCode(), e);
+            }
         } catch (SQLException e) {
             throw new RuntimeException("Error SQL" + e.getErrorCode(), e);
         }
@@ -72,7 +76,7 @@ public class DAOArticuloImp implements DAOArticulo {
         try (Connection c = DBConnection.connect();
              Statement st = c.createStatement();
 
-             ResultSet rs = st.executeQuery("select id from Artículo where ID = '" + id + "'")) {
+             ResultSet rs = st.executeQuery("select id from Artículo where ID = "+ id)) {
             return rs != null;
         } catch (SQLException e) {
             throw new RuntimeException("Error SQL" + e.getErrorCode(), e);

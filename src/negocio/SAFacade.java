@@ -130,7 +130,7 @@ public class SAFacade {
         return saUsuario.create(tUsuario);
     }
 
-    public String getUsuario() {
+    public TUsuario getUsuario() {
         return saUsuario.getUsuario();
     }
 
@@ -166,7 +166,7 @@ public class SAFacade {
         saUsuario.logout();
     }
 
-    public void actualizarSaldoAdmin(int cantidad, int id) {
+    public void actualizarSaldoAdmin(double cantidad, int id) {
         saUsuario.actualizarSaldoAdmin(cantidad, id);
     }
 

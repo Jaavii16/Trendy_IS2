@@ -27,7 +27,7 @@ public class BusinessDelegate {
 
     BOCesta boCesta = new BOCesta(daoCesta);
 
-    DAOUsuario daoUsuario = new DAOImpUsuario();
+    DAOUsuario daoUsuario = new DAOUsuarioImp();
     BOUsuario boUsuario = new BOUsuario(daoUsuario);
 
     private DAOFactory daoFactory; //TODO Usar daoFactory
@@ -35,6 +35,7 @@ public class BusinessDelegate {
     public BusinessDelegate(DAOFactory daoFactory) {
         this.daoFactory = daoFactory;
         boUsuario.addObserver(boCesta);
+        boCesta.addObserver(boUsuario);
     }
 
     public void registerObserver(Observer observer) {
@@ -195,7 +196,7 @@ public class BusinessDelegate {
         boUsuario.logout();
     }
 
-    public void actualizarSaldoAdmin(int cantidad, int id) {
+    public void actualizarSaldoAdmin(double cantidad, int id) {
         boUsuario.actualizarSaldoAdmin(cantidad, id);
     }
 

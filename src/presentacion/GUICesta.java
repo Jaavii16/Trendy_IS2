@@ -6,6 +6,7 @@ import negocio.TOArticuloEnCesta;
 import negocio.TOCesta;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.TreeSet;
@@ -15,6 +16,11 @@ public class GUICesta extends MainGUIPanel implements CestaObserver {
     SAFacade facade;
     JPanel mainPanel;
     private HashMap<String, JPanel> panelMap;
+
+    private static final String PANELCESTA = "Panel_cesta";
+    private static final String PANELFAVORITOS = "Panel_favoritos";
+
+    private JPanel cards;
 
     public GUICesta(SAFacade saFacade) {
         this.facade = saFacade;
@@ -26,7 +32,33 @@ public class GUICesta extends MainGUIPanel implements CestaObserver {
     private void initGui() {
 
         mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setLayout(new BorderLayout());
+        setViewportView(mainPanel);
+        cards = new JPanel(new CardLayout());
+        //PANEL DE LOS BOTONES
+        JPanel buttonPanel = new JPanel(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
+        mainPanel.add(buttonPanel, BorderLayout.PAGE_START);
+
+        //CREAMOS PANELES
+
+        //PANEL CESTA
+
+
+        //PANEL FAVORITOS
+
+        //CREAMOS BOTONES
+        //BOTON CESTA
+        JButton cesta = new JButton("Cesta");
+        cesta.setAlignmentX(Component.CENTER_ALIGNMENT);
+        cesta.addActionListener((e -> ));
+        buttonPanel.add(cesta);
+
+        //BOTON FAVORITOS
+        JButton favs = new JButton("Favoritos");
+        favs.setAlignmentX(Component.CENTER_ALIGNMENT);
+        favs.addActionListener((e -> ));
+        buttonPanel.add(favs);
+
 
         mainPanel.setOpaque(true);
 

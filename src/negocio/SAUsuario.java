@@ -5,7 +5,7 @@ import java.util.Collection;
 public interface SAUsuario {
     public boolean create(TUsuario tUsuario);
 
-    public String getUsuario();
+    public TUsuario getUsuario();
 
     public Collection<TUsuario> readAll();
 
@@ -23,5 +23,5 @@ public interface SAUsuario {
 
     void logout();
 
-    void actualizarSaldoAdmin(int cantidad, int id);
+    void actualizarSaldoAdmin(double cantidad, int id);
 }

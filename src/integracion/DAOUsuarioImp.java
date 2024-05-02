@@ -10,7 +10,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DAOImpUsuario implements DAOUsuario {
+public class DAOUsuarioImp implements DAOUsuario {
     @Override
     public List<TUsuario> buscarUsuarios() {
         List<TUsuario>list = new ArrayList<>();
@@ -78,7 +78,7 @@ public class DAOImpUsuario implements DAOUsuario {
     public TUsuario crearUsuario(TUsuario usuario) {
         try (Connection connection = DBConnection.connect()) {
             int id = getNuevoId();
-            String sql = "INSERT INTO Usuarios VALUES ("
+            String sql = "INSERT INTO Usuarios (ID, correo, contraseña, nombre, apellidos, pais, sexo, suscripcion_id, Dirección, saldo, anyo_nacimiento) VALUES ("
                     + id + ", '"
                     + usuario.getCorreo_e() + "', '"
                     + usuario.getContrasenya() + "', '"

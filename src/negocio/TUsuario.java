@@ -18,6 +18,7 @@ public class TUsuario implements Serializable {
     protected int id;
     protected String direccion;
     protected double saldo;
+    protected int id_Cesta;
     protected boolean admin = false;
 
     public TUsuario(int Id) {
@@ -52,8 +53,11 @@ public class TUsuario implements Serializable {
         saldo = 0;
         favoritos = new LinkedList<>();
         admin = Admin;
-        //TODO suscripcion tiene q ser el id de la normal pero no se cual es
         suscripcion = Suscripciones.NORMAL.name();
+    }
+
+    public TUsuario() {
+
     }
 
 
@@ -174,9 +178,19 @@ public class TUsuario implements Serializable {
         return this;
     }
 
+    public int getIDCesta() {
+        return id_Cesta;
+    }
+
+    public TUsuario setIDCesta(int idCesta){
+        id_Cesta = idCesta;
+        return this;
+    }
+
     @Override
     public String toString() {
         return "Usuario [nombre=" + nombre + ", email=" + correo_e + "]";
     }
+
 
 }
