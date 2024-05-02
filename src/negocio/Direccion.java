@@ -10,7 +10,14 @@ public record Direccion(Via via, int numero, String ciudad, String provincia, in
     }
 
     public record Via(Via.TipoVia tipoVia, String nombre) {
-        public enum TipoVia {CALLE, AVENIDA, PLAZA, CAMINO, CARRETERA}
+        public enum TipoVia {
+            CALLE, AVENIDA, PLAZA, CAMINO, CARRETERA;
+
+            @Override
+            public String toString() {
+                return super.toString().toUpperCase().charAt(0) + super.toString().substring(1).toLowerCase();
+            }
+        }
 
         public Via {
             if (tipoVia == null || nombre == null)
@@ -26,6 +33,6 @@ public record Direccion(Via via, int numero, String ciudad, String provincia, in
     public static Direccion parse(String direccion) {
         String[] parts = direccion.split(", ");
         String[] viaParts = parts[0].split(" ");
-        return new Direccion(new Via(Via.TipoVia.valueOf(viaParts[0]), viaParts[1]), Integer.parseInt(parts[1]), parts[2], parts[3], Integer.parseInt(parts[4]));
+        return new Direccion(new Via(Via.TipoVia.valueOf(viaParts[0].toUpperCase()), viaParts[1]), Integer.parseInt(parts[1]), parts[2], parts[3], Integer.parseInt(parts[4]));
     }
 }

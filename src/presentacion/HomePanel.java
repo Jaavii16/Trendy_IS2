@@ -94,7 +94,7 @@ public class HomePanel extends MainGUIPanel {
         noHayPedidos.setFont(new Font("Arial", Font.BOLD, 20));
         jpLastPedidoPanel.add(noHayPedidos, BorderLayout.NORTH);
         JButton crearPedidoButton = new JButton("Hacer pedido");
-        crearPedidoButton.addActionListener(e -> mainWindow.showGUIPedidos());
+        crearPedidoButton.addActionListener(e -> mainWindow.showCesta());
         jpLastPedidoPanel.add(crearPedidoButton, BorderLayout.SOUTH);
 
         jpLastPedido.add(jpLastPedidoPanel);

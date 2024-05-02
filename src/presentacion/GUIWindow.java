@@ -34,7 +34,7 @@ public class GUIWindow extends JFrame {
     private MainGUIPanel userPanel;
     private MainGUIPanel cestaPanel;
     private MainGUIPanel searchPanel;
-    private GUILogIn authDialog;
+    private GUILogin authDialog;
 
     public GUIWindow(SAFacade saFacade) {
         this.saFacade = saFacade;
@@ -54,7 +54,7 @@ public class GUIWindow extends JFrame {
     }
 
     private void autoLogin() {
-        File login = new File("trendy-storage/login.txt");
+        File login = new File("login.txt");
         if (login.exists()) {
             String[] credentials = null;
             try {
@@ -140,10 +140,10 @@ public class GUIWindow extends JFrame {
         controlPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         homePanel = new HomePanel(this, saFacade);
-        userPanel = new GUIPerfil(saFacade);
+        userPanel = new GUIPerfil(saFacade, this);
         cestaPanel = new GUICesta(saFacade);
         searchPanel = new GUIPpalCategorias(saFacade);
-        authDialog = new GUILogIn(saFacade);
+        authDialog = new GUILogin(saFacade);
 
         mainPanel.add(homePanel, BorderLayout.CENTER);
         mainPanel.add(controlPanel, BorderLayout.SOUTH);
@@ -204,6 +204,8 @@ public class GUIWindow extends JFrame {
         return (panel) -> Transitions.makeWhiteFadeTransition(lastPanel.getLeft(), panel, 1, (from, to) -> {
             mainPanel.remove(from);
             mainPanel.add(to, BorderLayout.CENTER);
+            revalidate();
+            repaint();
         });
     }
 
@@ -260,8 +262,17 @@ public class GUIWindow extends JFrame {
     }
 
 
-    public void showGUIPedidos() {
-        buttonAction(changePanelAction()).accept(userPanel);
-        //TODO userPanel.goToPedidos();
+    public void showCesta() {
+        buttonAction(changePanelAction()).accept(cestaPanel);
+        //TODO cestaPanel.goToPedidos();
+    }
+
+    public void goHome() {
+        Transitions.makeWhiteFadeTransition(lastPanel.getLeft(), homePanel, 1, (from, to) -> {
+            mainPanel.remove(from);
+            mainPanel.add(to, BorderLayout.CENTER);
+            revalidate();
+            repaint();
+        });
     }
 }

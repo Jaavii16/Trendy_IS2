@@ -16,6 +16,7 @@ public class GUICesta extends MainGUIPanel implements CestaObserver {
     SAFacade facade;
     JPanel mainPanel;
     private HashMap<String, JPanel> panelMap;
+    private JPanel panelCesta;
 
     private static final String PANELCESTA = "Panel_cesta";
     private static final String PANELFAVORITOS = "Panel_favoritos";
@@ -36,12 +37,16 @@ public class GUICesta extends MainGUIPanel implements CestaObserver {
         setViewportView(mainPanel);
         cards = new JPanel(new CardLayout());
         //PANEL DE LOS BOTONES
-        JPanel buttonPanel = new JPanel(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
         mainPanel.add(buttonPanel, BorderLayout.PAGE_START);
 
         //CREAMOS PANELES
 
         //PANEL CESTA
+        panelCesta = new JPanel();
+        panelCesta.setLayout(new BoxLayout(panelCesta, BoxLayout.Y_AXIS));
+        panelCesta.setVisible(false);
 
 
         //PANEL FAVORITOS
@@ -50,13 +55,13 @@ public class GUICesta extends MainGUIPanel implements CestaObserver {
         //BOTON CESTA
         JButton cesta = new JButton("Cesta");
         cesta.setAlignmentX(Component.CENTER_ALIGNMENT);
-        cesta.addActionListener((e -> ));
+        //cesta.addActionListener((e -> )); //TODO Quitar comentarios
         buttonPanel.add(cesta);
 
         //BOTON FAVORITOS
         JButton favs = new JButton("Favoritos");
         favs.setAlignmentX(Component.CENTER_ALIGNMENT);
-        favs.addActionListener((e -> ));
+        //favs.addActionListener((e -> ));
         buttonPanel.add(favs);
 
 
@@ -70,35 +75,38 @@ public class GUICesta extends MainGUIPanel implements CestaObserver {
         this.setVisible(true);*/
     }
 
+
     @Override
     public void onCestaChanged(TOCesta cesta) {
-        mainPanel.removeAll();//elimino lo antiguo
+        panelCesta.removeAll();//elimino lo antiguo
         panelMap.clear();
         TreeSet<TOArticuloEnCesta> lista = (TreeSet<TOArticuloEnCesta>) cesta.getListaArticulos();
         Iterator<TOArticuloEnCesta> art_it = lista.iterator();
         while (art_it.hasNext()) {
             TOArticuloEnCesta art = art_it.next();
-            JPanel articulo = new JPanel(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
+            JPanel articulo = new JPanel(new BoxLayout(panelCesta, BoxLayout.X_AXIS));
             articulo.add(new JLabel(art.toString()));//nombre¿?
             articulo.add(new JLabel(art.getTalla() + ""));
             articulo.add(new JLabel(art.getCantidad() + ""));
             addButtons(articulo, art);
             panelMap.put(art.getIdArticulo() + "", articulo);
-            mainPanel.add(articulo);
+            panelCesta.add(articulo);
         }
-        mainPanel.repaint();
+        panelCesta.revalidate();
+        panelCesta.repaint();
     }
 
     @Override
     public void onArticuloAdded(TOArticuloEnCesta articulo) {
-        JPanel _articulo = new JPanel(new BoxLayout(mainPanel, BoxLayout.X_AXIS));
+        JPanel _articulo = new JPanel(new BoxLayout(panelCesta, BoxLayout.X_AXIS));
         _articulo.add(new JLabel(articulo.toString()));//nombre¿?
         _articulo.add(new JLabel(articulo.getTalla() + ""));
         _articulo.add(new JLabel(articulo.getCantidad() + ""));
         addButtons(_articulo, articulo);
         panelMap.put(articulo.getIdArticulo() + "", _articulo);
-        mainPanel.add(_articulo);
-        mainPanel.repaint();
+        panelCesta.add(_articulo);
+        panelCesta.revalidate();
+        panelCesta.repaint();
     }
 
 

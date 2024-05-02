@@ -1,7 +1,6 @@
 package presentacion;
 
 import negocio.SAFacade;
-import negocio.SAUsuario;
 import negocio.SAUsuarioImp;
 import negocio.TUsuario;
 import utils.ViewUtils;
@@ -36,14 +35,15 @@ public class GUIRegister extends JPanel {
     private SAUsuarioImp saUsuario;
     private TUsuario tUsuario;
 
-    private GUILogIn _parent;
+    private GUILogin _parent;
 
-    public GUIRegister(GUILogIn parent, SAFacade saFacade){
+    public GUIRegister(GUILogin parent, SAFacade saFacade) {
         this.saFacade = saFacade;
         this._parent = parent;
         initGUI();
     }
-    private void initGUI(){
+
+    private void initGUI() {
         //setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         //setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
@@ -89,7 +89,6 @@ public class GUIRegister extends JPanel {
         mainPanel.add(_repContrasenya);
 
 
-
         addJLabel("Pais", mainPanel);
 
         _pais = new JTextField();
@@ -132,11 +131,10 @@ public class GUIRegister extends JPanel {
             String contra, contraRep;
             contra = _contrasenya.getText();
             contraRep = _repContrasenya.getText();
-            if(contra.equals(contraRep)){
+            if (contra.equals(contraRep)) {
                 tUsuario = crearUsuario();
                 saFacade.create(tUsuario);
-            }
-            else{
+            } else {
                 System.out.println("La contraseña no coincide");
             }
         });
@@ -152,7 +150,7 @@ public class GUIRegister extends JPanel {
         sexoModelo.addElement('F');
     }
 
-    private TUsuario crearUsuario(){
+    private TUsuario crearUsuario() {
         String nombre, apellidos, correo, contrasenya, pais, dir;
         char sexo;
         int anyo;
@@ -167,7 +165,7 @@ public class GUIRegister extends JPanel {
         return new TUsuario(nombre, apellidos, correo, contrasenya, anyo, sexo, pais, dir, false);
     }
 
-    private void addJLabel(String text, Container container){
+    private void addJLabel(String text, Container container) {
         JLabel label = new JLabel(text);
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
         container.add(label);

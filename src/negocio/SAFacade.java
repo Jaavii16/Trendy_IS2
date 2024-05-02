@@ -193,4 +193,7 @@ public class SAFacade {
 
     }
 
+    public void unregisterObserver(Observer observer) {
+        businessDelegate.unregisterObserver(observer);
+    }
 }

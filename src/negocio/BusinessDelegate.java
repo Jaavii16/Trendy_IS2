@@ -169,7 +169,9 @@ public class BusinessDelegate {
         boUsuario.delete(id);
     }
 
-    public void actualizarSaldo(double cantidad){boUsuario.actualizarSaldo(cantidad);}
+    public void actualizarSaldo(double cantidad) {
+        boUsuario.actualizarSaldo(cantidad);
+    }
 
 
     public void actualizarSusc(int id) {
@@ -200,4 +202,14 @@ public class BusinessDelegate {
         boUsuario.actualizarSaldoAdmin(cantidad, id);
     }
 
+    public void unregisterObserver(Observer observer) {
+        if (observer instanceof CestaObserver co)
+            boCesta.removeObserver(co);
+        else if (observer instanceof FavsObserver fo)
+            boCesta.removeObserver(fo);
+        else if (observer instanceof AuthObserver ao)
+            boUsuario.removeObserver(ao);
+        else
+            throw new IllegalArgumentException("Observer no soportado");
+    }
 }

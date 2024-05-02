@@ -3,6 +3,8 @@ package negocio;
 import integracion.DAOUsuario;
 
 import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,12 +24,7 @@ public class BOUsuario implements Observable<AuthObserver>, CestaObserver {
         this.tUsuario = daoUsuario.crearUsuario(tUsuario);
         observers.forEach(observer -> observer.onAuthChanged(true, this.tUsuario.getId()));
 
-       /* try (PrintStream out = new PrintStream("trendy-storage/login.txt")) {
-            out.println(tUsuario.getCorreo_e());
-            out.println(tUsuario.getContrasenya());
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }*/
+        saveLogin();
 
         return this.tUsuario;
     }
@@ -49,8 +46,11 @@ public class BOUsuario implements Observable<AuthObserver>, CestaObserver {
         daoUsuario.eliminarUsuario(id);
     }
 
-    public void actualizarSaldo(double cantidad){ daoUsuario.actualizarSaldo(tUsuario.getId(), cantidad); }
-    public void onHacerPedido(int idCesta){
+    public void actualizarSaldo(double cantidad) {
+        daoUsuario.actualizarSaldo(tUsuario.getId(), cantidad);
+    }
+
+    public void onHacerPedido(int idCesta) {
         daoUsuario.actualizarCesta(tUsuario.getId(), idCesta); //TODO Hacer con observer
     }
 
@@ -59,7 +59,7 @@ public class BOUsuario implements Observable<AuthObserver>, CestaObserver {
     }
 
     public void actualizarSuscrAdmin(int userID, int id) {
-        if(tUsuario.admin)
+        if (tUsuario.admin)
             daoUsuario.actualizarSuscripcion(userID, id);
         else throw new IllegalStateException("Tienes que ser admin para poder hacer esto");
     }
@@ -76,41 +76,47 @@ public class BOUsuario implements Observable<AuthObserver>, CestaObserver {
 
     public void login(String correo, String contraseña) {
         tUsuario = daoUsuario.getUsuario(correo, contraseña);
-        if (tUsuario == null) {
-            observers.forEach(observer -> observer.onAuthChanged(false, 0));
-            return;
-        }
-        observers.forEach(observer -> observer.onAuthChanged(true, tUsuario.getId()));
+        if (tUsuario != null) {
+            observers.forEach(observer -> observer.onAuthChanged(true, tUsuario.getId()));
+            saveLogin();
+        } else
+            throw new IllegalArgumentException("Usuario no encontrado con esas credenciales");
+    }
 
-        /* //TODO Arreglar
-        File outFile = new File("trendy-storage/login.txt");
-        try (OutputStream outStream = new FileOutputStream(outFile); PrintStream out = new PrintStream(outStream)) {
+    private void saveLogin() {
+
+        Path outFile = Paths.get("login.txt");
+
+        try (OutputStream outStream = new FileOutputStream(outFile.toFile()); PrintStream out = new PrintStream(outStream)) {
             out.println(tUsuario.getCorreo_e());
             out.println(tUsuario.getContrasenya());
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-         */
     }
 
     public void logout() {
         tUsuario = null;
         observers.forEach(observer -> observer.onAuthChanged(false, 0));
 
-        File file = new File("trendy-storage/login.txt");
+        File file = new File("login.txt");
         file.delete();
+
     }
 
     public void actualizarSaldoAdmin(double cantidad, int id) {
-        if(tUsuario.admin)
+        if (tUsuario.admin)
             daoUsuario.actualizarSaldo(id, cantidad);
         else throw new IllegalStateException("Tienes que ser admin para poder hacer esto");
     }
 
     @Override
     public void onCestaChanged(TOCesta cesta) {
-        tUsuario.setIDCesta(cesta.getIdCesta());
+        if (tUsuario != null) {
+            tUsuario.setIDCesta(cesta.getIdCesta());
+        }
     }
 
     @Override
