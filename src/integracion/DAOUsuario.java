@@ -12,7 +12,7 @@ public interface DAOUsuario {
     void eliminarUsuario(int ID);
     int getNuevoId();
     void actualizarCesta(int idUsuario, int idCesta);
-    void actualizarSaldo(int idUsuario, int cantidad);
+    void actualizarSaldo(int idUsuario, double cantidad);
 
     void actualizarSuscripcion(int idUsuario, int susc);
 }

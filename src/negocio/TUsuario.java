@@ -53,6 +53,7 @@ public class TUsuario implements Serializable {
         favoritos = new LinkedList<>();
         admin = Admin;
         //TODO suscripcion tiene q ser el id de la normal pero no se cual es
+        suscripcion = Suscripciones.NORMAL.name();
     }
 
 

@@ -43,6 +43,7 @@ public class BOUsuario implements Observable<AuthObserver> {
         return daoUsuario.buscarUsuarios();
     }
 
+
     public void update(TUsuario tUsuario) {
         daoUsuario.actualizarUsuario(tUsuario, tUsuario.getId());
     }
@@ -51,12 +52,8 @@ public class BOUsuario implements Observable<AuthObserver> {
         daoUsuario.eliminarUsuario(id);
     }
 
-    public void actualizarCesta(int cantidad) { //TODO Hacer con CestaObserver
-        daoUsuario.actualizarCesta(tUsuario.getId(), cantidad);
-    }
-
-    public void onHacerPedido(int idCesta) { //TODO Hacer con PedidoObserver
-
+    public void actualizarSaldo(double cantidad){ daoUsuario.actualizarSaldo(tUsuario.getId(), cantidad); }
+    public void OnHacerPedido(int idCesta){
         daoUsuario.actualizarCesta(tUsuario.getId(), idCesta);
     }
 

@@ -15,6 +15,7 @@ public class BusinessDelegate {
     DAOArticulo daoart = new DAOArticuloImp();
     DAOListas daolistas = new DAOListasImp();
 
+
     BOStock bostock = new BOStock(daostock);
     BOArticulo boArticulo = new BOArticulo(daoart, daocat, daostock);
     BOCategorias boCategorias = new BOCategorias(daocat);
@@ -167,9 +168,8 @@ public class BusinessDelegate {
         boUsuario.delete(id);
     }
 
-    public void actualizarSaldo(int cantidad) {
-        boUsuario.actualizarCesta(cantidad);
-    }
+    public void actualizarSaldo(double cantidad){boUsuario.actualizarSaldo(cantidad);}
+
 
     public void actualizarSusc(int id) {
         boUsuario.actualizarSuscr(id);

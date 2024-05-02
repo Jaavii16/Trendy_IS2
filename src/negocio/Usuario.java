@@ -14,7 +14,7 @@ public class Usuario {
     protected String pais;
     protected Suscripciones suscripcion;
     protected String direccion;
-    protected int saldo;
+    protected double saldo;
     protected int id;
     protected int id_cesta;
     protected List<Integer> favoritos;//tiene una lista de los id de los articulos favoritos
@@ -107,11 +107,11 @@ public class Usuario {
         this.direccion = direccion;
     }
 
-    public int getSaldo() {
+    public double getSaldo() {
         return saldo;
     }
 
-    public void setSaldo(int saldo) {
+    public void setSaldo(double saldo) {
         this.saldo = saldo;
     }
 
