@@ -16,7 +16,7 @@ public class SAUsuarioImp extends AbstractSA implements SAUsuario {
 
     @Override
     public TUsuario getUsuario() {
-        return businessDelegate.read() != null ? businessDelegate.read(): null;
+        return businessDelegate.read() != null ? businessDelegate.read() : null;
     }
 
     @Override
