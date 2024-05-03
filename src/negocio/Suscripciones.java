@@ -13,4 +13,13 @@ public enum Suscripciones {
     public double getPrecio() {
         return precio;
     }
+
+    public static double obtenerValorPorOrdinal(int ordinal) {
+        for (Suscripciones suscripcion : Suscripciones.values()) {
+            if (suscripcion.ordinal() == ordinal) {
+                return suscripcion.getPrecio();
+            }
+        }
+        throw new IllegalArgumentException("Ordinal no válido: " + ordinal);
+    }
 }

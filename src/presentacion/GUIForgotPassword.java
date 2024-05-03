@@ -15,8 +15,8 @@ public class GUIForgotPassword extends JDialog{
     }
     public void initGUI(){
         this._user = new JTextField();
-        this._contrasenya = new JTextField();
-        this._repContrasenya = new JTextField();
+        this._contrasenya = new JPasswordField(20);
+        this._repContrasenya = new JPasswordField(20);
 
         this._enter = new JButton("Entrar");
         this._cancel = new JButton("Cancelar");

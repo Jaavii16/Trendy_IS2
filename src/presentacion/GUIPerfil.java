@@ -56,6 +56,7 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
     public GUIPerfil(SAFacade facade, GUIWindow guiWindow) {
         saFacade = facade;
         saFacade.registerObserver(this);
+        tUsuario = saFacade.getUsuario();
         window = guiWindow;
         initGUI();
     }
@@ -117,7 +118,7 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
             JLabel etiqueta = new JLabel(mensaje);
             etiqueta.setAlignmentX(Component.CENTER_ALIGNMENT);
             getContentPane().add(etiqueta);
-            setSize(300, 100);
+            setSize(250, 100);
             setLocation(GUIPerfil.this.getWidth() / 2 + GUIPerfil.this.getLocation().x, GUIPerfil.this.getHeight() / 2 + GUIPerfil.this.getLocation().y);
             setVisible(true);
         }
@@ -272,44 +273,52 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
         texto_ayuda.setLineWrap(true);
         texto_ayuda.setWrapStyleWord(true);
         texto_ayuda.setEditable(false);
+        modPanel.add(texto_ayuda);
 
         addJLabel("Nombre", modPanel);
-        _nombre = new JTextField();
+        _nombre = new JTextField(tUsuario != null ?  tUsuario.getNombre():"");
         _nombre.setAlignmentX(Component.CENTER_ALIGNMENT);
         _nombre.setMaximumSize(new Dimension(200, 20));
         _nombre.setToolTipText("Introduzca su nombre");
         modPanel.add(_nombre);
 
         addJLabel("Apellidos", modPanel);
-        _apellidos = new JTextField();
+        _apellidos = new JTextField(tUsuario != null ?  tUsuario.getApellidos():"");
         _apellidos.setAlignmentX(Component.CENTER_ALIGNMENT);
         _apellidos.setMaximumSize(new Dimension(200, 20));
         _apellidos.setToolTipText("Intruduzca sus apellidos");
         modPanel.add(_apellidos);
 
         addJLabel("Contraseña", modPanel);
-        _contrasenya = new JTextField();
+        _contrasenya = new JPasswordField(20);
         _contrasenya.setAlignmentX(Component.CENTER_ALIGNMENT);
         _contrasenya.setMaximumSize(new Dimension(200, 20));
         _contrasenya.setToolTipText("Introduzca una contraseña");
         modPanel.add(_contrasenya);
 
+        addJLabel("Año nacimiento", modPanel);
+        _anyoNac = new JTextField(tUsuario != null ? tUsuario.getAnyoNacimiento()+"":"");
+        _anyoNac.setAlignmentX(Component.CENTER_ALIGNMENT);
+        _anyoNac.setMaximumSize(new Dimension(200,20));
+        _anyoNac.setToolTipText("Introduzca su año de nacimiento");
+        modPanel.add(_anyoNac);
+
         addJLabel("Correo", modPanel);
-        _correo = new JTextField();
+        _correo = new JTextField(tUsuario != null ?  tUsuario.getCorreo_e() : "");
         _correo.setAlignmentX(Component.CENTER_ALIGNMENT);
         _correo.setMaximumSize(new Dimension(200, 20));
         _correo.setToolTipText("Introduzca su correo electronico");
         modPanel.add(_correo);
 
         addJLabel("Pais", modPanel);
-        _pais = new JTextField();
+        _pais = new JTextField(tUsuario != null ?  tUsuario.getPais() : "");
         _pais.setAlignmentX(Component.CENTER_ALIGNMENT);
         _pais.setMaximumSize(new Dimension(200, 20));
         _pais.setToolTipText("Intruduzca su pais");
         modPanel.add(_pais);
 
         addJLabel("Direccion", modPanel);
-        _direccion = new JTextField();
+        _direccion = new JTextField(tUsuario != null ?  tUsuario.getDireccion() : "");
         _direccion.setAlignmentX(Component.CENTER_ALIGNMENT);
         _direccion.setMaximumSize(new Dimension(200, 20));
         _direccion.setToolTipText("Introduzca su direccion");
@@ -462,9 +471,9 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
                     double nuevoSaldo = this.tUsuario.getSaldo() + cantidad;
                     saldo.setText(nuevoSaldo + "");
                 }
-                VentanaMensaje ventanaMensaje = new VentanaMensaje("Saldo añadido con éxito!");
+                new VentanaMensaje("Saldo añadido con éxito!");
             } catch (RuntimeException exception) {
-                VentanaMensaje ventanaMensaje = new VentanaMensaje("Algo ha fallado...");
+                new VentanaMensaje("Algo ha fallado...");
             } finally {
                 cl.show(cards, "Panel_ini");
             }
@@ -498,9 +507,18 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
         panelSuscr.add(confirmar);
         confirmar.addActionListener((e -> {
             suscripcion.setText(comboBoxSusc.getSelectedItem() + "");
-            saFacade.actualizarSuscr(comboBoxSusc.getSelectedIndex());
-            VentanaMensaje ventanaMensaje = new VentanaMensaje("Suscripcion actualizada con éxito!");
-            cl.show(cards, "Panel_ini");
+            try{
+                if (this.tUsuario != null) {
+                    double nuevoSaldo = this.tUsuario.getSaldo() - Suscripciones.obtenerValorPorOrdinal(comboBoxSusc.getSelectedIndex());
+                    saldo.setText(nuevoSaldo + "");
+                }
+                saFacade.actualizarSuscr((comboBoxSusc.getSelectedIndex()));
+                new VentanaMensaje("Suscripcion actualizada con éxito!");
+            }catch(RuntimeException ex){
+                new VentanaMensaje("Algo ha fallado...");
+            }finally{
+                cl.show(cards, "Panel_ini");
+            }
         }));
     }
 

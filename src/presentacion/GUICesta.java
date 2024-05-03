@@ -87,6 +87,14 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
         }));
         buttonPanel.add(favs);
 
+        //BOTON REALIZAR PEDIDO
+        JButton pedir = new JButton("Realizar pedido");
+        pedir.setAlignmentX(Component.CENTER_ALIGNMENT);
+        pedir.addActionListener((e -> {
+            this.facade.crearPedido();
+        }));
+        buttonPanel.add(pedir);
+
 
         mainPanel.setOpaque(true);
 

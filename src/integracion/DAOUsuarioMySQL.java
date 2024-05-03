@@ -1,6 +1,7 @@
 package integracion;
 
 import database.DBConnection;
+import negocio.Suscripciones;
 import negocio.TUsuario;
 
 import java.sql.Connection;
@@ -192,9 +193,10 @@ public class DAOUsuarioMySQL implements DAOUsuario {
 
     @Override
     public void actualizarSuscripcion(int idUsuario, int susc) {
+        double quitarDeSaldo = Suscripciones.obtenerValorPorOrdinal(susc);
         try (Connection connection = DBConnection.connect()) {
             String sql = "UPDATE Usuarios SET " +
-                    "suscripcion_id =  '+" + susc + "' WHERE ID = " + idUsuario + ";";
+                    "suscripcion_id =  " + susc  + ", saldo = saldo -" + quitarDeSaldo + "WHERE ID = " + idUsuario + ";";
             try {
                 connection.createStatement().executeUpdate(sql);
             } catch (SQLException e) {

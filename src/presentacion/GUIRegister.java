@@ -24,8 +24,8 @@ public class GUIRegister extends JPanel {
     private JLabel direccion;
     private JTextField _nombre;
     private JTextField _apellidos;
-    private JTextField _contrasenya;
-    private JTextField _repContrasenya;
+    private JPasswordField _contrasenya;
+    private JPasswordField _repContrasenya;
     private JTextField _correo;
     private JTextField _pais;
     private JTextField _anyoNac;
@@ -76,14 +76,14 @@ public class GUIRegister extends JPanel {
 
         addJLabel("Contraseña", mainPanel);
 
-        _contrasenya = new JTextField();
+        _contrasenya = new JPasswordField(20);
         _contrasenya.setAlignmentX(Component.CENTER_ALIGNMENT);
         _contrasenya.setToolTipText("Introduzca una contraseña");
         mainPanel.add(_contrasenya);
 
         addJLabel("Confirmar contraseña", mainPanel);
 
-        _repContrasenya = new JTextField();
+        _repContrasenya = new JPasswordField(20);
         _repContrasenya.setAlignmentX(Component.CENTER_ALIGNMENT);
         _repContrasenya.setToolTipText("Repita la contraseña anterior");
         mainPanel.add(_repContrasenya);

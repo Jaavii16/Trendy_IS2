@@ -40,7 +40,7 @@ public class GUIPpalCategorias extends MainGUIPanel implements ActionListener {
         int i = 0;
         while (i < this.categorias.size() && e.getSource() != this.categorias.get(i)) i++;
         if (i < this.categorias.size()) {
-            GUICategoria guicat = new GUICategoria(sa, this.categorias.get(i).getName(), this);
+            GUICategoria guicat = new GUICategoria(sa, this.categorias.get(i).getText(), this);
             this.setVisible(false);
         }
     }

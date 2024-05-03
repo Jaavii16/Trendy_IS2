@@ -48,7 +48,7 @@ public class GUILogin extends JDialog implements AuthObserver {
         contrasenya.setAlignmentX(CENTER_ALIGNMENT);
         mainPanel.add(contrasenya);
 
-        this._contrasenya = new JTextField();
+        this._contrasenya = new JPasswordField(20);
         this._contrasenya.setAlignmentX(CENTER_ALIGNMENT);
         this._contrasenya.setToolTipText("Introduzca su contraseña");
         this._contrasenya.setMaximumSize(new Dimension(200, 20));
