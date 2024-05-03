@@ -52,7 +52,7 @@ public class BOStock {
         XS, S, M, L, XL;
     }
 
-    public String tallatoString(Talla talla) {
+    public static String tallatoString(Talla talla) {
         String c = "";
         switch (talla) {
             case XS -> c = "XS";
