@@ -29,6 +29,8 @@ public class GUIArticulo extends MainGUIPanel {
     private JLabel cat;
     private JLabel subcat;
     private JPanel end;
+    private JComboBox boxcolores;
+    private JComboBox boxtallas;
 
     GUIArticulo(Articulo art, String cat, GUICategoria categoria, SAFacade sa) {
         this.sa = sa;
@@ -87,7 +89,7 @@ public class GUIArticulo extends MainGUIPanel {
         for (BOStock.Talla a : BOStock.Talla.values()) {
             tallas.addElement(BOStock.tallatoString(a));
         }
-        JComboBox boxtallas = new JComboBox(tallas);
+        boxtallas = new JComboBox(tallas);
         talla.add(ltalla);
         talla.add(boxtallas);
         centro.add(talla);
@@ -131,7 +133,7 @@ public class GUIArticulo extends MainGUIPanel {
         for (BOStock.Color a : BOStock.Color.values()) {
             colores.addElement(BOStock.colorToString(a));
         }
-        JComboBox boxcolores = new JComboBox(colores);
+        boxcolores = new JComboBox(colores);
         color.add(c);
         color.add(boxcolores);
         centro.add(color);
@@ -197,8 +199,13 @@ public class GUIArticulo extends MainGUIPanel {
                 cesta = new JButton("Añadir a cesta");
                 cesta.addActionListener((e) -> {
                     //se añade a la cesta (sa)
-                    //sa.addArticuloACesta(art);
-                    //TODO creo q a la cesta deberian añadirse Articulo en vez de TOArticuloEnCesta
+                    TOArticuloEnCesta artEnCesta = new TOArticuloEnCesta();
+                    artEnCesta.setCantidad((int)uds.getValue());
+                    artEnCesta.setColor((BOStock.Color)boxcolores.getSelectedItem());
+                    artEnCesta.setTalla((TOArticuloEnCesta.Talla)boxtallas.getSelectedItem());
+                    artEnCesta.setIdArticulo(art.getID());
+                    //artEnCesta.setFechaAñadido(); //TODO no se como coger la fecha
+                    sa.addArticuloACesta(artEnCesta);
                 });
                 end.add(cesta);
             }
