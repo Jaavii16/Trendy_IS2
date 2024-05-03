@@ -1,14 +1,13 @@
 package presentacion;
 
-import negocio.Articulo;
-import negocio.BOStock;
-import negocio.SAFacade;
-import negocio.TOArticuloEnCesta;
+import negocio.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashSet;
+import java.util.Set;
 
-public class GUIArticulo extends MainGUIPanel {
+public class GUIArticulo extends MainGUIPanel implements Observable<CestaObserver> {
     //Al haberle dado a un artículo de una categoría
 
     private Articulo art;
@@ -32,11 +31,14 @@ public class GUIArticulo extends MainGUIPanel {
     private JComboBox boxcolores;
     private JComboBox boxtallas;
 
+    private Set<CestaObserver> observers;
+
     GUIArticulo(Articulo art, String cat, GUICategoria categoria, SAFacade sa) {
         this.sa = sa;
         this.art = art;
         this.categoria = cat;
         this.guicategoria = categoria;
+        observers = new HashSet<>();
         initGUI();
     }
 
@@ -208,6 +210,9 @@ public class GUIArticulo extends MainGUIPanel {
             artEnCesta.setIdArticulo(art.getID());
             //artEnCesta.setFechaAñadido(); //TODO no se como coger la fecha
             sa.addArticuloACesta(artEnCesta);
+            for(CestaObserver o: observers){
+                o.onArticuloAdded(artEnCesta);
+            }
         });
         end.add(cesta);
 
@@ -216,5 +221,15 @@ public class GUIArticulo extends MainGUIPanel {
             //se añade a favoritos (sa)
         });
         end.add(favoritos);
+    }
+
+    @Override
+    public void addObserver(CestaObserver observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void removeObserver(CestaObserver observer) {
+        observers.remove(observer);
     }
 }
