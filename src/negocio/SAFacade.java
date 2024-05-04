@@ -92,6 +92,14 @@ public class SAFacade {
         return saStock.getStock(id, color, t);
     }
 
+    public int getStockColor(int id, String color) {
+        return saStock.getStockColor(id, color);
+    }
+
+    public int getStockTalla(int id, String t) {
+        return saStock.getStockTalla(id, t);
+    }
+
     public List<String> getCategorias() {
         return saCategorias.getCategorias();
     }

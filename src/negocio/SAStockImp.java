@@ -1,8 +1,8 @@
 package negocio;
 
-public class SAStockImp extends AbstractSA implements SAStock{
+public class SAStockImp extends AbstractSA implements SAStock {
 
-    public SAStockImp(BusinessDelegate b){
+    public SAStockImp(BusinessDelegate b) {
         super(b);
     }
 
@@ -24,5 +24,15 @@ public class SAStockImp extends AbstractSA implements SAStock{
     @Override
     public int getStock(int id, String color, String t) {
         return businessDelegate.getStock(id, color, t);
+    }
+
+    @Override
+    public int getStockColor(int id, String color) {
+        return businessDelegate.getStockColor(id, color);
+    }
+
+    @Override
+    public int getStockTalla(int id, String t) {
+        return businessDelegate.getStockTalla(id, t);
     }
 }

@@ -68,6 +68,14 @@ public class BusinessDelegate {
         return bostock.getStock(id, color, t);
     }
 
+    public int getStockColor(int id, String color) {
+        return bostock.getStockColor(id, color);
+    }
+
+    public int getStockTalla(int id, String t) {
+        return bostock.getStockTalla(id, t);
+    }
+
     public List<String> getCategorias() {
         return this.boCategorias.getCategorias();
     }

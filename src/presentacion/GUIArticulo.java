@@ -189,32 +189,31 @@ public class GUIArticulo extends MainGUIPanel implements Observable<CestaObserve
 
         //CREAR FUNCION PARA COMPROBAR SI ES PREMIUM PORQUE TENEMOS QUE VER QUE EN CASO DE QUE SEA
         //SE PUEDA RESERVAR EL ARTICULO
-        if(sa.esPremium()){
-            if (sa.esExclusivo(art)) {
-                reservar = new JButton("Reservar");
-                reservar.addActionListener((e) -> {
-                    //se reserva
+        //if(sa.esPremium()){
+        if (sa.esExclusivo(art)) {
+            reservar = new JButton("Reservar");
+            reservar.addActionListener((e) -> {
+                //se reserva
 
-                });
-                end.add(reservar);
-            }
+            });
+            end.add(reservar);
+        } else {
+            cesta = new JButton("Añadir a cesta");
+            cesta.addActionListener((e) -> {
+                //se añade a la cesta (sa)
+                TOArticuloEnCesta artEnCesta = new TOArticuloEnCesta();
+                artEnCesta.setCantidad((int) uds.getValue());
+                artEnCesta.setColor((BOStock.Color) boxcolores.getSelectedItem());
+                artEnCesta.setTalla((TOArticuloEnCesta.Talla) boxtallas.getSelectedItem());
+                artEnCesta.setIdArticulo(art.getID());
+                //artEnCesta.setFechaAñadido(); //TODO no se como coger la fecha
+                sa.addArticuloACesta(artEnCesta);
+                for (CestaObserver o : observers) {
+                    o.onArticuloAdded(artEnCesta);
+                }
+            });
+            end.add(cesta);
         }
-
-        cesta = new JButton("Añadir a cesta");
-        cesta.addActionListener((e) -> {
-            //se añade a la cesta (sa)
-            TOArticuloEnCesta artEnCesta = new TOArticuloEnCesta();
-            artEnCesta.setCantidad((int)uds.getValue());
-            artEnCesta.setColor((BOStock.Color)boxcolores.getSelectedItem());
-            artEnCesta.setTalla((TOArticuloEnCesta.Talla)boxtallas.getSelectedItem());
-            artEnCesta.setIdArticulo(art.getID());
-            //artEnCesta.setFechaAñadido(); //TODO no se como coger la fecha
-            sa.addArticuloACesta(artEnCesta);
-            for(CestaObserver o: observers){
-                o.onArticuloAdded(artEnCesta);
-            }
-        });
-        end.add(cesta);
 
         favoritos = new JButton("Añadir a favoritos");
         favoritos.addActionListener(e -> {

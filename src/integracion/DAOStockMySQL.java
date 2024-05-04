@@ -61,4 +61,34 @@ public class DAOStockMySQL implements DAOStock {
             throw new RuntimeException("Error SQL" + e.getErrorCode(), e);
         }
     }
+
+    @Override
+    public int getStockColor(int id, String color) {
+        try (Connection c = DBConnection.connect();
+             Statement st = c.createStatement();
+             ResultSet rs = st.executeQuery("select stock from Stock where ID_articulo = '" + id + "' and Color = '" + color + "'")) {
+            int s = 0;
+            if (rs.next()) {
+                s = rs.getInt("stock");
+            }
+            return s;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error SQL" + e.getErrorCode(), e);
+        }
+    }
+
+    @Override
+    public int getStockTalla(int id, String t) {
+        try (Connection c = DBConnection.connect();
+             Statement st = c.createStatement();
+             ResultSet rs = st.executeQuery("select stock from Stock where ID_articulo = '" + id + "' and Talla = '" + t + "'")) {
+            int s = 0;
+            if (rs.next()) {
+                s = rs.getInt("stock");
+            }
+            return s;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error SQL" + e.getErrorCode(), e);
+        }
+    }
 }

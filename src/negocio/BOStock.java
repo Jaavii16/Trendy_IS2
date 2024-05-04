@@ -102,4 +102,12 @@ public class BOStock {
     public int getStock(int id, String color, String t) {
         return daoStock.getStock(id, color, t);
     }
+
+    public int getStockColor(int id, String color) {
+        return daoStock.getStockColor(id, color);
+    }
+
+    public int getStockTalla(int id, String t) {
+        return daoStock.getStockTalla(id, t);
+    }
 }

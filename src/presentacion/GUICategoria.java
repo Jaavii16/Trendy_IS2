@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 public class GUICategoria extends MainGUIPanel implements ActionListener {
     //Después de haberle dado a una categoría en si
@@ -22,11 +23,20 @@ public class GUICategoria extends MainGUIPanel implements ActionListener {
     private JButton atras;
     private GUIPpalCategorias guippal;
     private JPanel art;
+    private String subcatfiltro;
+    private String colorfiltro;
+    private String preciofiltro;
+    private String tallafiltro;
+    private static String[] valoresprecio = {"10 €", "25 €", "50 €"};
 
     GUICategoria(SAFacade sa, String cat, GUIPpalCategorias ppal) {
         this.sa = sa;
         this.cat = cat;
         this.guippal = ppal;
+        subcatfiltro = "";
+        colorfiltro = "";
+        preciofiltro = "";
+        tallafiltro = "";
         initGUI();
     }
 
@@ -63,46 +73,55 @@ public class GUICategoria extends MainGUIPanel implements ActionListener {
         JMenu mcolor = new JMenu("Color");
         for (BOStock.Color a : BOStock.Color.values()) {
             JCheckBoxMenuItem colores = new JCheckBoxMenuItem(BOStock.colorToString(a));
+            colores.addActionListener((e) -> {
+                colorfiltro = colores.getText();
+            });
             mcolor.add(colores);
         }
         filtro.add(mcolor);
 
-        JPanel precio = new JPanel();
-        precio.setLayout(new BoxLayout(precio, BoxLayout.X_AXIS));
-        JLabel lprecio = new JLabel("Precio máx.");
-        DefaultComboBoxModel<String> precios = new DefaultComboBoxModel<>();
-        precios.addElement("-");
-        precios.addElement("10 €");
-        precios.addElement("25 €");
-        precios.addElement("50 €");
-        JComboBox boxprecios = new JComboBox(precios);
-        precio.add(lprecio);
-        precio.add(boxprecios);
-        filtro.add(precio);
+        JMenu mprecio = new JMenu("Precio max.");
+        for (String a : valoresprecio) {
+            JCheckBoxMenuItem vprecios = new JCheckBoxMenuItem(a);
+            vprecios.addActionListener((e) -> {
+                StringTokenizer tokens = new StringTokenizer(vprecios.getText());
+                preciofiltro = tokens.nextToken();
+            });
+            mprecio.add(vprecios);
+        }
+        filtro.add(mprecio);
 
         JMenu msubcat = new JMenu("Subcategoria");
         for (Articulo.Subcategoria a : Articulo.Subcategoria.values()) {
             JCheckBoxMenuItem subcat = new JCheckBoxMenuItem(Articulo.subcategoriaToString(a));
+            subcat.addActionListener((e) -> {
+                subcatfiltro = subcat.getText();
+            });
             msubcat.add(subcat);
         }
         filtro.add(msubcat);
 
-        JPanel talla = new JPanel();
-        talla.setLayout(new BoxLayout(talla, BoxLayout.X_AXIS));
-        JLabel ltalla = new JLabel("Talla");
-        DefaultComboBoxModel<String> tallas = new DefaultComboBoxModel<>();
-        tallas.addElement("XS");
-        tallas.addElement("S");
-        tallas.addElement("M");
-        tallas.addElement("L");
-        tallas.addElement("XL");
-        JComboBox boxtallas = new JComboBox(tallas);
-        talla.add(ltalla);
-        talla.add(boxtallas);
-        filtro.add(talla);
+        JMenu mtalla = new JMenu("Talla");
+        for (BOStock.Talla a : BOStock.Talla.values()) {
+            JCheckBoxMenuItem talla = new JCheckBoxMenuItem(BOStock.tallatoString(a));
+            talla.addActionListener((e) -> {
+                tallafiltro = talla.getText();
+            });
+            mtalla.add(talla);
+        }
+        filtro.add(mtalla);
 
         fmenuBar.add(filtro);
         arriba.add(fmenuBar);
+
+        //BOTON BUSCAR (aplica los filtros seleccionados)
+        JButton buscar = new JButton("Buscar");
+        buscar.setToolTipText("Aplica los filtros seleccionados");
+        buscar.addActionListener((e) -> {
+            update();
+        });
+        arriba.add(buscar);
+
         pcat.add(arriba, BorderLayout.PAGE_START);
 
         this.setVisible(true);
@@ -115,12 +134,22 @@ public class GUICategoria extends MainGUIPanel implements ActionListener {
             this.setVisible(false);
             GUIArticulo art = new GUIArticulo(a, cat, this, this.sa);
             this.guippal.setViewportView(art);
-
         }
     }
 
     private void añadeBotones() {
         List<Articulo> lista = this.sa.buscaArticulosCategoria(this.cat);
+        if (!preciofiltro.equals("")) {
+            double p = Double.parseDouble(preciofiltro);
+            lista = this.sa.buscaFiltro(lista, Articulo -> Articulo.getPrecio() <= p);
+        }
+        if (!subcatfiltro.equals(""))
+            lista = this.sa.buscaFiltro(lista, Articulo -> Articulo.subcategoriaToString(Articulo.getSubcat()).equals(subcatfiltro));
+        if (!colorfiltro.equals(""))
+            lista = this.sa.buscaFiltro(lista, Articulo -> sa.getStockColor(Articulo.getID(), colorfiltro) > 0);
+        if (!tallafiltro.equals(""))
+            lista = this.sa.buscaFiltro(lista, Articulo -> sa.getStockTalla(Articulo.getID(), tallafiltro) > 0);
+
         for (Articulo a : lista) {
             JButton botonart = new JButton(a.getName());
             botonart.setToolTipText("Muestra este articulo");
@@ -140,6 +169,10 @@ public class GUICategoria extends MainGUIPanel implements ActionListener {
         }
         articulos.clear();
         añadeBotones();
+        this.subcatfiltro = "";
+        this.colorfiltro = "";
+        this.preciofiltro = "";
+        this.tallafiltro = "";
     }
 
     @Override
