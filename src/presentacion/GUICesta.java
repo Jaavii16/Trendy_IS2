@@ -1,13 +1,17 @@
 package presentacion;
 
 import negocio.*;
+import org.apache.commons.lang3.tuple.MutablePair;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Timer;
+import java.util.*;
 
 public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserver, ReservasObserver, AuthObserver {
 
@@ -16,7 +20,7 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
     JPanel mainPanel;
     private HashMap<TOArticuloEnCesta, JPanel> panelMap;
     private HashMap<TOArticuloEnFavoritos, JPanel> favsMap;
-    private HashMap<TOArticuloEnReservas, JPanel> reserMap;
+    private HashMap<TOArticuloEnReservas, JPanel> reserMap; //TODO Pensar si hacer TreeMap con las fechas de lanzamiento
     private JPanel panelCesta;
     private JPanel panelFavs;
     private JPanel panelReservas;
@@ -34,6 +38,8 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
     private CardLayout cl;
     private JPanel buttonPanel;
 
+    private List<MutablePair<JLabel, Duration>> fechasEspera = new ArrayList<>();
+
     public GUICesta(SAFacade saFacade, GUIWindow mainWindow) {
         this.facade = saFacade;
         this.mainWindow = mainWindow;
@@ -41,6 +47,21 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
         panelMap = new HashMap<>();
         favsMap = new HashMap<>();
         reserMap = new HashMap<>();
+        fechasEspera = new ArrayList<>();
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                for (MutablePair<JLabel, Duration> pair : fechasEspera) {
+                    Duration duration = pair.getRight();
+                    duration = duration.minus(1, ChronoUnit.SECONDS);
+                    pair.getLeft().setText(duration.toString().substring(2, duration.toString().length() - 5) + "S");
+                    pair.setRight(duration);
+                }
+                revalidate();
+                repaint();
+            }
+        }, 0, 1000);
         initGui();
     }
 
@@ -239,9 +260,9 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
 
     @Override
     public void onFavoritosChanged(Set<TOArticuloEnFavoritos> favoritos) {
+        panelFavs.removeAll();//elimino lo antiguo
+        favsMap.clear();
         if (favoritos != null) {
-            panelFavs.removeAll();//elimino lo antiguo
-            favsMap.clear();
             Set<TOArticuloEnFavoritos> lista = favoritos;
             if (lista.isEmpty()) {
                 panelFavs.add(mensajeFavs);
@@ -281,7 +302,7 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
     public void onArticuloAdded(TOArticuloEnReservas toArticuloEnReservas) {
         JPanel _articulo = new JPanel();
         _articulo.setLayout(new BoxLayout(_articulo, BoxLayout.X_AXIS));
-        _articulo.add(new JLabel(toArticuloEnReservas.getIdArticulo() + ""));
+        _articulo.add(new JLabel(facade.buscarArticulo(toArticuloEnReservas.getIdArticulo()).getNombre()));
         reserMap.put(toArticuloEnReservas, _articulo);
         panelReservas.add(_articulo);
         JButton delete = new JButton("Eliminar reserva");
@@ -292,6 +313,34 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
             reserMap.remove(toArticuloEnReservas);
             panelReservas.remove(_articulo);
         });
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            Date fechaLanzamiento = sdf.parse(facade.getFechaLanz(toArticuloEnReservas.getIdArticulo()));
+            Date fechaActual = new Date();
+            if (fechaLanzamiento.getTime() - fechaActual.getTime() <= 1000 * 60 * 60 * 24) {
+                JButton añadirACesta = new JButton("Añadir a cesta");
+                añadirACesta.setAlignmentX(Component.RIGHT_ALIGNMENT);
+                _articulo.add(añadirACesta);
+                añadirACesta.addActionListener(e -> {
+                    TOArticuloEnCesta toArticuloEnCesta = new TOArticuloEnCesta();
+                    toArticuloEnCesta.setIdArticulo(toArticuloEnReservas.getIdArticulo());
+                    toArticuloEnCesta.setCantidad(1);
+                    toArticuloEnCesta.setColor(toArticuloEnReservas.getColor());
+                    toArticuloEnCesta.setTalla(toArticuloEnReservas.getTalla());
+                    facade.addArticuloACesta(toArticuloEnCesta);
+                    //TODO Cambiar esto por addReservaACesta para hacer checks de fechas y tal
+                });
+            } else {
+                Duration tiempoEspera = Duration.of(fechaLanzamiento.getTime() - fechaActual.getTime(), ChronoUnit.MILLIS);
+                JLabel espera = new JLabel(tiempoEspera.toString().substring(2, tiempoEspera.toString().length() - 5) + "S");
+                fechasEspera.add(MutablePair.of(espera, tiempoEspera));
+                _articulo.add(espera);
+            }
+
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
         panelReservas.revalidate();
         panelReservas.repaint();
     }
@@ -307,9 +356,10 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
 
     @Override
     public void onReservasChanged(Set<TOArticuloEnReservas> reservas) {
+        panelReservas.removeAll();//elimino lo antiguo
+        reserMap.clear();
+        panelReservas.add(new JLabel("Podrás añadir a la cesta los artículos 1 dia antes de su lanzamiento"));
         if (reservas != null) {
-            panelReservas.removeAll();//elimino lo antiguo
-            reserMap.clear();
             Set<TOArticuloEnReservas> lista = reservas;
             if (lista.isEmpty()) {
                 panelReservas.add(mensajesReservas);
@@ -319,7 +369,7 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
                     TOArticuloEnReservas art = art_it.next();
                     JPanel articulo = new JPanel();
                     articulo.setLayout(new BoxLayout(articulo, BoxLayout.X_AXIS));
-                    articulo.add(new JLabel(art.getIdArticulo() + ""));
+                    articulo.add(new JLabel(facade.buscarArticulo(art.getIdArticulo()).getNombre()));
                     reserMap.put(art, articulo);
                     panelReservas.add(articulo);
                     JButton delete = new JButton("Eliminar reserva");
@@ -330,6 +380,34 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
                         reserMap.remove(art);
                         panelReservas.remove(articulo);
                     }));
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                    try {
+                        Date fechaLanzamiento = sdf.parse(facade.getFechaLanz(art.getIdArticulo()));
+                        Date fechaActual = new Date();
+                        if (fechaLanzamiento.getTime() - fechaActual.getTime() <= 1000 * 60 * 60 * 24) {
+                            JButton añadirACesta = new JButton("Añadir a cesta");
+                            añadirACesta.setAlignmentX(Component.RIGHT_ALIGNMENT);
+                            articulo.add(añadirACesta);
+                            añadirACesta.addActionListener(e -> {
+                                TOArticuloEnCesta toArticuloEnCesta = new TOArticuloEnCesta();
+                                toArticuloEnCesta.setIdArticulo(art.getIdArticulo());
+                                toArticuloEnCesta.setCantidad(1);
+                                toArticuloEnCesta.setColor(art.getColor());
+                                toArticuloEnCesta.setTalla(art.getTalla());
+                                facade.addArticuloACesta(toArticuloEnCesta);
+                                //TODO Cambiar esto por addReservaACesta para hacer checks de fechas y tal
+                            });
+                        } else {
+                            Duration tiempoEspera = Duration.of(fechaLanzamiento.getTime() - fechaActual.getTime(), ChronoUnit.MILLIS);
+                            JLabel espera = new JLabel(tiempoEspera.toString().substring(2, tiempoEspera.toString().length() - 5) + "S");
+                            fechasEspera.add(MutablePair.of(espera, tiempoEspera));
+                            articulo.add(espera);
+                        }
+
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
+                    }
+
                 }
             }
             panelReservas.revalidate();

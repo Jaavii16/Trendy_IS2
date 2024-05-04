@@ -194,7 +194,7 @@ public class GUIWindow extends JFrame {
     private Consumer<MainGUIPanel> buttonAction(Consumer<JScrollPane> changePanel) {
         return (panel) -> {
             if (lastPanel.getLeft() == panel) {
-                if (lastPanel.getRight() <= 1) {
+                if (lastPanel.getRight() < 1) {
                     panel.update();
                 } else {
                     panel.reset();
@@ -264,8 +264,23 @@ public class GUIWindow extends JFrame {
 
 
     public void showPedido(TOPedido lastPedido) {
-        buttonAction(changePanelAction()).accept(userPanel);
-        //TODO userPanel.showPedido(lastPedido);
+        JButton backButton = new JButton("Atras");
+
+        GUIPedido guiPedido = new GUIPedido(lastPedido, backButton);
+
+        backButton.addActionListener(e1 -> Transitions.makeWhiteFadeTransition(guiPedido, homePanel, 1, (from, to) -> {
+            mainPanel.remove(from);
+            mainPanel.add(to, BorderLayout.CENTER);
+            revalidate();
+            repaint();
+        }));
+
+        Transitions.makeWhiteFadeTransition(homePanel, guiPedido, 1, (from, to) -> {
+            mainPanel.remove(from);
+            mainPanel.add(to, BorderLayout.CENTER);
+            revalidate();
+            repaint();
+        });
     }
 
 
@@ -275,13 +290,7 @@ public class GUIWindow extends JFrame {
     }
 
     public void goHome() {
-        Transitions.makeWhiteFadeTransition(lastPanel.getLeft(), homePanel, 1, (from, to) -> {
-            mainPanel.remove(from);
-            mainPanel.add(to, BorderLayout.CENTER);
-            revalidate();
-            repaint();
-        });
-        lastPanel = Pair.of(homePanel, 0);
+        buttonAction(changePanelAction()).accept(homePanel);
     }
 
     public void goToArticulo(int idArticulo) {

@@ -2,20 +2,22 @@ package negocio;
 
 import integracion.DAOPedidos;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 
-public class BOPedido {
+public class BOPedido implements Observable<PedidoObserver> {
 
     private final DAOPedidos daoPedidos;
 
+    private final Set<PedidoObserver> observers;
+
     public BOPedido(DAOPedidos daoPedidos) {
         this.daoPedidos = daoPedidos;
+        this.observers = new HashSet<>();
     }
 
     public void crearPedido(TOACestaUsuario toaCestaUsuario) {
-        daoPedidos.añadirPedido(toaCestaUsuario);
+        var pedido = daoPedidos.añadirPedido(toaCestaUsuario);
+        observers.forEach(observer -> observer.onPedidoCreated(pedido));
     }
 
     public Collection<TOPedido> getAllPedidos() {
@@ -36,10 +38,27 @@ public class BOPedido {
 
     public void cambiarStatus(int ID, TOStatusPedido statusPedido) {
         daoPedidos.cambiarStatus(ID, statusPedido);
+        var pedido = daoPedidos.getPedido(ID);
+        observers.forEach(observer -> observer.onPedidoUpdated(pedido));
     }
 
     public void cancelarPedido(int ID) {
         daoPedidos.cambiarStatus(ID, TOStatusPedido.CANCELADO);
+        var pedido = daoPedidos.getPedido(ID);
+        observers.forEach(observer -> observer.onPedidoUpdated(pedido));
     }
 
+    public TOPedido getLastPedido(int id) {
+        return daoPedidos.getLastPedido(id);
+    }
+
+    @Override
+    public void addObserver(PedidoObserver observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void removeObserver(PedidoObserver observer) {
+        observers.remove(observer);
+    }
 }

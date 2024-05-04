@@ -44,6 +44,10 @@ public class BusinessDelegate {
             boUsuario.addObserver(ao);
             añadido = true;
         }
+        if (observer instanceof PedidoObserver po) {
+            boPedido.addObserver(po);
+            añadido = true;
+        }
         if (!añadido)
             throw new IllegalArgumentException("Observer no soportado");
     }
@@ -250,5 +254,10 @@ public class BusinessDelegate {
 
     public void updateCesta() {
         boCesta.updateCesta(boUsuario.read().getId());
+    }
+
+    public TOPedido getLastPedido() {
+        if (boUsuario.read() == null) return null;
+        return boPedido.getLastPedido(boUsuario.read().getId());
     }
 }

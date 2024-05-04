@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.Properties;
 import java.util.function.Consumer;
 
-public class GUIPerfil extends MainGUIPanel implements AuthObserver {
+public class GUIPerfil extends MainGUIPanel implements AuthObserver, PedidoObserver {
 
     private SAFacade saFacade;
     private TUsuario tUsuario;
@@ -57,6 +57,7 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
     private JComboBox<TOStatusPedido> status;
     private JDatePicker fechaInicio;
     private JDatePicker fechaFin;
+    private CardLayout cl;
 
     public GUIPerfil(SAFacade facade, GUIWindow guiWindow) {
         saFacade = facade;
@@ -111,6 +112,16 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
             panelIni.revalidate();
             panelIni.repaint();
         }
+    }
+
+    @Override
+    public void onPedidoCreated(TOPedido toPedido) {
+        updateTable();
+    }
+
+    @Override
+    public void onPedidoUpdated(TOPedido toPedido) {
+        updateTable();
     }
 
     class VentanaMensaje extends JFrame {
@@ -179,7 +190,7 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
 
 
         //PARA CAMBIAR LOS PANELES CON LOS ACTION LISTENERS
-        CardLayout cl = (CardLayout) (cards.getLayout());
+        cl = (CardLayout) (cards.getLayout());
 
 
         //PANEL PARA AÑADIR LOS BOTONES

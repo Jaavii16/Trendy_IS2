@@ -52,10 +52,6 @@ public class BOUsuario implements Observable<AuthObserver>, CestaObserver {
         daoUsuario.actualizarSaldo(tUsuario.getId(), cantidad);
     }
 
-    public void onHacerPedido(int idCesta) {
-        daoUsuario.actualizarCesta(tUsuario.getId(), idCesta); //TODO Hacer con observer
-    }
-
     public void actualizarSuscr(Suscripciones susc) {
         daoUsuario.actualizarSuscripcion(tUsuario.getId(), susc);
         tUsuario.setSuscripcion(susc);

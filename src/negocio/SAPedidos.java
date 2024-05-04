@@ -17,4 +17,6 @@ public interface SAPedidos {
     void cambiarStatus(int ID, TOStatusPedido TOStatusPedido);
 
     void cancelarPedido(int ID);
+
+    TOPedido getLastPedido();
 }

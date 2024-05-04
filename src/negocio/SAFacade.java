@@ -3,7 +3,6 @@ package negocio;
 import launcher.SAFactory;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -117,14 +116,6 @@ public class SAFacade {
         return saPedidos.getPedidosUsuario();
     }
 
-    public Collection<TOPedido> getPedidosStatus(TOStatusPedido TOStatusPedido) {
-        return saPedidos.getPedidosStatus(TOStatusPedido);
-    }
-
-    public Collection<TOPedido> getPedidosFecha(Date fecha) {
-        return saPedidos.getPedidosFecha(fecha);
-    }
-
     public void cambiarStatus(int ID, TOStatusPedido TOStatusPedido) {
         saPedidos.cambiarStatus(ID, TOStatusPedido);
     }
@@ -134,7 +125,7 @@ public class SAFacade {
     }
 
     public TOPedido getLastPedido() {
-        return null; //TODO
+        return saPedidos.getLastPedido();
     }
 
     //FUNCIONES MÓDULO USUARIO
@@ -223,5 +214,9 @@ public class SAFacade {
 
     public void updateCesta() {
         saCesta.updateCesta();
+    }
+
+    public String getFechaLanz(int id) {
+        return saCategorias.getFechaLanz(id);
     }
 }

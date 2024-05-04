@@ -46,4 +46,9 @@ public class SAPedidosImp extends AbstractSA implements SAPedidos {
         //businessDelegate.cambiarStatus(ID, TOStatusPedido.CANCELADO);
     }
 
+    @Override
+    public TOPedido getLastPedido() {
+        return businessDelegate.getLastPedido();
+    }
+
 }

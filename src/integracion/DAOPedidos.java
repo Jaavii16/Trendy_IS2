@@ -7,7 +7,7 @@ import negocio.TOStatusPedido;
 import java.util.Collection;
 
 public interface DAOPedidos {
-    void añadirPedido(TOACestaUsuario toaCestaUsuario);
+    TOPedido añadirPedido(TOACestaUsuario toaCestaUsuario);
 
     TOPedido getPedido(int ID);
 
@@ -17,5 +17,5 @@ public interface DAOPedidos {
 
     void cambiarStatus(int ID, TOStatusPedido TOStatusPedido);
 
-    TOPedido getLastPedido();
+    TOPedido getLastPedido(int id);
 }

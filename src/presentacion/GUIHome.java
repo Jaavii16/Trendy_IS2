@@ -71,12 +71,13 @@ public class GUIHome extends MainGUIPanel implements AuthObserver {
 
             exclusivos.forEach(articulo -> {
                 JPanel jpArticulo = new JPanel(new BorderLayout());
+                jpArticulo.setBorder(BorderFactory.createLineBorder(Color.BLACK));
                 jpArticulo.add(new JLabel(articulo.getName()), BorderLayout.NORTH);
                 jpArticulo.add(new JLabel(articulo.getPrecio() + "€"), BorderLayout.SOUTH);
                 jpArticulo.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        //mainWindow.showArticulo(articulo); //TODO
+                        mainWindow.goToArticulo(articulo.getID());
                     }
                 });
                 jpArticulosExclusivos.add(jpArticulo);
@@ -112,15 +113,8 @@ public class GUIHome extends MainGUIPanel implements AuthObserver {
 
         JPanel jpLastPedidoStatus = new JPanel(new BorderLayout());
 
-        jpLastPedidoStatus.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                mainWindow.showPedido(lastPedido);
-            }
-        });
-
         jpLastPedidoStatus.add(new JLabel("Estado: " + lastPedido.getStatus()), BorderLayout.WEST);
-        if (lastPedido.getStatus().equals(TOStatusPedido.REPARTO.toString())) {
+        if (lastPedido.getStatus().toUpperCase().equals(TOStatusPedido.REPARTO.toString())) {
             JButton cancelarPedidoButton = new JButton("Cancelar pedido");
             cancelarPedidoButton.addActionListener(e -> {
                 int sel = JOptionPane.showConfirmDialog(this, "Estas seguro de que quieres cancelar el pedido?", "Cancelar pedido", JOptionPane.YES_NO_OPTION);
@@ -141,6 +135,10 @@ public class GUIHome extends MainGUIPanel implements AuthObserver {
             jpLastPedidoStatus.add(cancelarPedidoButton, BorderLayout.EAST);
         }
         jpLastPedido.add(jpLastPedidoStatus);
+
+        JButton irPedidoButton = new JButton("Ver pedido");
+        irPedidoButton.addActionListener(e -> mainWindow.showPedido(lastPedido));
+        jpLastPedido.add(irPedidoButton);
     }
 
     private void updatePedido(JPanel jpLastPedido) {

@@ -15,13 +15,18 @@ import java.util.List;
 public class DAOPedidosMySQL implements DAOPedidos {
 
     @Override
-    public void añadirPedido(TOACestaUsuario toaCestaUsuario) {
+    public TOPedido añadirPedido(TOACestaUsuario toaCestaUsuario) {
         try (Connection connection = DBConnection.connect()) {
             String sql = "INSERT INTO Pedidos (direccion, id_cesta, id_usuario) " + "VALUES (" +
                     "'" + toaCestaUsuario.getToUsuario().getDireccion() + "', "
                     + toaCestaUsuario.getToCesta().getIdCesta() + ", "
                     + toaCestaUsuario.getToUsuario().getId() + ")";
             connection.createStatement().executeUpdate(sql);
+            return new TOPedido()
+                    .setDireccion(toaCestaUsuario.getToUsuario().getDireccion())
+                    .setIDCesta(toaCestaUsuario.getToCesta().getIdCesta())
+                    .setIDUsuario(toaCestaUsuario.getToUsuario().getId())
+                    .setStatus(TOStatusPedido.REPARTO.toString());
         } catch (SQLException e) {
             throw new RuntimeException("Error SQL " + e.getErrorCode(), e);
         }
@@ -114,9 +119,9 @@ public class DAOPedidosMySQL implements DAOPedidos {
     }
 
     @Override
-    public TOPedido getLastPedido() {
+    public TOPedido getLastPedido(int id) {
         try (Connection connection = DBConnection.connect()) {
-            String sql = "SELECT * FROM Pedidos ORDER BY Id DESC LIMIT 1";
+            String sql = "SELECT * FROM Pedidos WHERE id_usuario = " + id + " ORDER BY Id DESC LIMIT 1";
             try (Statement statement = connection.createStatement();
                  ResultSet rS = statement.executeQuery(sql)
             ) {

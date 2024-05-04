@@ -71,9 +71,7 @@ public class BOCesta implements Observable<Observer>, AuthObserver {
         toCesta.getListaArticulos().add(toArticuloEnCesta);
         cestaObservers.forEach(cestaObserver -> cestaObserver.onArticuloAdded(toArticuloEnCesta));
         if (isAuth) {
-
             if (daoCesta.añadirArticulo(toCesta, toArticuloEnCesta)) {
-                toCesta.setIdCesta(daoCesta.abrirCesta(toCesta.getIdUsuario()));
                 cestaObservers.forEach(cestaObserver -> cestaObserver.onCestaChanged(toCesta));
             }
         }
@@ -122,7 +120,7 @@ public class BOCesta implements Observable<Observer>, AuthObserver {
     }
 
     public void addArticuloAFavoritos(TOArticuloEnFavoritos toArticuloEnFavoritos) {
-        if (isAuth) {
+        if (isAuth) { //TODO Comprobar que no esta ya en favoritos
             daoCesta.añadirArticuloAFavoritos(toArticuloEnFavoritos);
             favsObservers.forEach(favsObserver -> favsObserver.onArticuloAdded(toArticuloEnFavoritos));
         } else {
@@ -149,8 +147,9 @@ public class BOCesta implements Observable<Observer>, AuthObserver {
     }
 
     public void addArticuloAReservas(TOArticuloEnReservas artEnReservas) {
-        if (isAuth) {
+        if (isAuth) { //TODO Comprobar que no esta ya en reservas
             daoCesta.añadirArticuloAReservas(artEnReservas);
+            reservasObservers.forEach(reservasObserver -> reservasObserver.onArticuloAdded(artEnReservas));
         } else {
             throw new IllegalStateException("Para añadir a reservas hay que estar autenticado");
         }
@@ -159,6 +158,7 @@ public class BOCesta implements Observable<Observer>, AuthObserver {
     public void removeArticuloDeReservas(TOArticuloEnReservas artEnReservas) {
         if (isAuth) {
             daoCesta.eliminarArticuloDeReservas(artEnReservas);
+            reservasObservers.forEach(reservasObserver -> reservasObserver.onArticuloRemoved(artEnReservas));
         } else {
             throw new IllegalStateException("Para eliminar de reservas hay que estar autenticado");
         }
