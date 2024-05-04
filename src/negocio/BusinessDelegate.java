@@ -161,6 +161,8 @@ public class BusinessDelegate {
     }
 
     public TUsuario create(TUsuario tUsuario) {
+        int idCesta = boCesta.guardarCesta();
+        tUsuario.setIDCesta(idCesta);
         return boUsuario.create(tUsuario);
     }
 

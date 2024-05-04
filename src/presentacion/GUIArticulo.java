@@ -203,14 +203,17 @@ public class GUIArticulo extends MainGUIPanel implements Observable<CestaObserve
                 //se añade a la cesta (sa)
                 TOArticuloEnCesta artEnCesta = new TOArticuloEnCesta();
                 artEnCesta.setCantidad((int) uds.getValue());
-                artEnCesta.setColor((BOStock.Color) boxcolores.getSelectedItem());
-                artEnCesta.setTalla((TOArticuloEnCesta.Talla) boxtallas.getSelectedItem());
+                artEnCesta.setColor(BOStock.Color.valueOf(((String) boxcolores.getSelectedItem()).toUpperCase()));
+                artEnCesta.setTalla(TOArticuloEnCesta.Talla.valueOf(((String) boxtallas.getSelectedItem()).toUpperCase()));
                 artEnCesta.setIdArticulo(art.getID());
                 //artEnCesta.setFechaAñadido(); //TODO no se como coger la fecha
                 sa.addArticuloACesta(artEnCesta);
+                /*
                 for (CestaObserver o : observers) {
                     o.onArticuloAdded(artEnCesta);
                 }
+
+                 */
             });
             end.add(cesta);
         }

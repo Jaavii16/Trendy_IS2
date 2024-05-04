@@ -49,7 +49,7 @@ public class GUIWindow extends JFrame {
 
         setIconAndPlayIntroAnimation();
         initPanels();
-        //autoLogin();
+        autoLogin();
         waitForAnimation();
     }
 
@@ -67,8 +67,15 @@ public class GUIWindow extends JFrame {
             }
 
             if (credentials != null) {
-                saFacade.login(credentials[0], credentials[1]);
+                try {
+                    saFacade.login(credentials[0], credentials[1]);
+                } catch (IllegalArgumentException e) {
+                    File file = new File("login.txt");
+                    file.delete();
+                }
             }
+        } else {
+            saFacade.logout();
         }
     }
 

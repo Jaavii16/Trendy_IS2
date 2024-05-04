@@ -101,7 +101,7 @@ public class BOUsuario implements Observable<AuthObserver>, CestaObserver {
     public void logout() {
         tUsuario = null;
         observers.forEach(observer -> observer.onAuthChanged(false, 0));
-
+        
         File file = new File("login.txt");
         file.delete();
 
@@ -113,8 +113,8 @@ public class BOUsuario implements Observable<AuthObserver>, CestaObserver {
         else throw new IllegalStateException("Tienes que ser admin para poder hacer esto");
     }
 
-    public boolean esPremium(){
-        return tUsuario.getSuscripcion().equals(Suscripciones.PREMIUM.name());
+    public boolean esPremium() {
+        return tUsuario != null && tUsuario.getSuscripcion().equals(Suscripciones.PREMIUM.name());
     }
 
     @Override

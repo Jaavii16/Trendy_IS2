@@ -9,10 +9,12 @@ import org.jdatepicker.impl.UtilDateModel;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Properties;
@@ -52,6 +54,9 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
     private JLabel nombre;
     private JLabel suscripcion;
     private JLabel saldo;
+    private JComboBox<TOStatusPedido> status;
+    private JDatePicker fechaInicio;
+    private JDatePicker fechaFin;
 
     public GUIPerfil(SAFacade facade, GUIWindow guiWindow) {
         saFacade = facade;
@@ -92,11 +97,7 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
         }
         TUsuario tUsu = saFacade.getUsuario();
         if (tUsu != null) {
-//            if (panelIni.getComponentCount() > 1) {
-//                panelIni.remove(nombre);
-//                panelIni.remove(suscripcion);
-//                panelIni.remove(saldo);
-//            }
+            updateTable();
             panelIni.removeAll();
             nombre = new JLabel(tUsu.getNombre() + " " + (tUsu.getApellidos() != null ? tUsu.getApellidos() : " "));
             nombre.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -104,13 +105,12 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
             suscripcion.setAlignmentX(Component.CENTER_ALIGNMENT);
             saldo = new JLabel("Saldo: " + tUsu.getSaldo());
             saldo.setAlignmentX(Component.CENTER_ALIGNMENT);
-            panelIni.add(nombre);
+            panelIni.add(nombre); //TODO Añadir toda la informacion (y si hay tiempo hacerlo bonito)
             panelIni.add(suscripcion);
             panelIni.add(saldo);
             panelIni.revalidate();
             panelIni.repaint();
         }
-        //TODO mirar lo del panel inicial del label con el nombre
     }
 
     class VentanaMensaje extends JFrame {
@@ -119,7 +119,7 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
             etiqueta.setAlignmentX(Component.CENTER_ALIGNMENT);
             getContentPane().add(etiqueta);
             setSize(250, 100);
-            setLocation(GUIPerfil.this.getWidth() / 2 + GUIPerfil.this.getLocation().x, GUIPerfil.this.getHeight() / 2 + GUIPerfil.this.getLocation().y);
+            setLocationRelativeTo(GUIPerfil.this);
             setVisible(true);
         }
     }
@@ -139,7 +139,7 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
 
         //PANEL DE VER MIS PEDIDOS
         JPanel panelPedidos = new JPanel();
-        panelPedidos.setLayout(new BorderLayout());
+        panelPedidos.setLayout(new BoxLayout(panelPedidos, BoxLayout.Y_AXIS));
         panelPedidos.setBorder(new TitledBorder("Pedidos"));
         panelPedidos.setVisible(false);
         panelPedidos.setBorder(BorderFactory.createTitledBorder("Pedidos"));
@@ -267,7 +267,7 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
     }
 
 
-    private void configurarPanelMod(JPanel cards, JPanel modPanel) {
+    private void configurarPanelMod(JPanel cards, JPanel modPanel) { //TODO Poner la informacion antigua en los campos
         JTextArea texto_ayuda = new JTextArea("Complete todos los campos aunque no los quiera cambiar");
         texto_ayuda.setBackground(modPanel.getBackground());
         texto_ayuda.setLineWrap(true);
@@ -276,14 +276,14 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
         modPanel.add(texto_ayuda);
 
         addJLabel("Nombre", modPanel);
-        _nombre = new JTextField(tUsuario != null ?  tUsuario.getNombre():"");
+        _nombre = new JTextField(tUsuario != null ? tUsuario.getNombre() : "");
         _nombre.setAlignmentX(Component.CENTER_ALIGNMENT);
         _nombre.setMaximumSize(new Dimension(200, 20));
         _nombre.setToolTipText("Introduzca su nombre");
         modPanel.add(_nombre);
 
         addJLabel("Apellidos", modPanel);
-        _apellidos = new JTextField(tUsuario != null ?  tUsuario.getApellidos():"");
+        _apellidos = new JTextField(tUsuario != null ? tUsuario.getApellidos() : "");
         _apellidos.setAlignmentX(Component.CENTER_ALIGNMENT);
         _apellidos.setMaximumSize(new Dimension(200, 20));
         _apellidos.setToolTipText("Intruduzca sus apellidos");
@@ -297,28 +297,28 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
         modPanel.add(_contrasenya);
 
         addJLabel("Año nacimiento", modPanel);
-        _anyoNac = new JTextField(tUsuario != null ? tUsuario.getAnyoNacimiento()+"":"");
+        _anyoNac = new JTextField(tUsuario != null ? tUsuario.getAnyoNacimiento() + "" : "");
         _anyoNac.setAlignmentX(Component.CENTER_ALIGNMENT);
-        _anyoNac.setMaximumSize(new Dimension(200,20));
+        _anyoNac.setMaximumSize(new Dimension(200, 20));
         _anyoNac.setToolTipText("Introduzca su año de nacimiento");
         modPanel.add(_anyoNac);
 
         addJLabel("Correo", modPanel);
-        _correo = new JTextField(tUsuario != null ?  tUsuario.getCorreo_e() : "");
+        _correo = new JTextField(tUsuario != null ? tUsuario.getCorreo_e() : "");
         _correo.setAlignmentX(Component.CENTER_ALIGNMENT);
         _correo.setMaximumSize(new Dimension(200, 20));
         _correo.setToolTipText("Introduzca su correo electronico");
         modPanel.add(_correo);
 
         addJLabel("Pais", modPanel);
-        _pais = new JTextField(tUsuario != null ?  tUsuario.getPais() : "");
+        _pais = new JTextField(tUsuario != null ? tUsuario.getPais() : "");
         _pais.setAlignmentX(Component.CENTER_ALIGNMENT);
         _pais.setMaximumSize(new Dimension(200, 20));
         _pais.setToolTipText("Intruduzca su pais");
         modPanel.add(_pais);
 
         addJLabel("Direccion", modPanel);
-        _direccion = new JTextField(tUsuario != null ?  tUsuario.getDireccion() : "");
+        _direccion = new JTextField(tUsuario != null ? tUsuario.getDireccion() : "");
         _direccion.setAlignmentX(Component.CENTER_ALIGNMENT);
         _direccion.setMaximumSize(new Dimension(200, 20));
         _direccion.setToolTipText("Introduzca su direccion");
@@ -359,52 +359,57 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
 
     private void configurarPanelPedidos(JPanel panelPedidos) {
 
-        JPanel filtros = new JPanel(); //TODO Hacer PedidosObserver
+        JPanel panelFiltrosTabla = new JPanel();
+        panelFiltrosTabla.setLayout(new BorderLayout());
+
+        JPanel filtros = new JPanel();
+
+        filtros.setBorder(BorderFactory.createTitledBorder("Filtros"));
 
         filtros.setLayout(new BoxLayout(filtros, BoxLayout.X_AXIS));
 
-        JLabel filtro = new JLabel("Filtros: ");
-        filtros.add(filtro);
-
-        JLabel statusLabel = new JLabel("Status");
+        JLabel statusLabel = new JLabel("Status:");
         filtros.add(statusLabel);
 
-        JComboBox<TOStatusPedido> status = new JComboBox<>(new DefaultComboBoxModel<>(TOStatusPedido.values()));
+        filtros.add(Box.createRigidArea(new Dimension(10, 0)));
+
+        status = new JComboBox<>(new DefaultComboBoxModel<>(TOStatusPedido.values()));
         filtros.add(status);
 
-        JLabel fechaLabel = new JLabel("Fecha inicio");
+        filtros.add(Box.createRigidArea(new Dimension(10, 0)));
+
+        JLabel fechaLabel = new JLabel("Fecha inicio:");
         filtros.add(fechaLabel);
 
-        JDatePicker fechaInicio = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel(), new Properties()), new DateComponentFormatter());
+        filtros.add(Box.createRigidArea(new Dimension(10, 0)));
+
+        fechaInicio = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel(), new Properties()), new DateComponentFormatter());
         filtros.add((Component) fechaInicio);
 
-        JLabel fechaFinLabel = new JLabel("Fecha fin");
+        filtros.add(Box.createRigidArea(new Dimension(10, 0)));
+
+        JLabel fechaFinLabel = new JLabel("Fecha fin:");
         filtros.add(fechaFinLabel);
 
-        JDatePicker fechaFin = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel(), new Properties()), new DateComponentFormatter());
+        filtros.add(Box.createRigidArea(new Dimension(10, 0)));
+
+        fechaFin = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel(), new Properties()), new DateComponentFormatter());
         filtros.add((Component) fechaFin);
 
-        panelPedidos.add(filtros, BorderLayout.PAGE_START);
+        panelFiltrosTabla.add(filtros, BorderLayout.PAGE_START);
 
-        Consumer<Collection<TOPedido>> updateTable = (articulos) -> {
-            pedidosModel.setRowCount(0);
-            articulos.forEach(toPedido -> pedidosModel.addRow(new Object[]{toPedido.getID(), toPedido.getFecha(), toPedido.getStatus(), 0})); //TODO Poner precio
+        status.addActionListener(e -> updateTable());
+
+        fechaInicio.addActionListener(e -> updateTable());
+
+        fechaFin.addActionListener(e -> updateTable());
+
+        pedidosModel = new DefaultTableModel() {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column == 0;
+            }
         };
-
-        status.addActionListener(e -> {
-            TOStatusPedido toStatusPedido = (TOStatusPedido) status.getSelectedItem();
-            Date fechaInicioDate = (Date) fechaInicio.getModel().getValue();
-            Date fechaFinDate = (Date) fechaFin.getModel().getValue();
-            Collection<TOPedido> pedidos = saFacade.getAllPedidos();
-            pedidos = pedidos.stream().filter(toPedido -> fechaInicioDate == null || toPedido.getFecha().after(fechaInicioDate))
-                    .filter(toPedido -> fechaFinDate == null || toPedido.getFecha().before(fechaFinDate))
-                    .filter(toPedido -> toStatusPedido == null || toPedido.getStatus().equals(toStatusPedido.toString()))
-                    .toList();
-            updateTable.accept(pedidos);
-        });
-
-
-        pedidosModel = new DefaultTableModel();
 
         pedidosModel.addColumn("ID");
         pedidosModel.addColumn("Fecha");
@@ -413,38 +418,53 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
 
         JTable tablaPedidos = new JTable(pedidosModel);
 
-        tablaPedidos.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int row = tablaPedidos.getSelectedRow();
-                int idPedido = (int) tablaPedidos.getValueAt(row, 0);
-                TOPedido toPedido = saFacade.getAllPedidos().stream().filter(toPedido1 -> toPedido1.getID() == idPedido).findFirst().orElse(null);
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        tablaPedidos.setDefaultRenderer(Object.class, centerRenderer);
 
-                JButton backButton = new JButton("Atras");
+        tablaPedidos.getColumn("ID").setCellRenderer(new ButtonRenderer());
+        tablaPedidos.getColumn("ID").setCellEditor(new ButtonEditor(new JCheckBox(), v -> {
+            int row = tablaPedidos.getSelectedRow();
+            int idPedido = (Integer) pedidosModel.getValueAt(row, 0);
+            TOPedido toPedido = saFacade.getAllPedidos().stream().filter(toPedido1 -> toPedido1.getID() == idPedido).findFirst().orElse(null);
 
-                GUIPedido guiPedido = new GUIPedido(toPedido, backButton);
+            JButton backButton = new JButton("Atras");
 
-                backButton.addActionListener(e1 -> Transitions.makeWhiteFadeTransition(guiPedido, panelPedidos, 1, (from, to) -> {
-                    mainPanel.remove(from);
-                    mainPanel.add(to, BorderLayout.CENTER);
-                }));
+            GUIPedido guiPedido = new GUIPedido(toPedido, backButton);
 
-                Transitions.makeWhiteFadeTransition(panelPedidos, guiPedido, 1, (from, to) -> {
-                    mainPanel.remove(from);
-                    mainPanel.add(to, BorderLayout.CENTER);
-                });
-            }
-        });
+            backButton.addActionListener(e1 -> Transitions.makeWhiteFadeTransition(guiPedido, panelFiltrosTabla, 1, (from, to) -> {
+                panelPedidos.remove(from);
+                panelPedidos.add(to);
+                revalidate();
+                repaint();
+            }));
+
+            Transitions.makeWhiteFadeTransition(panelFiltrosTabla, guiPedido, 1, (from, to) -> {
+                panelPedidos.remove(from);
+                panelPedidos.add(to);
+                revalidate();
+                repaint();
+            });
+        }));
 
         JScrollPane scrollPane = new JScrollPane(tablaPedidos);
-        panelPedidos.add(scrollPane, BorderLayout.CENTER);
-        /*
-        JButton atras = new JButton("Atras");
-        panelPedidos.add(atras);
-        atras.addActionListener((e -> {
-            cl.show(cards, "Panel_ini");
-        }));
-        */
+        scrollPane.setBorder(BorderFactory.createTitledBorder("Lista de pedidos"));
+        panelFiltrosTabla.add(scrollPane, BorderLayout.CENTER);
+
+        panelPedidos.add(panelFiltrosTabla);
+    }
+
+    private void updateTable() {
+        TOStatusPedido toStatusPedido = (TOStatusPedido) status.getSelectedItem();
+        Date fechaInicioDate = (Date) fechaInicio.getModel().getValue();
+        Date fechaFinDate = (Date) fechaFin.getModel().getValue();
+        Collection<TOPedido> pedidos = saFacade.getPedidosUsuario();
+        pedidos = pedidos.stream().filter(toPedido -> fechaInicioDate == null || toPedido.getFecha().after(fechaInicioDate))
+                .filter(toPedido -> fechaFinDate == null || toPedido.getFecha().before(fechaFinDate))
+                .filter(toPedido -> toStatusPedido == null || toPedido.getStatus().equals(toStatusPedido.toString().toLowerCase()))
+                .toList();
+        pedidosModel.setRowCount(0);
+        pedidos.forEach(toPedido -> pedidosModel.addRow(new Object[]{toPedido.getID(), toPedido.getFecha(), toPedido.getStatus().toUpperCase(), 0})); //TODO Poner precio
     }
 
     private void configurarPanelSaldo(JPanel cards, JPanel panelSaldo) {
@@ -467,7 +487,7 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
             try {
                 saFacade.actualizarSaldo(cantidad);
                 this.tUsuario = saFacade.getUsuario();
-                tUsuario.setSaldo(tUsuario.getSaldo()+cantidad);
+                tUsuario.setSaldo(tUsuario.getSaldo() + cantidad);
                 if (this.tUsuario != null) {
                     double nuevoSaldo = this.tUsuario.getSaldo();
                     saldo.setText(nuevoSaldo + "");
@@ -508,7 +528,7 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
         panelSuscr.add(confirmar);
         confirmar.addActionListener((e -> {
             suscripcion.setText(comboBoxSusc.getSelectedItem() + "");
-            try{
+            try {
                 if (this.saFacade.getUsuario() != null) {
                     double nuevoSaldo = this.saFacade.getUsuario().getSaldo() - Suscripciones.obtenerValorPorOrdinal(comboBoxSusc.getSelectedIndex());
                     saFacade.getUsuario().setSaldo(nuevoSaldo);
@@ -518,9 +538,9 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
                 saFacade.getUsuario().setSuscripcion(Suscripciones.obtenerSuscPorOrdinal(susc));
                 saFacade.actualizarSuscr(susc);
                 new VentanaMensaje("Suscripcion actualizada con éxito!");
-            }catch(RuntimeException ex){
+            } catch (RuntimeException ex) {
                 new VentanaMensaje("Algo ha fallado...");
-            }finally{
+            } finally {
                 cl.show(cards, "Panel_ini");
             }
         }));
@@ -543,5 +563,79 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver {
         return new TUsuario(nombre, apellidos, correo, contrasenya, anyo, sexo, pais, dir, false);
     }
 
+
+    static class ButtonRenderer extends JButton implements TableCellRenderer {
+
+        public ButtonRenderer() {
+            setOpaque(true);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                                                       boolean isSelected, boolean hasFocus, int row, int column) {
+            if (isSelected) {
+                setForeground(table.getSelectionForeground());
+                setBackground(table.getSelectionBackground());
+            } else {
+                setForeground(table.getForeground());
+                setBackground(UIManager.getColor("Button.background"));
+            }
+            setText((value == null) ? "" : value.toString());
+            return this;
+        }
+    }
+
+    static class ButtonEditor extends DefaultCellEditor {
+
+        protected JButton button;
+        private Object label;
+        private boolean isPushed;
+
+        private final Consumer<Void> push;
+
+        public ButtonEditor(JCheckBox checkBox, Consumer<Void> push) {
+            super(checkBox);
+            this.push = push;
+            button = new JButton();
+            button.setOpaque(true);
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    fireEditingStopped();
+                }
+            });
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value,
+                                                     boolean isSelected, int row, int column) {
+            if (isSelected) {
+                button.setForeground(table.getSelectionForeground());
+                button.setBackground(table.getSelectionBackground());
+            } else {
+                button.setForeground(table.getForeground());
+                button.setBackground(table.getBackground());
+            }
+            label = (value == null) ? "" : value;
+            button.setText(String.valueOf(label));
+            isPushed = true;
+            return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            if (isPushed) {
+                push.accept(null);
+            }
+            isPushed = false;
+            return label;
+        }
+
+        @Override
+        public boolean stopCellEditing() {
+            isPushed = false;
+            return super.stopCellEditing();
+        }
+    }
 
 }

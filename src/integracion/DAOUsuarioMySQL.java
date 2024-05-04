@@ -79,7 +79,8 @@ public class DAOUsuarioMySQL implements DAOUsuario {
     public TUsuario crearUsuario(TUsuario usuario) {
         try (Connection connection = DBConnection.connect()) {
             int id = getNuevoId();
-            String sql = "INSERT INTO Usuarios (ID, correo, contraseña, nombre, apellidos, pais, sexo, suscripcion_id, Dirección, saldo, anyo_nacimiento) VALUES ("
+            usuario.setId(id);
+            String sql = "INSERT INTO Usuarios (ID, correo, contraseña, nombre, apellidos, pais, sexo, suscripcion_id, Dirección, saldo, anyo_nacimiento, cesta_activa_id) VALUES ("
                     + id + ", '"
                     + usuario.getCorreo_e() + "', '"
                     + usuario.getContrasenya() + "', '"
@@ -90,7 +91,8 @@ public class DAOUsuarioMySQL implements DAOUsuario {
                     + usuario.getSuscripcion() + "', '"
                     + usuario.getDireccion() + "', "
                     + usuario.getSaldo() + ", "
-                    + usuario.getAnyoNacimiento() + ")";
+                    + usuario.getAnyoNacimiento() + ", "
+                    + usuario.getIDCesta() + ")";
             try {
                 connection.createStatement().executeUpdate(sql);
             } catch (SQLException e) {
@@ -196,7 +198,7 @@ public class DAOUsuarioMySQL implements DAOUsuario {
         double quitarDeSaldo = Suscripciones.obtenerValorPorOrdinal(susc);
         try (Connection connection = DBConnection.connect()) {
             String sql = "UPDATE Usuarios SET " +
-                    "suscripcion_id =  " + susc  + ", saldo = saldo -" + quitarDeSaldo + " WHERE ID = " + idUsuario + ";";
+                    "suscripcion_id =  " + susc + ", saldo = saldo -" + quitarDeSaldo + " WHERE ID = " + idUsuario + ";";
             try {
                 connection.createStatement().executeUpdate(sql);
             } catch (SQLException e) {

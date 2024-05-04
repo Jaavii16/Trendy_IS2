@@ -14,16 +14,6 @@ import java.util.TreeSet;
 public class DAOCestaMySQL implements DAOCesta {
 
     @Override
-    public void abrirCesta(int idUsuario) {
-        try (Connection connection = DBConnection.connect()) {
-            String sql = "INSERT INTO Cesta (ID_usuario) VALUES (" + idUsuario + ")";
-            connection.createStatement().executeUpdate(sql);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Override
     public void añadirArticulo(int idCesta, TOArticuloEnCesta toArticuloEnCesta) {
         try (Connection connection = DBConnection.connect()) {
             String sql = "INSERT INTO ArtículosEnCesta (ID_Cesta, ID_Artículo, Talla, Cantidad, Color) VALUES (" +
@@ -53,21 +43,23 @@ public class DAOCestaMySQL implements DAOCesta {
     @Override
     public TOCesta getCesta(int idUsuario) {
         try (Connection connection = DBConnection.connect()) {
-            String sql = "SELECT ID FROM Cesta WHERE ID_usuario = " + idUsuario;
+
+            String sql = "SELECT cesta_activa_id AS ID FROM Usuarios WHERE ID = " + idUsuario; //TODO Hacer en BusinessDelegate
             var resultSet = connection.createStatement().executeQuery(sql);
-            if (!resultSet.next()) return null; //TODO Pensar si lanzar excepcion o devolver null
+            if (!resultSet.next()) return null;
 
             TOCesta toCesta = new TOCesta().setIdCesta(resultSet.getInt("ID")).setIdUsuario(idUsuario);
 
             TreeSet<TOArticuloEnCesta> listaArticulos = new TreeSet<>();
-            sql = "SELECT ID_Artículo, Talla, Cantidad, Color FROM ArtículosEnCesta WHERE ID_Cesta = " + resultSet.getInt("ID");
+            sql = "SELECT * FROM ArtículosEnCesta WHERE ID_Cesta = " + resultSet.getInt("ID");
             resultSet = connection.createStatement().executeQuery(sql);
             while (resultSet.next()) {
                 listaArticulos.add(new TOArticuloEnCesta()
                         .setIdArticulo(resultSet.getInt("ID_Artículo"))
                         .setTalla(TOArticuloEnCesta.Talla.valueOf(resultSet.getString("Talla")))
                         .setCantidad(resultSet.getInt("Cantidad"))
-                        .setColor(BOStock.Color.valueOf(resultSet.getString("Color"))));
+                        .setColor(BOStock.Color.valueOf(resultSet.getString("Color")))
+                        .setFechaAñadido(resultSet.getTimestamp("Fecha_añadido").toLocalDateTime()));
             }
             return toCesta.setListaArticulos(listaArticulos);
         } catch (SQLException e) {
@@ -109,6 +101,18 @@ public class DAOCestaMySQL implements DAOCesta {
             String sql = "DELETE FROM ArtículosEnFavoritos WHERE ID_usuario = " + toArticuloEnFavoritos.getIdUsuario() + " AND ID_Articulo = " +
                     toArticuloEnFavoritos.getIdArticulo();
             connection.createStatement().executeUpdate(sql);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public int guardaCesta(TOCesta toCesta) {
+        try (Connection connection = DBConnection.connect()) {
+            var resultSet = connection.createStatement().executeQuery("SELECT ID_Cesta AS ID FROM ArtículosEnCesta ORDER BY ID_Cesta DESC LIMIT 1");
+            int idCesta = resultSet.next() ? resultSet.getInt("ID") + 1 : 1;
+            toCesta.getListaArticulos().forEach(toArticuloEnCesta -> añadirArticulo(idCesta, toArticuloEnCesta));
+            return idCesta;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

@@ -2,6 +2,7 @@ package negocio;
 
 import integracion.DAOCesta;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
@@ -50,13 +51,17 @@ public class BOCesta implements Observable<Observer>, AuthObserver {
     }
 
     public void addArticuloACesta(TOArticuloEnCesta toArticuloEnCesta) {
-        if (toCesta.getListaArticulos().add(toArticuloEnCesta)) {
-            cestaObservers.forEach(cestaObserver -> cestaObserver.onArticuloAdded(toArticuloEnCesta));
-            if (isAuth) {
-                daoCesta.añadirArticulo(toCesta.getIdCesta(), toArticuloEnCesta);
-            }
-        } else {
-            throw new IllegalArgumentException("El articulo ya está en la cesta");
+
+        for (TOArticuloEnCesta articulo : toCesta.getListaArticulos()) {
+            if (articulo.equals(toArticuloEnCesta))
+                throw new IllegalArgumentException("El articulo ya está en la cesta");
+        }
+
+        toArticuloEnCesta.setFechaAñadido(LocalDateTime.now());
+        toCesta.getListaArticulos().add(toArticuloEnCesta);
+        cestaObservers.forEach(cestaObserver -> cestaObserver.onArticuloAdded(toArticuloEnCesta));
+        if (isAuth) {
+            daoCesta.añadirArticulo(toCesta.getIdCesta(), toArticuloEnCesta);
         }
     }
 
@@ -87,10 +92,6 @@ public class BOCesta implements Observable<Observer>, AuthObserver {
         this.isAuth = isAuth;
         if (isAuth) {
             toCesta = daoCesta.getCesta(idUsuario);
-            if (toCesta == null) {
-                daoCesta.abrirCesta(idUsuario);
-                toCesta = daoCesta.getCesta(idUsuario);
-            }
             favoritos = daoCesta.getFavoritos(idUsuario);
 
         } else {
@@ -117,5 +118,9 @@ public class BOCesta implements Observable<Observer>, AuthObserver {
         } else {
             throw new IllegalStateException("Para eliminar de favoritos hay que estar autenticado");
         }
+    }
+
+    public int guardarCesta() {
+        return daoCesta.guardaCesta(toCesta);
     }
 }

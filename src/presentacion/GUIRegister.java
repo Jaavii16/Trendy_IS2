@@ -3,7 +3,6 @@ package presentacion;
 import negocio.SAFacade;
 import negocio.SAUsuarioImp;
 import negocio.TUsuario;
-import utils.ViewUtils;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -120,8 +119,8 @@ public class GUIRegister extends JPanel {
 
         _cancel = new JButton("Cancelar");
         _cancel.addActionListener((e) -> {
-            ViewUtils.quit(this);
-            _parent.setVisible(true);
+            _parent.reset();
+
         });
         _cancel.setAlignmentX(Component.CENTER_ALIGNMENT);
         mainPanel.add(_cancel);

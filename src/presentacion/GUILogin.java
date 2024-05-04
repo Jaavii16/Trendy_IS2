@@ -21,10 +21,8 @@ public class GUILogin extends JDialog implements AuthObserver {
     private GUIRegister guiUserRegister;
 
     public GUILogin(SAFacade saFacade) {
-
         this.saFacade = saFacade;
         this.guiUserRegister = new GUIRegister(this, saFacade);
-        saFacade.registerObserver(this);
         initGUI();
     }
 
@@ -77,19 +75,22 @@ public class GUILogin extends JDialog implements AuthObserver {
         this._cancel.addActionListener(e -> {
             setVisible(false);
             setContentPane(mainPanel);
-
+            revalidate();
+            repaint();
+            pack();
+            setLocationRelativeTo(getParent());
         });
 
         this._register.addActionListener(e -> {
-            Transitions.makeWhiteFadeTransition(mainPanel, guiUserRegister, 1, (from, to) -> {
-                this.setContentPane((Container) to);
-                revalidate();
-                repaint();
-                pack(); //TODO Hacer que funcione
-            });
+            this.setContentPane(guiUserRegister);
+            revalidate();
+            repaint();
+            pack();
+            setLocationRelativeTo(getParent());
         });
 
         this._forgotPassword.addActionListener(e -> {
+            //FIXME
             GUIForgotPassword guiForgotPassword = new GUIForgotPassword();
             guiForgotPassword.setVisible(true);
         });
@@ -142,7 +143,7 @@ public class GUILogin extends JDialog implements AuthObserver {
 
     @Override
     public void onAuthChanged(boolean isAuth, int idUsuario) {
-        if (!isAuth)
+        if (!isAuth) //TODO No mostrar si ha sido por logout al hacer autoLogin
             JOptionPane.showMessageDialog(this, "Usuario o contraseña no existente");
         else {
             setVisible(false);
@@ -158,4 +159,11 @@ public class GUILogin extends JDialog implements AuthObserver {
         setVisible(true);
     }
 
+    public void reset() {
+        this.setContentPane(mainPanel);
+        this.revalidate();
+        this.repaint();
+        this.pack();
+        this.setLocationRelativeTo(getParent());
+    }
 }

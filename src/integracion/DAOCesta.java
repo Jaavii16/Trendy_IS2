@@ -7,8 +7,6 @@ import negocio.TOCesta;
 import java.util.Set;
 
 public interface DAOCesta {
-    void abrirCesta(int idUsuario);
-
     void añadirArticulo(int idCesta, TOArticuloEnCesta toArticuloEnCesta);
 
     void eliminarArticulo(int idCesta, TOArticuloEnCesta toArticuloEnCesta);
@@ -20,4 +18,6 @@ public interface DAOCesta {
     void añadirArticuloAFavoritos(TOArticuloEnFavoritos toArticuloEnFavoritos);
 
     void eliminarArticuloDeFavoritos(TOArticuloEnFavoritos toArticuloEnFavoritos);
+
+    int guardaCesta(TOCesta toCesta);
 }

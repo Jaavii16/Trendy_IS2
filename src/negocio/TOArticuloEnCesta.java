@@ -1,20 +1,19 @@
 package negocio;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class TOArticuloEnCesta implements Comparable<TOArticuloEnCesta>, java.io.Serializable {
 
     public enum Talla {
-        S, M, L, XL, XXL
+        XS, S, M, L, XL
     }
 
     private int idArticulo;
     private int cantidad;
     private Talla talla;
     private BOStock.Color color;
-
-    private Date fechaAñadido;
+    private LocalDateTime fechaAñadido;
 
     public int getIdArticulo() {
         return idArticulo;
@@ -28,7 +27,7 @@ public class TOArticuloEnCesta implements Comparable<TOArticuloEnCesta>, java.io
         return talla;
     }
 
-    public Date getFechaAñadido() {
+    public LocalDateTime getFechaAñadido() {
         return fechaAñadido;
     }
 
@@ -51,7 +50,7 @@ public class TOArticuloEnCesta implements Comparable<TOArticuloEnCesta>, java.io
         return this;
     }
 
-    public TOArticuloEnCesta setFechaAñadido(Date fechaAñadido) {
+    public TOArticuloEnCesta setFechaAñadido(LocalDateTime fechaAñadido) {
         this.fechaAñadido = fechaAñadido;
         return this;
     }
@@ -76,8 +75,8 @@ public class TOArticuloEnCesta implements Comparable<TOArticuloEnCesta>, java.io
 
     @Override
     public int compareTo(TOArticuloEnCesta o) {
-        if (fechaAñadido.equals(o.fechaAñadido))
+        if (this.equals(o)) //TODO Pensar si esto va asi o si quitar el equals
             return 0;
-        return fechaAñadido.before(o.fechaAñadido) ? -1 : 1;
+        return fechaAñadido.compareTo(o.fechaAñadido);
     }
 }
