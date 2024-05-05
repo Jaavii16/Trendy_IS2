@@ -49,13 +49,13 @@ public class GUIAdmin extends JPanel {
 
         crearArticulo.setVisible(true);
 
-        this.add(paneles, BorderLayout.CENTER);
 
         JPanel botones = new JPanel();
-
+        this.add(botones, BorderLayout.CENTER);
         bCrearArticulo = new JButton("Crear Articulo");
         bCrearArticulo.setAlignmentX(CENTER_ALIGNMENT);
         bCrearArticulo.addActionListener(e -> {
+            cambiarArticulo.setVisible(false);
             añadirSaldo.setVisible(false);
             cambiarSuscripcion.setVisible(false);
             cambiarEstadoPedido.setVisible(false);
@@ -66,6 +66,7 @@ public class GUIAdmin extends JPanel {
         bAñadirSaldo = new JButton("Añadir Saldo");
         bAñadirSaldo.setAlignmentX(CENTER_ALIGNMENT);
         bAñadirSaldo.addActionListener(e -> {
+            cambiarArticulo.setVisible(false);
             crearArticulo.setVisible(false);
             cambiarSuscripcion.setVisible(false);
             cambiarEstadoPedido.setVisible(false);
@@ -76,6 +77,7 @@ public class GUIAdmin extends JPanel {
         bCambiarSuscripcion = new JButton("Cambiar Suscripcion");
         bCambiarSuscripcion.setAlignmentX(CENTER_ALIGNMENT);
         bCambiarSuscripcion.addActionListener(e -> {
+            cambiarArticulo.setVisible(false);
             crearArticulo.setVisible(false);
             añadirSaldo.setVisible(false);
             cambiarEstadoPedido.setVisible(false);
@@ -86,6 +88,7 @@ public class GUIAdmin extends JPanel {
         bCambiarEstadoPedido = new JButton("Cambiar Estado Pedido");
         bCambiarEstadoPedido.setAlignmentX(CENTER_ALIGNMENT);
         bCambiarEstadoPedido.addActionListener(e -> {
+            cambiarArticulo.setVisible(false);
             crearArticulo.setVisible(false);
             añadirSaldo.setVisible(false);
             cambiarSuscripcion.setVisible(false);
@@ -104,7 +107,7 @@ public class GUIAdmin extends JPanel {
             cambiarEstadoPedido.setVisible(false);
             this.cambiarArticulo.setVisible(true);
         });
-        add(botones, BorderLayout.NORTH);
+        add(botones, BorderLayout.CENTER);
 
     }
 

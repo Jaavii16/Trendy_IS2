@@ -49,7 +49,12 @@ public class GUIRegister extends JPanel {
         setBorder(new EmptyBorder(10, 10, 10, 10));
 
         JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+
+        mainPanel.setLayout(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+
+        c.gridx = 0;
+        c.gridy = 0;
 
         addJLabel("Nombre", mainPanel);
 
@@ -142,7 +147,7 @@ public class GUIRegister extends JPanel {
 
         //setViewportView(mainPanel);
 
-        add(mainPanel);
+        add(mainPanel, c);
 
         revalidate();
         repaint();
