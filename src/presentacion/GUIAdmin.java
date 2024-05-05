@@ -16,7 +16,8 @@ public class GUIAdmin extends JPanel {
     private JPanel añadirSaldo;
     private JPanel cambiarSuscripcion;
     private JPanel cambiarEstadoPedido;
-    private JButton bCrearArticulo, bAñadirSaldo, bCambiarSuscripcion, bCambiarEstadoPedido;
+    private JPanel cambiarArticulo;
+    private JButton bCrearArticulo, bAñadirSaldo, bCambiarSuscripcion, bCambiarEstadoPedido, bcambiarArticulo;
     private SAFacade saFacade;
 
 
@@ -89,10 +90,62 @@ public class GUIAdmin extends JPanel {
         });
         botones.add(bCambiarEstadoPedido);
 
+
+        bcambiarArticulo = new JButton("Cambiar Articulo");
+        bcambiarArticulo.setAlignmentX(CENTER_ALIGNMENT);
+        bcambiarArticulo.addActionListener(e -> {
+            initCambiarArticulo();
+        });
         add(botones, BorderLayout.NORTH);
 
     }
 
+    private void initCambiarArticulo(){
+        cambiarArticulo = new JPanel();
+        cambiarArticulo.setLayout(new BoxLayout(cambiarArticulo, BoxLayout.Y_AXIS));
+        cambiarArticulo.setBorder(new TitledBorder("Cambiar Articulo"));
+        cambiarArticulo.setVisible(false);
+
+        JLabel lId = new JLabel("ID: ");
+        this.cambiarArticulo.add(lId);
+        JTextField tId = new JTextField();
+        tId.setMaximumSize(new Dimension(200, 20));
+        this.cambiarArticulo.add(tId);
+
+        JLabel lNombre = new JLabel("Nombre: ");
+        this.cambiarArticulo.add(lNombre);
+        JTextField tNombre = new JTextField();
+        tNombre.setMaximumSize(new Dimension(200, 20));
+        this.cambiarArticulo.add(tNombre);
+
+        JLabel lSubcategoria = new JLabel("Subcategoria: ");
+        this.cambiarArticulo.add(lSubcategoria);
+        JTextField tSubcategoria = new JTextField();
+        tSubcategoria.setMaximumSize(new Dimension(200, 20));
+        this.cambiarArticulo.add(tSubcategoria);
+
+        JLabel lPrecio = new JLabel("Precio: ");
+        this.cambiarArticulo.add(lPrecio);
+        JTextField tPrecio = new JTextField();
+        tPrecio.setMaximumSize(new Dimension(200, 20));
+        this.cambiarArticulo.add(tPrecio);
+
+        JButton bCambiar = new JButton("Cambiar");
+        this.cambiarArticulo.add(bCambiar);
+        bCambiar.addActionListener(e -> {
+            tArticulo art = new tArticulo(Integer.parseInt(tId.getText()), tNombre.getText(), tSubcategoria.getText(), Double.parseDouble(tPrecio.getText()));
+            saFacade.modificarArticulo(art);
+        });
+
+        JButton bCancelar = new JButton("Cancelar");
+        this.cambiarArticulo.add(bCancelar);
+        bCancelar.addActionListener(e -> {
+            cambiarArticulo.setVisible(false);
+            this.setVisible(true);
+        });
+
+
+    }
     private void initCrearArticulo() {
 
         //TArticulo
