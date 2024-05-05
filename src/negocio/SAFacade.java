@@ -27,6 +27,8 @@ public class SAFacade {
         saPedidos = saFactory.getPedidosSA(businessDelegate);
         saStock = saFactory.getStockSA(businessDelegate);
         saUsuario = saFactory.getUsuarioSA(businessDelegate);
+
+        saCategorias.actualizaExclusivos();
     }
 
     public void registerObserver(Observer observer) {
@@ -55,10 +57,6 @@ public class SAFacade {
         saCategorias.altaArticuloCat(id, fechal, descuento, genero);
     }
 
-    public void bajaArticuloCat(int id) {
-        saCategorias.bajaArticuloCat(id);
-    }
-
     public void modificarArticulo(int id, String fechal, int descuento, String genero) {
         saCategorias.modificarArticulo(id, fechal, descuento, genero);
     }
@@ -73,14 +71,6 @@ public class SAFacade {
 
     public boolean esExclusivo(Articulo art) {
         return saCategorias.esExclusivo(art);
-    }
-
-    public void altaArticuloStock(int id, int s) {
-        saStock.altaArticuloStock(id, s);
-    }
-
-    public void bajaArticuloStock(int id) {
-        saStock.bajaArticuloStock(id);
     }
 
     public void modificarArticuloStock(tStock s) {

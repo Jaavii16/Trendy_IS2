@@ -85,14 +85,44 @@ public class DAOCategoriasMySQL implements DAOCategorias {
             Date todayDate = new Date();
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             String fechaActual = sdf.format(todayDate);
-            ResultSet rs = st.executeQuery("select * from ClasificacionArticulos where Categoria = 'EXCLUSIVOS'");
+            ResultSet rs = st.executeQuery("select * from ClasificacionArticulos where FechaLanzamiento != ''");
             while (rs.next()) {
                 String fechal = rs.getString("FechaLanzamiento");
-                if (fechaMayor(fechal, fechaActual)) {
-                    st.executeUpdate("delete from ClasificacionArticulos where FechaLanzamiento = '" + fechal + "' ");
+                if (fechaMenor(fechal, fechaActual)) {
+                    String cat = rs.getString("Categoria");
+                    if(!cat.toUpperCase().equals("EXCLUSIVOS")){
+                        actualizaCatExclusivosPasados("", cat);
+                    }
+                    borraExclusivosPasados(fechal);
                 }
             }
 
+        } catch (SQLException e) {
+            throw new RuntimeException("Error SQL" + e.getErrorCode(), e);
+        }
+    }
+
+    private void actualizaCatExclusivosPasados(String fecha, String cat){
+        try (Connection connection = database.DBConnection.connect()) {
+            String sql = "UPDATE ClasificacionArticulos SET " +
+                    "'FechaLanzamiento = '" + fecha +
+                    " WHERE Categoria = " + cat ;
+            try {
+                connection.createStatement().executeUpdate(sql);
+            } catch (SQLException e) {
+                throw new RuntimeException("Error SQL " + e.getErrorCode(), e);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error SQL " + e.getErrorCode(), e);
+        }
+    }
+
+    private void borraExclusivosPasados(String fecha){
+        try (Connection c = DBConnection.connect();
+             Statement st = c.createStatement();
+
+        ) {
+            st.executeUpdate("delete from ClasificacionArticulos where FechaLanzamiento = '" + fecha + "' and Categoria = 'EXCLUSIVOS' ");
         } catch (SQLException e) {
             throw new RuntimeException("Error SQL" + e.getErrorCode(), e);
         }
@@ -112,7 +142,7 @@ public class DAOCategoriasMySQL implements DAOCategorias {
         }
     }
 
-    private boolean fechaMayor(String f1, String f2) { //true si f1 >=f2 (f2 es hoy)
+    private boolean fechaMenor(String f1, String f2) { //true si f1 <= f2 (f2 es hoy)
         String year1, month1, day1, year2, month2, day2;
 
         day1 = Character.toString(f1.charAt(0)) + Character.toString(f1.charAt(1));
@@ -126,9 +156,9 @@ public class DAOCategoriasMySQL implements DAOCategorias {
         month2 = Character.toString(f2.charAt(5)) + Character.toString(f2.charAt(6));
         day2 = Character.toString(f2.charAt(8)) + Character.toString(f2.charAt(9));
 
-        return Integer.parseInt(year1) > Integer.parseInt(year2) || (Integer.valueOf(year1).equals(Integer.valueOf(year2))
-                && Integer.parseInt(month1) > Integer.parseInt(month2)) || (Integer.valueOf(year1).equals(Integer.valueOf(year2))
-                && Integer.valueOf(month1).equals(Integer.valueOf(month2)) && Integer.parseInt(day1) >= Integer.parseInt(day2));
+        return Integer.parseInt(year1) < Integer.parseInt(year2) || (Integer.valueOf(year1).equals(Integer.valueOf(year2))
+                && Integer.parseInt(month1) < Integer.parseInt(month2)) || (Integer.valueOf(year1).equals(Integer.valueOf(year2))
+                && Integer.valueOf(month1).equals(Integer.valueOf(month2)) && Integer.parseInt(day1) <= Integer.parseInt(day2));
     }
 
     @Override

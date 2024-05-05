@@ -39,6 +39,7 @@ public class BOArticulo {
     public void bajaArticulo(tArticulo a) {
         if (dao.existeArticulo(a.getID())) {
             cats.bajaArticuloCat(a.getID());
+            stock.bajaArticuloStock(a.getID());
             dao.bajaArticulo(a);
         }
     }
