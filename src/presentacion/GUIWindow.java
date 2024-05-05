@@ -285,8 +285,8 @@ public class GUIWindow extends JFrame {
 
 
     public void showCesta() {
-        buttonAction(changePanelAction()).accept(cestaPanel);
         cestaPanel.showCesta();
+        buttonAction(changePanelAction()).accept(cestaPanel);
     }
 
     public void goHome() {
@@ -294,7 +294,8 @@ public class GUIWindow extends JFrame {
     }
 
     public void goToArticulo(int idArticulo) {
-        buttonAction(changePanelAction()).accept(searchPanel);
         searchPanel.goToArticulo(idArticulo);
+        buttonAction(changePanelAction()).accept(searchPanel);
+
     }
 }

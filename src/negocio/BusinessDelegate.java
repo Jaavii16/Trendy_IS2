@@ -55,7 +55,8 @@ public class BusinessDelegate {
     public void crearPedido() {
         TUsuario toUsuario = boUsuario.read();
         TOACestaUsuario toaCestaUsuario = new TOACestaUsuario(boCesta.getCesta(), toUsuario);
-        boPedido.crearPedido(toaCestaUsuario); //TODO Quitar stock? Comprobar saldo? Comprobar exlusivos?
+        //TODO Quitar stock? Comprobar saldo? Comprobar exlusivos?
+        boPedido.crearPedido(toaCestaUsuario);
         boCesta.abrirCesta(toUsuario.getId());
     }
 

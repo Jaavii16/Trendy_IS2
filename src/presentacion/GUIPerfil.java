@@ -17,6 +17,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 import java.util.function.Consumer;
 
@@ -384,7 +385,10 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver, PedidoObser
 
         filtros.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        status = new JComboBox<>(new DefaultComboBoxModel<>(TOStatusPedido.values()));
+        DefaultComboBoxModel<TOStatusPedido> statusModel = new DefaultComboBoxModel<>();
+        statusModel.addElement(null);
+        statusModel.addAll(List.of(TOStatusPedido.values()));
+        status = new JComboBox<>(statusModel);
         filtros.add(status);
 
         filtros.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -394,7 +398,11 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver, PedidoObser
 
         filtros.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        fechaInicio = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel(), new Properties()), new DateComponentFormatter());
+        Properties i18nStrings = new Properties();
+        i18nStrings.put("text.today", "Hoy");
+
+
+        fechaInicio = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel(), i18nStrings), new DateComponentFormatter());
         filtros.add((Component) fechaInicio);
 
         filtros.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -404,7 +412,7 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver, PedidoObser
 
         filtros.add(Box.createRigidArea(new Dimension(10, 0)));
 
-        fechaFin = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel(), new Properties()), new DateComponentFormatter());
+        fechaFin = new JDatePickerImpl(new JDatePanelImpl(new UtilDateModel(), i18nStrings), new DateComponentFormatter());
         filtros.add((Component) fechaFin);
 
         panelFiltrosTabla.add(filtros, BorderLayout.PAGE_START);

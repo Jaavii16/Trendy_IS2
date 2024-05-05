@@ -13,7 +13,7 @@ public class GUIPedido extends JPanel {
         this.add(new JLabel("IDUsuario: " + toPedido.getIDUsuario()));
         this.add(new JLabel("Status: " + toPedido.getStatus()));
         this.add(new JLabel("Fecha: " + toPedido.getFecha()));
-        //TODO Hacer tabla de articulos en pedido, y hacer crearPedido (importante jeje)
+        //TODO Hacer tabla de articulos en pedido, boton de cancelar, etc
         this.add(backButton);
     }
 }
