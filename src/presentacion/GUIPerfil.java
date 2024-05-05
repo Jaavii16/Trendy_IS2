@@ -483,7 +483,7 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver, PedidoObser
                 .filter(toPedido -> toStatusPedido == null || toPedido.getStatus().equals(toStatusPedido.toString().toLowerCase()))
                 .toList();
         pedidosModel.setRowCount(0);
-        pedidos.forEach(toPedido -> pedidosModel.addRow(new Object[]{toPedido.getID(), toPedido.getFecha(), toPedido.getStatus().toUpperCase(), 0})); //TODO Poner precio
+        pedidos.forEach(toPedido -> pedidosModel.addRow(new Object[]{toPedido.getID(), toPedido.getFecha(), toPedido.getStatus().toUpperCase(), toPedido.getToACestaPedido().getToAArticuloEnPedido().stream().mapToDouble(TOAArticuloEnPedido::getPrecio).sum()}));
     }
 
     private void configurarPanelSaldo(JPanel cards, JPanel panelSaldo) {
@@ -557,9 +557,9 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver, PedidoObser
 
                 JOptionPane.showMessageDialog(this, "Suscripcion actualizada con éxito!");
             } catch (RuntimeException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage());
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             } finally {
-                cl.show(cards, "Panel_ini");
+                cl.show(cards, "Panel_ini"); //TODO Pensar si ponerlo solo si se ha actualizado correctamente
             }
         }));
     }

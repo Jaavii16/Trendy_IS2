@@ -1,13 +1,10 @@
 package integracion;
 
-import negocio.TOACestaUsuario;
+import negocio.TOACestaPedido;
 import negocio.TOPedido;
 import negocio.TOStatusPedido;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -15,18 +12,34 @@ import java.util.List;
 public class DAOPedidosMySQL implements DAOPedidos {
 
     @Override
-    public TOPedido añadirPedido(TOACestaUsuario toaCestaUsuario) {
+    public TOPedido añadirPedido(TOACestaPedido toaCestaPedido) {
         try (Connection connection = DBConnection.connect()) {
             String sql = "INSERT INTO Pedidos (direccion, id_cesta, id_usuario) " + "VALUES (" +
-                    "'" + toaCestaUsuario.getToUsuario().getDireccion() + "', "
-                    + toaCestaUsuario.getToCesta().getIdCesta() + ", "
-                    + toaCestaUsuario.getToUsuario().getId() + ")";
-            connection.createStatement().executeUpdate(sql);
+                    "'" + toaCestaPedido.getToACestaUsuario().getToUsuario().getDireccion() + "', "
+                    + toaCestaPedido.getToACestaUsuario().getToCesta().getIdCesta() + ", "
+                    + toaCestaPedido.getToACestaUsuario().getToUsuario().getId() + ")";
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(sql);
+            int id = statement.executeQuery("SELECT last_insert_id()").getInt(1);
+
+            sql = "INSERT INTO ArtículosEnPedido (ID_pedido, ID_articulo, talla, color, cantidad, precio) VALUES (" +
+                    id + ", ?, ?, ?, ?, ?)";
+            PreparedStatement insertArticuloEnPedido = connection.prepareStatement(sql);
+            for (var toArticuloEnPedido : toaCestaPedido.getToAArticuloEnPedido()) {
+                insertArticuloEnPedido.setInt(1, toArticuloEnPedido.getToArticuloEnCesta().getIdArticulo());
+                insertArticuloEnPedido.setString(2, String.valueOf(toArticuloEnPedido.getToArticuloEnCesta().getTalla()));
+                insertArticuloEnPedido.setString(3, String.valueOf(toArticuloEnPedido.getToArticuloEnCesta().getColor()));
+                insertArticuloEnPedido.setInt(4, toArticuloEnPedido.getToArticuloEnCesta().getCantidad());
+                insertArticuloEnPedido.setDouble(5, toArticuloEnPedido.getPrecio());
+                insertArticuloEnPedido.executeUpdate();
+            }
+
             return new TOPedido()
-                    .setDireccion(toaCestaUsuario.getToUsuario().getDireccion())
-                    .setIDCesta(toaCestaUsuario.getToCesta().getIdCesta())
-                    .setIDUsuario(toaCestaUsuario.getToUsuario().getId())
-                    .setStatus(TOStatusPedido.REPARTO.toString());
+                    .setToACestaPedido(toaCestaPedido)
+                    .setDireccion(toaCestaPedido.getToACestaUsuario().getToUsuario().getDireccion())
+                    .setID(id)
+                    .setStatus(TOStatusPedido.REPARTO.toString().toLowerCase())
+                    .setFecha(new Date(System.currentTimeMillis()));
         } catch (SQLException e) {
             throw new RuntimeException("Error SQL " + e.getErrorCode(), e);
         }
@@ -43,8 +56,7 @@ public class DAOPedidosMySQL implements DAOPedidos {
                     return new TOPedido()
                             .setID(rS.getInt("Id"))
                             .setDireccion(rS.getString("direccion"))
-                            .setIDCesta(rS.getInt("id_cesta"))
-                            .setIDUsuario(rS.getInt("id_usuario"))
+                            .setToACestaPedido() //TODO
                             .setStatus(rS.getString("status"))
                             .setFecha(rS.getDate("fecha"));
                 } else {
@@ -80,8 +92,7 @@ public class DAOPedidosMySQL implements DAOPedidos {
             pedidos.add(new TOPedido()
                     .setID(rS.getInt("Id"))
                     .setDireccion(rS.getString("direccion"))
-                    .setIDCesta(rS.getInt("id_cesta"))
-                    .setIDUsuario(rS.getInt("id_usuario"))
+                    .setToACestaPedido() //TODO
                     .setStatus(rS.getString("status"))
                     .setFecha(rS.getDate("fecha")));
         }
@@ -129,8 +140,7 @@ public class DAOPedidosMySQL implements DAOPedidos {
                     return new TOPedido()
                             .setID(rS.getInt("Id"))
                             .setDireccion(rS.getString("direccion"))
-                            .setIDCesta(rS.getInt("id_cesta"))
-                            .setIDUsuario(rS.getInt("id_usuario"))
+                            .setToACestaPedido() //TODO
                             .setStatus(rS.getString("status"))
                             .setFecha(rS.getDate("fecha"));
                 } else {

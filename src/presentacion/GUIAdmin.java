@@ -154,8 +154,11 @@ public class GUIAdmin extends JPanel {
             this.setVisible(true);
         });
 
+        JPanel wrapper = new JPanel();
+        cambiarArticulo.add(wrapper);
 
     }
+
     private void initCrearArticulo() {
 
         //TArticulo
@@ -238,6 +241,9 @@ public class GUIAdmin extends JPanel {
             crearArticulo.setVisible(false);
             this.setVisible(true);
         });
+
+        JPanel wrapper = new JPanel();
+        crearArticulo.add(wrapper);
     }
 
     private void initAñadirSaldo() {
@@ -271,6 +277,9 @@ public class GUIAdmin extends JPanel {
             añadirSaldo.setVisible(false);
             this.setVisible(true);
         });
+
+        JPanel wrapper = new JPanel();
+        añadirSaldo.add(wrapper);
     }
 
     private void initCambiarSuscripcion() {
@@ -305,6 +314,9 @@ public class GUIAdmin extends JPanel {
             cambiarSuscripcion.setVisible(false);
             this.setVisible(true);
         });
+
+        JPanel wrapper = new JPanel();
+        cambiarSuscripcion.add(wrapper);
     }
 
     private void initCambiarEstadoPedido() {
@@ -337,5 +349,8 @@ public class GUIAdmin extends JPanel {
             cambiarEstadoPedido.setVisible(false);
             this.setVisible(true);
         });
+
+        JPanel wrapper = new JPanel();
+        cambiarEstadoPedido.add(wrapper);
     }
 }

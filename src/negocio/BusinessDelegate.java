@@ -5,7 +5,9 @@ import launcher.DAOFactory;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class BusinessDelegate {
 
@@ -55,8 +57,23 @@ public class BusinessDelegate {
     public void crearPedido() {
         TUsuario toUsuario = boUsuario.read();
         TOACestaUsuario toaCestaUsuario = new TOACestaUsuario(boCesta.getCesta(), toUsuario);
-        //TODO Quitar stock? Comprobar saldo? Comprobar exlusivos?
-        boPedido.crearPedido(toaCestaUsuario);
+        Set<TOAArticuloEnPedido> toaArticuloEnPedidos = toaCestaUsuario.getToCesta().getListaArticulos().stream().map(toArticuloEnCesta -> {
+            tArticulo articulo = boArticulo.buscarArticulo(toArticuloEnCesta.getIdArticulo());
+            return new TOAArticuloEnPedido(toArticuloEnCesta, articulo.getPrecio());
+        }).collect(Collectors.toSet());
+
+        //TODO Quitar stock? Comprobar exlusivos?
+
+        double precioTotal = toaArticuloEnPedidos.stream().mapToDouble(TOAArticuloEnPedido::getPrecio).sum();
+        if (toUsuario.getSaldo() < precioTotal)
+            throw new RuntimeException("Saldo insuficiente");
+
+
+        TOACestaPedido toaCestaPedido = new TOACestaPedido(toaCestaUsuario, toaArticuloEnPedidos);
+        boPedido.crearPedido(toaCestaPedido);
+
+        boUsuario.actualizarSaldo(-precioTotal);
+
         boCesta.abrirCesta(toUsuario.getId());
     }
 

@@ -15,12 +15,8 @@ public class BOPedido implements Observable<PedidoObserver> {
         this.observers = new HashSet<>();
     }
 
-    public void crearPedido(TOACestaUsuario toaCestaUsuario) {
-        int precio = 0;
-        for(TOArticuloEnCesta art: toaCestaUsuario.getToCesta().getListaArticulos()){
-            //TODO los articulos no tienen el precio al que se añadieron
-        }
-        var pedido = daoPedidos.añadirPedido(toaCestaUsuario);
+    public void crearPedido(TOACestaPedido toaCestaPedido) {
+        var pedido = daoPedidos.añadirPedido(toaCestaPedido);
         observers.forEach(observer -> observer.onPedidoCreated(pedido));
     }
 

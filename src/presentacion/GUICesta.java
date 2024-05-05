@@ -355,7 +355,7 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
     }
 
     @Override
-    public void onReservasChanged(Set<TOArticuloEnReservas> reservas) {
+    public void onReservasChanged(Set<TOArticuloEnReservas> reservas) { //TODO Alinear
         panelReservas.removeAll();//elimino lo antiguo
         reserMap.clear();
         panelReservas.add(new JLabel("Podrás añadir a la cesta los artículos 1 dia antes de su lanzamiento"));
