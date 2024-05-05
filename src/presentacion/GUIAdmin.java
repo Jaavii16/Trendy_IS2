@@ -36,6 +36,8 @@ public class GUIAdmin extends JPanel {
         initAñadirSaldo();
         initCambiarSuscripcion();
         initCambiarEstadoPedido();
+        initCambiarArticulo();
+
 
         JPanel paneles = new JPanel();
         paneles.setLayout(new OverlayLayout(paneles));
@@ -43,6 +45,7 @@ public class GUIAdmin extends JPanel {
         paneles.add(añadirSaldo);
         paneles.add(cambiarSuscripcion);
         paneles.add(cambiarEstadoPedido);
+        paneles.add(cambiarArticulo);
 
         crearArticulo.setVisible(true);
 
@@ -93,8 +96,13 @@ public class GUIAdmin extends JPanel {
 
         bcambiarArticulo = new JButton("Cambiar Articulo");
         bcambiarArticulo.setAlignmentX(CENTER_ALIGNMENT);
+        botones.add(bcambiarArticulo);
         bcambiarArticulo.addActionListener(e -> {
-            initCambiarArticulo();
+            crearArticulo.setVisible(false);
+            añadirSaldo.setVisible(false);
+            cambiarSuscripcion.setVisible(false);
+            cambiarEstadoPedido.setVisible(false);
+            this.cambiarArticulo.setVisible(true);
         });
         add(botones, BorderLayout.NORTH);
 
@@ -135,6 +143,8 @@ public class GUIAdmin extends JPanel {
         bCambiar.addActionListener(e -> {
             tArticulo art = new tArticulo(Integer.parseInt(tId.getText()), tNombre.getText(), tSubcategoria.getText(), Double.parseDouble(tPrecio.getText()));
             saFacade.modificarArticulo(art);
+            this.cambiarArticulo.setVisible(false);
+            this.setVisible(true);
         });
 
         JButton bCancelar = new JButton("Cancelar");
