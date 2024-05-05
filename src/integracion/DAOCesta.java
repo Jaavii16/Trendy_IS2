@@ -9,16 +9,15 @@ import java.util.Set;
 
 public interface DAOCesta {
 
-    //Cesta
-    int abrirCesta(int idUsuario);
+    void vaciarCesta(int idUsuario);
 
-    int guardaCesta(TOCesta toCesta);
+    void guardaCesta(int idUsuario, TOCesta toCesta);
 
     TOCesta getCesta(int idUsuario);
 
-    boolean añadirArticulo(TOCesta toCesta, TOArticuloEnCesta toArticuloEnCesta);
+    void añadirArticulo(TOCesta toCesta, TOArticuloEnCesta toArticuloEnCesta);
 
-    boolean eliminarArticulo(TOCesta toCesta, TOArticuloEnCesta toArticuloEnCesta);
+    void eliminarArticulo(TOCesta toCesta, TOArticuloEnCesta toArticuloEnCesta);
 
     //Favoritos
     Set<TOArticuloEnFavoritos> getFavoritos(int idUsuario);
@@ -34,5 +33,6 @@ public interface DAOCesta {
     void eliminarArticuloDeReservas(TOArticuloEnReservas artEnReservas);
 
     Set<TOArticuloEnReservas> getReservas(int idUsuario);
+
 
 }

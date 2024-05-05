@@ -59,6 +59,7 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver, PedidoObser
     private JDatePicker fechaInicio;
     private JDatePicker fechaFin;
     private CardLayout cl;
+    private JPanel panelMod;
 
     public GUIPerfil(SAFacade facade, GUIWindow guiWindow) {
         saFacade = facade;
@@ -99,6 +100,8 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver, PedidoObser
         }
         TUsuario tUsu = saFacade.getUsuario();
         if (tUsu != null) {
+            panelMod.removeAll();
+            configurarPanelMod(cards, panelMod);
             updateTable();
             panelIni.removeAll();
             nombre = new JLabel(tUsu.getNombre() + " " + (tUsu.getApellidos() != null ? tUsu.getApellidos() : " "));
@@ -143,7 +146,7 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver, PedidoObser
 
         //CREAMOS LOS PANELES
         //PANEL DE MODIFICAR DATOS
-        JPanel panelMod = new JPanel();
+        panelMod = new JPanel();
         panelMod.setLayout(new BoxLayout(panelMod, BoxLayout.Y_AXIS));
         panelMod.setVisible(false);
         panelMod.setBorder(BorderFactory.createTitledBorder("Modificar datos"));
@@ -279,23 +282,26 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver, PedidoObser
     }
 
 
-    private void configurarPanelMod(JPanel cards, JPanel modPanel) { //TODO Poner la informacion antigua en los campos
+    private void configurarPanelMod(JPanel cards, JPanel modPanel) {
         JTextArea texto_ayuda = new JTextArea("Complete todos los campos aunque no los quiera cambiar");
         texto_ayuda.setBackground(modPanel.getBackground());
         texto_ayuda.setLineWrap(true);
         texto_ayuda.setWrapStyleWord(true);
         texto_ayuda.setEditable(false);
+        texto_ayuda.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
         modPanel.add(texto_ayuda);
 
         addJLabel("Nombre", modPanel);
-        _nombre = new JTextField(saFacade.getUsuario() != null ? saFacade.getUsuario().getNombre() : "");
+        _nombre = new JTextField();
+        _nombre.setText(saFacade.getUsuario() != null ? saFacade.getUsuario().getNombre() : "");
         _nombre.setAlignmentX(Component.CENTER_ALIGNMENT);
         _nombre.setMaximumSize(new Dimension(200, 20));
         _nombre.setToolTipText("Introduzca su nombre");
         modPanel.add(_nombre);
 
         addJLabel("Apellidos", modPanel);
-        _apellidos = new JTextField(saFacade.getUsuario() != null ? saFacade.getUsuario().getApellidos() : "");
+        _apellidos = new JTextField();
+        _apellidos.setText(saFacade.getUsuario() != null ? saFacade.getUsuario().getApellidos() : "");
         _apellidos.setAlignmentX(Component.CENTER_ALIGNMENT);
         _apellidos.setMaximumSize(new Dimension(200, 20));
         _apellidos.setToolTipText("Intruduzca sus apellidos");
@@ -309,28 +315,32 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver, PedidoObser
         modPanel.add(_contrasenya);
 
         addJLabel("Año nacimiento", modPanel);
-        _anyoNac = new JTextField(saFacade.getUsuario() != null ? saFacade.getUsuario().getAnyoNacimiento() + "" : "");
+        _anyoNac = new JTextField();
+        _anyoNac.setText(saFacade.getUsuario() != null ? saFacade.getUsuario().getAnyoNacimiento() + "" : "");
         _anyoNac.setAlignmentX(Component.CENTER_ALIGNMENT);
         _anyoNac.setMaximumSize(new Dimension(200, 20));
         _anyoNac.setToolTipText("Introduzca su año de nacimiento");
         modPanel.add(_anyoNac);
 
         addJLabel("Correo", modPanel);
-        _correo = new JTextField(saFacade.getUsuario() != null ? saFacade.getUsuario().getCorreo_e() : "");
+        _correo = new JTextField();
+        _correo.setText(saFacade.getUsuario() != null ? saFacade.getUsuario().getCorreo_e() : "");
         _correo.setAlignmentX(Component.CENTER_ALIGNMENT);
         _correo.setMaximumSize(new Dimension(200, 20));
         _correo.setToolTipText("Introduzca su correo electronico");
         modPanel.add(_correo);
 
         addJLabel("Pais", modPanel);
-        _pais = new JTextField(saFacade.getUsuario() != null ? saFacade.getUsuario().getPais() : "");
+        _pais = new JTextField();
+        _pais.setText(saFacade.getUsuario() != null ? saFacade.getUsuario().getPais() : "");
         _pais.setAlignmentX(Component.CENTER_ALIGNMENT);
         _pais.setMaximumSize(new Dimension(200, 20));
         _pais.setToolTipText("Intruduzca su pais");
         modPanel.add(_pais);
 
         addJLabel("Direccion", modPanel);
-        _direccion = new JTextField(saFacade.getUsuario() != null ? saFacade.getUsuario().getDireccion() : "");
+        _direccion = new JTextField();
+        _direccion.setText(saFacade.getUsuario() != null ? saFacade.getUsuario().getDireccion() : "");
         _direccion.setAlignmentX(Component.CENTER_ALIGNMENT);
         _direccion.setMaximumSize(new Dimension(200, 20));
         _direccion.setToolTipText("Introduzca su direccion");
@@ -367,6 +377,8 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver, PedidoObser
         });
         _confirmar.setAlignmentX(Component.CENTER_ALIGNMENT);
         modPanel.add(_confirmar);
+
+        modPanel.add(new JPanel());
     }
 
     private void configurarPanelPedidos(JPanel panelPedidos) {
@@ -449,7 +461,7 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver, PedidoObser
 
             JButton backButton = new JButton("Atras");
 
-            GUIPedido guiPedido = new GUIPedido(toPedido, backButton);
+            GUIPedido guiPedido = new GUIPedido(saFacade, window, toPedido, backButton);
 
             backButton.addActionListener(e1 -> Transitions.makeWhiteFadeTransition(guiPedido, panelFiltrosTabla, 1, (from, to) -> {
                 panelPedidos.remove(from);
@@ -483,7 +495,7 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver, PedidoObser
                 .filter(toPedido -> toStatusPedido == null || toPedido.getStatus().equals(toStatusPedido.toString().toLowerCase()))
                 .toList();
         pedidosModel.setRowCount(0);
-        pedidos.forEach(toPedido -> pedidosModel.addRow(new Object[]{toPedido.getID(), toPedido.getFecha(), toPedido.getStatus().toUpperCase(), toPedido.getToACestaPedido().getToAArticuloEnPedido().stream().mapToDouble(TOAArticuloEnPedido::getPrecio).sum()}));
+        pedidos.forEach(toPedido -> pedidosModel.addRow(new Object[]{toPedido.getID(), toPedido.getFecha(), toPedido.getStatus().toUpperCase(), toPedido.getTOAArticulosEnPedido().getArticulosSet().stream().mapToDouble(TOAArticuloEnPedido::getPrecio).sum()}));
     }
 
     private void configurarPanelSaldo(JPanel cards, JPanel panelSaldo) {
@@ -511,7 +523,6 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver, PedidoObser
                     double nuevoSaldo = this.tUsuario.getSaldo();
                     saldo.setText(nuevoSaldo + "");
                 }
-                //new VentanaMensaje("Saldo añadido con éxito!");
                 JOptionPane.showMessageDialog(this, "Saldo añadido con éxito!");
             } catch (RuntimeException exception) {
                 new VentanaMensaje("Algo ha fallado...");
@@ -539,6 +550,16 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver, PedidoObser
         comboBoxSusc.setMaximumSize(panelSuscr.getMaximumSize());
         comboBoxSusc.setAlignmentX(Component.CENTER_ALIGNMENT);
         panelSuscr.add(comboBoxSusc);
+
+        JTextArea info = new JTextArea("INFORMACIÓN:\n\n" +
+                "NORMAL: Funcionalidades por defecto\n" +
+                "PRIME: No se pagará el envío, con valor de 5€\n" +
+                "PREMIUM: Podrá reservar artículos exclusivos y comprarlos las 24h antes de su lanzamiento");
+        info.setBackground(null);
+        info.setEditable(false);
+        panelSuscr.add(info);
+
+        JPanel panelVacio = new JPanel();
 
         CardLayout cl = (CardLayout) (cards.getLayout());
 

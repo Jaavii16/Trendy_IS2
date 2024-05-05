@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class BOCesta implements Observable<Observer>, AuthObserver {
+public class BOCesta implements Observable<Observer> {
 
     private final DAOCesta daoCesta;
 
@@ -60,6 +60,17 @@ public class BOCesta implements Observable<Observer>, AuthObserver {
         return daoCesta.getCesta(toCesta.getIdUsuario());
     }
 
+    public void guardarCesta(int idUsuario) {
+        daoCesta.guardaCesta(idUsuario, toCesta);
+    }
+
+
+    public void vaciarCesta(int idUsuario) {
+        daoCesta.vaciarCesta(idUsuario);
+        toCesta = new TOCesta().setListaArticulos(new TreeSet<>()).setIdUsuario(idUsuario);
+        cestaObservers.forEach(cestaObserver -> cestaObserver.onCestaChanged(toCesta));
+    }
+
     public void addArticuloACesta(TOArticuloEnCesta toArticuloEnCesta) {
 
         for (TOArticuloEnCesta articulo : toCesta.getListaArticulos()) {
@@ -71,9 +82,7 @@ public class BOCesta implements Observable<Observer>, AuthObserver {
         toCesta.getListaArticulos().add(toArticuloEnCesta);
         cestaObservers.forEach(cestaObserver -> cestaObserver.onArticuloAdded(toArticuloEnCesta));
         if (isAuth) {
-            if (daoCesta.añadirArticulo(toCesta, toArticuloEnCesta)) {
-                cestaObservers.forEach(cestaObserver -> cestaObserver.onCestaChanged(toCesta));
-            }
+            daoCesta.añadirArticulo(toCesta, toArticuloEnCesta);
         }
     }
 
@@ -93,30 +102,11 @@ public class BOCesta implements Observable<Observer>, AuthObserver {
         if (toCesta.getListaArticulos().remove(toArticuloEnCesta)) {
             cestaObservers.forEach(cestaObserver -> cestaObserver.onArticuloRemoved(toArticuloEnCesta));
             if (isAuth) {
-                if (daoCesta.eliminarArticulo(toCesta, toArticuloEnCesta)) {
-                    toCesta.setIdCesta(0);
-                    cestaObservers.forEach(cestaObserver -> cestaObserver.onCestaChanged(toCesta));
-                }
+                daoCesta.eliminarArticulo(toCesta, toArticuloEnCesta);
             }
         } else {
             throw new IllegalArgumentException("El articulo no está en la cesta");
         }
-    }
-
-    public void onAuthChanged(boolean isAuth, int idUsuario) {
-        this.isAuth = isAuth;
-        if (isAuth) {
-            toCesta = daoCesta.getCesta(idUsuario);
-            favoritos = daoCesta.getFavoritos(idUsuario);
-            reservas = daoCesta.getReservas(idUsuario);
-        } else {
-            toCesta = new TOCesta().setListaArticulos(new TreeSet<>());
-            favoritos = null;
-            reservas = null;
-        }
-        cestaObservers.forEach(cestaObserver -> cestaObserver.onCestaChanged(toCesta));
-        favsObservers.forEach(favsObserver -> favsObserver.onFavoritosChanged(favoritos));
-        reservasObservers.forEach(reservasObserver -> reservasObserver.onReservasChanged(reservas));
     }
 
     public void addArticuloAFavoritos(TOArticuloEnFavoritos toArticuloEnFavoritos) {
@@ -137,18 +127,9 @@ public class BOCesta implements Observable<Observer>, AuthObserver {
         }
     }
 
-    public int guardarCesta() {
-        return daoCesta.guardaCesta(toCesta);
-    }
-
-    public void abrirCesta(int id) {
-        toCesta = new TOCesta().setIdUsuario(id).setListaArticulos(new TreeSet<>());
-        cestaObservers.forEach(cestaObserver -> cestaObserver.onCestaChanged(toCesta));
-    }
-
     public void addArticuloAReservas(TOArticuloEnReservas artEnReservas) {
         if (isAuth) { //TODO Comprobar que no esta ya en reservas
-            if(!this.reservas.contains(artEnReservas)){
+            if (!this.reservas.contains(artEnReservas)) {
                 daoCesta.añadirArticuloAReservas(artEnReservas);
                 reservasObservers.forEach(reservasObserver -> reservasObserver.onArticuloAdded(artEnReservas));
             }
@@ -166,16 +147,18 @@ public class BOCesta implements Observable<Observer>, AuthObserver {
         }
     }
 
-    public void updateCesta(int id) {
+    public void updateCesta(boolean isAuth, int id) {
+        this.isAuth = isAuth;
         if (isAuth) {
             toCesta = daoCesta.getCesta(id);
             favoritos = daoCesta.getFavoritos(id);
             reservas = daoCesta.getReservas(id);
         } else {
             toCesta = new TOCesta().setListaArticulos(new TreeSet<>());
-            favoritos = null;
-            reservas = null;
+            favoritos = new HashSet<>();
+            reservas = new HashSet<>();
         }
+
         cestaObservers.forEach(cestaObserver -> cestaObserver.onCestaChanged(toCesta));
         favsObservers.forEach(favsObserver -> favsObserver.onFavoritosChanged(favoritos));
         reservasObservers.forEach(reservasObserver -> reservasObserver.onReservasChanged(reservas));

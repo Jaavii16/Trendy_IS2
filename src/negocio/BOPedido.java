@@ -15,9 +15,9 @@ public class BOPedido implements Observable<PedidoObserver> {
         this.observers = new HashSet<>();
     }
 
-    public void crearPedido(TOACestaPedido toaCestaPedido) {
-        var pedido = daoPedidos.añadirPedido(toaCestaPedido);
-        observers.forEach(observer -> observer.onPedidoCreated(pedido));
+    public void crearPedido(TOPedido toPedido) {
+        daoPedidos.añadirPedido(toPedido);
+        observers.forEach(observer -> observer.onPedidoCreated(toPedido));
     }
 
     public Collection<TOPedido> getAllPedidos() {

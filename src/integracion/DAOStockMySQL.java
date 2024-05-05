@@ -34,13 +34,11 @@ public class DAOStockMySQL implements DAOStock {
 
     @Override
     public void modificarArticuloStock(tStock s) {
-        try (Connection c = DBConnection.connect();
-             Statement st = c.createStatement();
-
-        ) {
-
-            st.executeUpdate("update Stock set  ('" + s.getId() + "', '" + s.getColor() + "' , '" + s.getTalla() + "', '" + s.getColor() + "')");
-
+        try (Connection c = DBConnection.connect()) {
+            String sql = "UPDATE Stock SET " +
+                    "stock = '" + s.getStock() +
+                    "' WHERE ID_articulo = '" + s.getId() + "' and Talla = '" + s.getTalla() + "' and Color = '" + s.getColor() + "'";
+            c.createStatement().executeUpdate(sql);
         } catch (SQLException e) {
             throw new RuntimeException("Error SQL" + e.getErrorCode(), e);
         }

@@ -1,31 +1,31 @@
 package integracion;
 
-import negocio.TOACestaPedido;
-import negocio.TOPedido;
-import negocio.TOStatusPedido;
+import negocio.*;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class DAOPedidosMySQL implements DAOPedidos {
 
     @Override
-    public TOPedido añadirPedido(TOACestaPedido toaCestaPedido) {
+    public void añadirPedido(TOPedido toPedido) {
         try (Connection connection = DBConnection.connect()) {
-            String sql = "INSERT INTO Pedidos (direccion, id_cesta, id_usuario) " + "VALUES (" +
-                    "'" + toaCestaPedido.getToACestaUsuario().getToUsuario().getDireccion() + "', "
-                    + toaCestaPedido.getToACestaUsuario().getToCesta().getIdCesta() + ", "
-                    + toaCestaPedido.getToACestaUsuario().getToUsuario().getId() + ")";
+            String sql = "INSERT INTO Pedidos (direccion, id_usuario) " + "VALUES (" +
+                    "'" + toPedido.getDireccion() + "', "
+                    + toPedido.getIDUsuario() + ")";
             Statement statement = connection.createStatement();
             statement.executeUpdate(sql);
-            int id = statement.executeQuery("SELECT last_insert_id()").getInt(1);
+
+            var rsId = statement.executeQuery("SELECT last_insert_id()");
+            rsId.next();
+            int id = rsId.getInt(1);
+
+            toPedido.setID(id);
 
             sql = "INSERT INTO ArtículosEnPedido (ID_pedido, ID_articulo, talla, color, cantidad, precio) VALUES (" +
                     id + ", ?, ?, ?, ?, ?)";
             PreparedStatement insertArticuloEnPedido = connection.prepareStatement(sql);
-            for (var toArticuloEnPedido : toaCestaPedido.getToAArticuloEnPedido()) {
+            for (var toArticuloEnPedido : toPedido.getTOAArticulosEnPedido().getArticulosSet()) {
                 insertArticuloEnPedido.setInt(1, toArticuloEnPedido.getToArticuloEnCesta().getIdArticulo());
                 insertArticuloEnPedido.setString(2, String.valueOf(toArticuloEnPedido.getToArticuloEnCesta().getTalla()));
                 insertArticuloEnPedido.setString(3, String.valueOf(toArticuloEnPedido.getToArticuloEnCesta().getColor()));
@@ -33,13 +33,6 @@ public class DAOPedidosMySQL implements DAOPedidos {
                 insertArticuloEnPedido.setDouble(5, toArticuloEnPedido.getPrecio());
                 insertArticuloEnPedido.executeUpdate();
             }
-
-            return new TOPedido()
-                    .setToACestaPedido(toaCestaPedido)
-                    .setDireccion(toaCestaPedido.getToACestaUsuario().getToUsuario().getDireccion())
-                    .setID(id)
-                    .setStatus(TOStatusPedido.REPARTO.toString().toLowerCase())
-                    .setFecha(new Date(System.currentTimeMillis()));
         } catch (SQLException e) {
             throw new RuntimeException("Error SQL " + e.getErrorCode(), e);
         }
@@ -56,7 +49,7 @@ public class DAOPedidosMySQL implements DAOPedidos {
                     return new TOPedido()
                             .setID(rS.getInt("Id"))
                             .setDireccion(rS.getString("direccion"))
-                            .setToACestaPedido() //TODO
+                            .setTOAArticulosEnPedido(getTOACestaPedido(connection.createStatement().executeQuery("SELECT * FROM ArtículosEnPedido WHERE ID_pedido = " + ID)))
                             .setStatus(rS.getString("status"))
                             .setFecha(rS.getDate("fecha"));
                 } else {
@@ -70,6 +63,22 @@ public class DAOPedidosMySQL implements DAOPedidos {
         }
     }
 
+    private TOArticulosEnPedido getTOACestaPedido(ResultSet rS) throws SQLException {
+        Set<TOAArticuloEnPedido> toaArticuloEnPedidos = new HashSet<>();
+        while (rS.next()) {
+            toaArticuloEnPedidos.add(new TOAArticuloEnPedido(
+                    new TOArticuloEnCesta()
+                            .setIdArticulo(rS.getInt("ID_articulo"))
+                            .setTalla(BOStock.Talla.valueOf(rS.getString("talla")))
+                            .setColor(BOStock.Color.valueOf(rS.getString("color")))
+                            .setCantidad(rS.getInt("cantidad")),
+                    rS.getDouble("precio"))
+            );
+        }
+        return new TOArticulosEnPedido(toaArticuloEnPedidos);
+
+    }
+
     @Override
     public Collection<TOPedido> getAllPedidos() {
         try (Connection connection = DBConnection.connect()) {
@@ -77,7 +86,7 @@ public class DAOPedidosMySQL implements DAOPedidos {
             try (Statement statement = connection.createStatement();
                  ResultSet rS = statement.executeQuery(sql)
             ) {
-                return getTOPedidosList(rS);
+                return getPedidoList(rS, connection);
             } catch (SQLException e) {
                 throw new RuntimeException("Error SQL " + e.getErrorCode(), e);
             }
@@ -86,13 +95,13 @@ public class DAOPedidosMySQL implements DAOPedidos {
         }
     }
 
-    private List<TOPedido> getTOPedidosList(ResultSet rS) throws SQLException {
+    private List<TOPedido> getPedidoList(ResultSet rS, Connection connection) throws SQLException {
         List<TOPedido> pedidos = new ArrayList<>();
         while (rS.next()) {
-            pedidos.add(new TOPedido()
-                    .setID(rS.getInt("Id"))
+            pedidos.add(new TOPedido().setIDUsuario(rS.getInt("id_usuario"))
                     .setDireccion(rS.getString("direccion"))
-                    .setToACestaPedido() //TODO
+                    .setID(rS.getInt("Id"))
+                    .setTOAArticulosEnPedido(getTOACestaPedido(connection.createStatement().executeQuery("SELECT * FROM ArtículosEnPedido WHERE ID_pedido = " + rS.getInt("Id"))))
                     .setStatus(rS.getString("status"))
                     .setFecha(rS.getDate("fecha")));
         }
@@ -106,7 +115,7 @@ public class DAOPedidosMySQL implements DAOPedidos {
             try (Statement statement = connection.createStatement();
                  ResultSet rS = statement.executeQuery(sql)
             ) {
-                return getTOPedidosList(rS);
+                return getPedidoList(rS, connection);
             } catch (SQLException e) {
                 throw new RuntimeException("Error SQL " + e.getErrorCode(), e);
             }
@@ -140,7 +149,8 @@ public class DAOPedidosMySQL implements DAOPedidos {
                     return new TOPedido()
                             .setID(rS.getInt("Id"))
                             .setDireccion(rS.getString("direccion"))
-                            .setToACestaPedido() //TODO
+                            .setIDUsuario(rS.getInt("id_usuario"))
+                            .setTOAArticulosEnPedido(getTOACestaPedido(connection.createStatement().executeQuery("SELECT * FROM ArtículosEnPedido WHERE ID_pedido = " + rS.getInt("Id"))))
                             .setStatus(rS.getString("status"))
                             .setFecha(rS.getDate("fecha"));
                 } else {

@@ -27,7 +27,6 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
 
     private static final String PANELCESTA = "Panel_cesta";
     private static final String PANELFAVORITOS = "Panel_favoritos";
-
     private static final String PANELRESERVAS = "Panel_reservas";
 
     private JLabel mensajeCesta = new JLabel("La cesta se encuentra vacia...");
@@ -80,7 +79,7 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
 
         panelCesta = new JPanel();
         panelCesta.setLayout(new BoxLayout(panelCesta, BoxLayout.Y_AXIS));
-        panelCesta.setBorder(BorderFactory.createTitledBorder("Articulos en la cesta"));
+        //panelCesta.setBorder(BorderFactory.createTitledBorder("Articulos en la cesta"));
         panelCestaComprar.add(panelCesta, BorderLayout.CENTER);
 
         //PANEL FAVORITOS
@@ -170,7 +169,9 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
         _articulo.add(new JLabel("/" + articulo.getCantidad() + "Uds.")); //TODO Añadir color (y a lo mejor hacer en un JTable)
         addButtons(_articulo, articulo);
         panelMap.put(articulo, _articulo);
-        panelCesta.add(_articulo);
+        panelCesta.removeAll();
+        panelMap.forEach((k, v) -> panelCesta.add(v));
+        //panelCesta.add(_articulo);
         panelCesta.revalidate();
         panelCesta.repaint();
     }
@@ -267,6 +268,7 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
             if (lista.isEmpty()) {
                 panelFavs.add(mensajeFavs);
             } else {
+
                 Iterator<TOArticuloEnFavoritos> art_it = lista.iterator();
                 while (art_it.hasNext()) {
                     TOArticuloEnFavoritos art = art_it.next();
@@ -276,7 +278,7 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
                     favsMap.put(art, articulo);
                     panelFavs.add(articulo);
 
-                    JButton anyadirACesta = new JButton("Añadir a cesta");
+                    JButton anyadirACesta = new JButton("Ver articulo");
                     anyadirACesta.setAlignmentX(Component.CENTER_ALIGNMENT);
                     articulo.add(anyadirACesta);
                     anyadirACesta.addActionListener(e -> {
@@ -292,6 +294,8 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
                         panelFavs.remove(articulo);
                     }));
                 }
+
+                panelFavs.add(new JPanel());
             }
             panelFavs.revalidate();
             panelFavs.repaint();
@@ -350,6 +354,11 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
         JPanel eliminar = reserMap.get(toArticuloEnReservas);
         reserMap.remove(toArticuloEnReservas);
         panelReservas.remove(eliminar);
+        if (reserMap.isEmpty()) {
+            JPanel mensaje = new JPanel();
+            mensaje.add(mensajesReservas);
+            panelReservas.add(mensaje);
+        }
         panelReservas.revalidate();
         panelReservas.repaint();
     }
@@ -358,11 +367,22 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
     public void onReservasChanged(Set<TOArticuloEnReservas> reservas) { //TODO Alinear
         panelReservas.removeAll();//elimino lo antiguo
         reserMap.clear();
-        panelReservas.add(new JLabel("Podrás añadir a la cesta los artículos 1 dia antes de su lanzamiento"));
+
+        JPanel infoUnDia = new JPanel();
+        infoUnDia.add(new JLabel("Podrás añadir a la cesta los artículos 1 dia antes de su lanzamiento"));
+        infoUnDia.setMaximumSize(infoUnDia.getPreferredSize());
+        panelReservas.add(infoUnDia);
+
+        JSeparator separator = new JSeparator();
+        separator.setMaximumSize(new Dimension(1000, 5));
+        panelReservas.add(separator);
+
         if (reservas != null) {
             //Set<TOArticuloEnReservas> lista = reservas;
             if (reservas.isEmpty()) {
-                panelReservas.add(mensajesReservas);
+                JPanel mensaje = new JPanel();
+                mensaje.add(mensajesReservas);
+                panelReservas.add(mensaje);
             } else {
                 Iterator<TOArticuloEnReservas> art_it = reservas.iterator();
                 while (art_it.hasNext()) {
@@ -382,12 +402,11 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
                     panelReservas.add(articulo);
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                     try {
-                        if(facade.getFechaLanz(art.getIdArticulo()) == ""){//se ha pasado el tiempo de prioridad de compra y ahora es un articulo NO exclusivo
+                        if (facade.getFechaLanz(art.getIdArticulo()) == "") {//se ha pasado el tiempo de prioridad de compra y ahora es un articulo NO exclusivo
                             facade.removeArticuloDeReservas(art);
                             reserMap.remove(art);
                             panelReservas.remove(articulo);
-                        }
-                        else{
+                        } else {
                             Date fechaLanzamiento = sdf.parse(facade.getFechaLanz(art.getIdArticulo()));
                             Date fechaActual = new Date();
                             if (fechaLanzamiento.getTime() - fechaActual.getTime() <= 1000 * 60 * 60 * 24) {
@@ -416,6 +435,9 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
 
                 }
             }
+
+            panelReservas.add(new JPanel());
+
             panelReservas.revalidate();
             panelReservas.repaint();
         }

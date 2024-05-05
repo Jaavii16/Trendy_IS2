@@ -18,7 +18,6 @@ public class TUsuario implements Serializable {
     protected int id;
     protected String direccion;
     protected double saldo;
-    protected int id_Cesta;
     protected boolean admin = false;
 
     public TUsuario(int Id) {
@@ -175,15 +174,6 @@ public class TUsuario implements Serializable {
 
     public TUsuario setAdmin(boolean admin) {
         this.admin = admin;
-        return this;
-    }
-
-    public int getIDCesta() {
-        return id_Cesta;
-    }
-
-    public TUsuario setIDCesta(int idCesta) {
-        id_Cesta = idCesta;
         return this;
     }
 

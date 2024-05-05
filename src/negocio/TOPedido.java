@@ -7,11 +7,11 @@ public class TOPedido implements Serializable {
 
     private int ID;
     private String direccion;
-
+    private int IDUsuario;
     private String status;
     private Date fecha;
 
-    private TOACestaPedido toaCestaPedido;
+    private TOArticulosEnPedido toArticulosEnPedido;
 
     public TOPedido() {
     }
@@ -34,12 +34,12 @@ public class TOPedido implements Serializable {
         return this;
     }
 
-    public TOACestaPedido getToACestaPedido() {
-        return toaCestaPedido;
+    public TOArticulosEnPedido getTOAArticulosEnPedido() {
+        return toArticulosEnPedido;
     }
 
-    public TOPedido setToACestaPedido(TOACestaPedido toaCestaPedido) {
-        this.toaCestaPedido = toaCestaPedido;
+    public TOPedido setTOAArticulosEnPedido(TOArticulosEnPedido toaCestaPedido) {
+        this.toArticulosEnPedido = toaCestaPedido;
         return this;
     }
 
@@ -60,4 +60,14 @@ public class TOPedido implements Serializable {
         this.fecha = fecha;
         return this;
     }
+
+    public int getIDUsuario() {
+        return IDUsuario;
+    }
+
+    public TOPedido setIDUsuario(int IDUsuario) {
+        this.IDUsuario = IDUsuario;
+        return this;
+    }
+
 }

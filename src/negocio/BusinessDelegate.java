@@ -2,10 +2,7 @@ package negocio;
 
 import launcher.DAOFactory;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -27,9 +24,6 @@ public class BusinessDelegate {
         boPedido = new BOPedido(daoFactory.getDAOPedidos());
         boCesta = new BOCesta(daoFactory.getDAOCesta());
         boUsuario = new BOUsuario(daoFactory.getDAOUsuario());
-
-        boUsuario.addObserver(boCesta);
-        boCesta.addObserver(boUsuario);
     }
 
     public void registerObserver(Observer observer) {
@@ -56,25 +50,66 @@ public class BusinessDelegate {
 
     public void crearPedido() {
         TUsuario toUsuario = boUsuario.read();
-        TOACestaUsuario toaCestaUsuario = new TOACestaUsuario(boCesta.getCesta(), toUsuario);
-        Set<TOAArticuloEnPedido> toaArticuloEnPedidos = toaCestaUsuario.getToCesta().getListaArticulos().stream().map(toArticuloEnCesta -> {
+
+        if (toUsuario == null) {
+            throw new RuntimeException("Tienes que estar logueado para realizar un pedido");
+        }
+
+        Set<TOAArticuloEnPedido> toaArticuloEnPedidos = boCesta.getCesta().getListaArticulos().stream().map(toArticuloEnCesta -> {
             tArticulo articulo = boArticulo.buscarArticulo(toArticuloEnCesta.getIdArticulo());
             return new TOAArticuloEnPedido(toArticuloEnCesta, articulo.getPrecio());
         }).collect(Collectors.toSet());
 
-        //TODO Quitar stock? Comprobar exlusivos?
+        List<tStock> stocks = new ArrayList<>();
+        for (TOAArticuloEnPedido art : toaArticuloEnPedidos) {
+            TOArticuloEnCesta artCesta = art.getToArticuloEnCesta();
+            /*
+            if (boCategorias.esExclusivo(boArticulo.buscarArticulo(art.getToArticuloEnCesta().getIdArticulo()))) {
+                if (!toUsuario.getSuscripcion().equals(Suscripciones.PREMIUM)) {//TODO falta comprobar lo de q no falte menos de un dia para la salida y el usuario tiene reserva
+                    throw new RuntimeException("No se puede comprar el articulo exclusivo " + artCesta.getIdArticulo() + " talla " + artCesta.getTalla() + " color " + artCesta.getColor());
+                }
+            }
+             */
+            int stockAnt = getStock(artCesta.getIdArticulo(), artCesta.getColor().toString(), artCesta.getTalla().toString());
+            if (stockAnt - artCesta.getCantidad() < 0) {
+                throw new RuntimeException("No hay stock suficiente de " + artCesta.getIdArticulo() + " talla " + artCesta.getTalla() + " color " + artCesta.getColor() + " para realizar el pedido");
+            }
+            tStock newStock = new tStock(
+                    artCesta.getIdArticulo(),
+                    artCesta.getColor().toString(),
+                    artCesta.getTalla().toString(),
+                    stockAnt - art.getToArticuloEnCesta().getCantidad());
+            stocks.add(newStock);
+        }
 
-        double precioTotal = toaArticuloEnPedidos.stream().mapToDouble(TOAArticuloEnPedido::getPrecio).sum();
+        double precioTotal = toaArticuloEnPedidos.stream().mapToDouble(articuloEnPedido -> articuloEnPedido.getPrecio() * articuloEnPedido.getToArticuloEnCesta().getCantidad()).sum();
+
+        if (boUsuario.read().getSuscripcion() != Suscripciones.PRIME) { //TODO Si hay tiempo hacer un update al usuario y sacar un nuevo TUsuario de la base de datos por si se cambia desde otra sesion
+            precioTotal += 5;
+        }
+
         if (toUsuario.getSaldo() < precioTotal)
             throw new RuntimeException("Saldo insuficiente");
 
+        TOPedido toPedido = new TOPedido()
+                .setTOAArticulosEnPedido(new TOArticulosEnPedido(toaArticuloEnPedidos))
+                .setDireccion(toUsuario.getDireccion())
+                .setIDUsuario(toUsuario.getId())
+                .setStatus(TOStatusPedido.REPARTO.toString())
+                .setFecha(new Date(System.currentTimeMillis())
+                );
 
-        TOACestaPedido toaCestaPedido = new TOACestaPedido(toaCestaUsuario, toaArticuloEnPedidos);
-        boPedido.crearPedido(toaCestaPedido);
+        boPedido.crearPedido(toPedido);
 
         boUsuario.actualizarSaldo(-precioTotal);
 
-        boCesta.abrirCesta(toUsuario.getId());
+        for (tStock s : stocks) {
+            bostock.modificarArticuloStock(s);
+        }
+
+        //TODO Eliminar reservas
+
+        boCesta.vaciarCesta(toUsuario.getId());
     }
 
     public void altaArticuloStock(int id, int s) {
@@ -176,6 +211,8 @@ public class BusinessDelegate {
 
     public void cancelarPedido(int id) {
         boPedido.cancelarPedido(id);
+        boUsuario.actualizarSaldo(boPedido.getAllPedidos().stream().filter(toPedido -> toPedido.getID() == id).findFirst().orElseThrow()
+                .getTOAArticulosEnPedido().getArticulosSet().stream().mapToDouble(TOAArticuloEnPedido::getPrecio).sum());
     }
 
     public void addArticuloACesta(TOArticuloEnCesta toArticuloEnCesta) {
@@ -191,9 +228,9 @@ public class BusinessDelegate {
     }
 
     public TUsuario create(TUsuario tUsuario) {
-        int idCesta = boCesta.guardarCesta();
-        tUsuario.setIDCesta(idCesta);
-        return boUsuario.create(tUsuario);
+        TUsuario newUser = boUsuario.create(tUsuario);
+        boCesta.guardarCesta(newUser.getId());
+        return newUser;
     }
 
     public TUsuario read() {
@@ -235,10 +272,12 @@ public class BusinessDelegate {
 
     public void login(String correo, String contraseña) {
         boUsuario.login(correo, contraseña);
+        boCesta.updateCesta(true, boUsuario.read().getId());
     }
 
     public void logout() {
         boUsuario.logout();
+        boCesta.updateCesta(false, 0);
     }
 
     public void actualizarSaldoAdmin(double cantidad, int id) {
@@ -261,17 +300,19 @@ public class BusinessDelegate {
     }
 
     public void addArticuloAReservas(TOArticuloEnReservas artEnReservas) {
-        if (boUsuario.esPremium())
+        if (boUsuario.esPremium()) //TODO Comprobar el stock
             boCesta.addArticuloAReservas(artEnReservas);
     }
 
     public void removeArticuloDeReservas(TOArticuloEnReservas artEnReservas) {
-        if (boUsuario.esPremium())
+        if (boUsuario.esPremium()) //TODO Sumar stock
             boCesta.removeArticuloDeReservas(artEnReservas);
     }
 
     public void updateCesta() {
-        boCesta.updateCesta(boUsuario.read().getId());
+        if (boUsuario.read() != null) {
+            boCesta.updateCesta(true, boUsuario.read().getId());
+        }
     }
 
     public TOPedido getLastPedido() {

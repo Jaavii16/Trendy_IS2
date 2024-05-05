@@ -80,7 +80,7 @@ public class DAOUsuarioMySQL implements DAOUsuario {
         try (Connection connection = DBConnection.connect()) {
             int id = getNuevoId();
             usuario.setId(id);
-            String sql = "INSERT INTO Usuarios (ID, correo, contraseña, nombre, apellidos, pais, sexo, suscripcion_id, Dirección, saldo, anyo_nacimiento, cesta_activa_id) VALUES ("
+            String sql = "INSERT INTO Usuarios (ID, correo, contraseña, nombre, apellidos, pais, sexo, suscripcion_id, Dirección, saldo, anyo_nacimiento) VALUES ("
                     + id + ", '"
                     + usuario.getCorreo_e() + "', '"
                     + usuario.getContrasenya() + "', '"
@@ -92,7 +92,7 @@ public class DAOUsuarioMySQL implements DAOUsuario {
                     + usuario.getDireccion() + "', "
                     + usuario.getSaldo() + ", "
                     + usuario.getAnyoNacimiento() + ", "
-                    + usuario.getIDCesta() + ")";
+                    + ")";
             try {
                 connection.createStatement().executeUpdate(sql);
             } catch (SQLException e) {
@@ -164,25 +164,10 @@ public class DAOUsuarioMySQL implements DAOUsuario {
     }
 
     @Override
-    public void actualizarCesta(int idUsuario, int idCesta) {
-        try (Connection connection = DBConnection.connect()) {
-            String sql = "UPDATE Usuarios SET " +
-                    "cesta_activa_id = " + idCesta + " WHERE ID = " + idUsuario + ";";
-            try {
-                connection.createStatement().executeUpdate(sql);
-            } catch (SQLException e) {
-                throw new RuntimeException("Error SQL " + e.getErrorCode(), e);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Error SQL " + e.getErrorCode(), e);
-        }
-    }
-
-    @Override
     public void actualizarSaldo(int idUsuario, double cantidad) {
         try (Connection connection = DBConnection.connect()) {
             String sql = "UPDATE Usuarios SET " +
-                    "saldo = saldo +" + cantidad + "WHERE ID = " + idUsuario + ";";
+                    "saldo = saldo + " + cantidad + " WHERE ID = " + idUsuario + ";";
             try {
                 connection.createStatement().executeUpdate(sql);
             } catch (SQLException e) {

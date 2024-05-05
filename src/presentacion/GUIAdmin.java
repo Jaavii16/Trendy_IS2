@@ -38,7 +38,6 @@ public class GUIAdmin extends JPanel {
         initCambiarEstadoPedido();
         initCambiarArticulo();
 
-
         JPanel paneles = new JPanel();
         paneles.setLayout(new OverlayLayout(paneles));
         paneles.add(crearArticulo);
@@ -47,11 +46,10 @@ public class GUIAdmin extends JPanel {
         paneles.add(cambiarEstadoPedido);
         paneles.add(cambiarArticulo);
 
-        crearArticulo.setVisible(true);
-
+        this.add(paneles, BorderLayout.CENTER);
 
         JPanel botones = new JPanel();
-        this.add(botones, BorderLayout.CENTER);
+
         bCrearArticulo = new JButton("Crear Articulo");
         bCrearArticulo.setAlignmentX(CENTER_ALIGNMENT);
         bCrearArticulo.addActionListener(e -> {
@@ -99,7 +97,6 @@ public class GUIAdmin extends JPanel {
 
         bcambiarArticulo = new JButton("Cambiar Articulo");
         bcambiarArticulo.setAlignmentX(CENTER_ALIGNMENT);
-        botones.add(bcambiarArticulo);
         bcambiarArticulo.addActionListener(e -> {
             crearArticulo.setVisible(false);
             añadirSaldo.setVisible(false);
@@ -107,11 +104,12 @@ public class GUIAdmin extends JPanel {
             cambiarEstadoPedido.setVisible(false);
             this.cambiarArticulo.setVisible(true);
         });
-        add(botones, BorderLayout.CENTER);
+        botones.add(bcambiarArticulo);
 
+        add(botones, BorderLayout.NORTH);
     }
 
-    private void initCambiarArticulo(){
+    private void initCambiarArticulo() {
         cambiarArticulo = new JPanel();
         cambiarArticulo.setLayout(new BoxLayout(cambiarArticulo, BoxLayout.Y_AXIS));
         cambiarArticulo.setBorder(new TitledBorder("Cambiar Articulo"));
@@ -121,27 +119,32 @@ public class GUIAdmin extends JPanel {
         this.cambiarArticulo.add(lId);
         JTextField tId = new JTextField();
         tId.setMaximumSize(new Dimension(200, 20));
+        tId.setAlignmentX(CENTER_ALIGNMENT);
         this.cambiarArticulo.add(tId);
 
         JLabel lNombre = new JLabel("Nombre: ");
         this.cambiarArticulo.add(lNombre);
         JTextField tNombre = new JTextField();
         tNombre.setMaximumSize(new Dimension(200, 20));
+        tNombre.setAlignmentX(CENTER_ALIGNMENT);
         this.cambiarArticulo.add(tNombre);
 
         JLabel lSubcategoria = new JLabel("Subcategoria: ");
         this.cambiarArticulo.add(lSubcategoria);
         JTextField tSubcategoria = new JTextField();
+        tSubcategoria.setAlignmentX(CENTER_ALIGNMENT);
         tSubcategoria.setMaximumSize(new Dimension(200, 20));
         this.cambiarArticulo.add(tSubcategoria);
 
         JLabel lPrecio = new JLabel("Precio: ");
         this.cambiarArticulo.add(lPrecio);
         JTextField tPrecio = new JTextField();
+        tPrecio.setAlignmentX(CENTER_ALIGNMENT);
         tPrecio.setMaximumSize(new Dimension(200, 20));
         this.cambiarArticulo.add(tPrecio);
 
         JButton bCambiar = new JButton("Cambiar");
+        bCambiar.setAlignmentX(CENTER_ALIGNMENT);
         this.cambiarArticulo.add(bCambiar);
         bCambiar.addActionListener(e -> {
             tArticulo art = new tArticulo(Integer.parseInt(tId.getText()), tNombre.getText(), tSubcategoria.getText(), Double.parseDouble(tPrecio.getText()));
@@ -151,6 +154,7 @@ public class GUIAdmin extends JPanel {
         });
 
         JButton bCancelar = new JButton("Cancelar");
+        bCancelar.setAlignmentX(CENTER_ALIGNMENT);
         this.cambiarArticulo.add(bCancelar);
         bCancelar.addActionListener(e -> {
             cambiarArticulo.setVisible(false);
@@ -167,64 +171,96 @@ public class GUIAdmin extends JPanel {
         //TArticulo
 
         crearArticulo = new JPanel();
-        crearArticulo.setLayout(new BoxLayout(crearArticulo, BoxLayout.Y_AXIS));
+        crearArticulo.setLayout(new GridLayout(0, 2));
         crearArticulo.setBorder(new TitledBorder("Crear Articulo"));
         crearArticulo.setVisible(false);
 
+        JPanel pId = new JPanel();
+        pId.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         JLabel lId = new JLabel("ID: ");
-        this.crearArticulo.add(lId);
+        pId.add(lId);
+        this.crearArticulo.add(pId);
         JTextField tId = new JTextField();
         tId.setMaximumSize(new Dimension(200, 20));
         this.crearArticulo.add(tId);
 
+        JPanel pNombre = new JPanel();
+        pNombre.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         JLabel lNombre = new JLabel("Nombre: ");
-        this.crearArticulo.add(lNombre);
+        pNombre.add(lNombre);
+        this.crearArticulo.add(pNombre);
         JTextField tNombre = new JTextField();
         tNombre.setMaximumSize(new Dimension(200, 20));
         this.crearArticulo.add(tNombre);
 
+        JPanel pSubcategoria = new JPanel();
+        pSubcategoria.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         JLabel lSubcategoria = new JLabel("Subcategoria: ");
-        this.crearArticulo.add(lSubcategoria);
+        pSubcategoria.add(lSubcategoria);
+        this.crearArticulo.add(pSubcategoria);
         JTextField tSubcategoria = new JTextField();
         tSubcategoria.setMaximumSize(new Dimension(200, 20));
         this.crearArticulo.add(tSubcategoria);
 
+        JPanel pPrecio = new JPanel();
+        pPrecio.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         JLabel lPrecio = new JLabel("Precio: ");
-        this.crearArticulo.add(lPrecio);
+        pPrecio.add(lPrecio);
+        this.crearArticulo.add(pPrecio);
         JTextField tPrecio = new JTextField();
         tPrecio.setMaximumSize(new Dimension(200, 20));
         this.crearArticulo.add(tPrecio);
 
 
         //resto
+        JPanel pFecha = new JPanel();
+        pFecha.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         JLabel lFecha = new JLabel("Fecha: ");
-        this.crearArticulo.add(lFecha);
+        pFecha.add(lFecha);
+        this.crearArticulo.add(pFecha);
         JTextField tFecha = new JTextField();
         tFecha.setMaximumSize(new Dimension(200, 20));
         this.crearArticulo.add(tFecha);
 
+        JPanel pDescuento = new JPanel();
+        pDescuento.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         JLabel lDescuento = new JLabel("Descuento: ");
-        this.crearArticulo.add(lDescuento);
+        pDescuento.add(lDescuento);
+        this.crearArticulo.add(pDescuento);
         JTextField tDescuento = new JTextField();
         tDescuento.setMaximumSize(new Dimension(200, 20));
         this.crearArticulo.add(tDescuento);
 
+        JPanel pGenero = new JPanel();
+        pGenero.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         JLabel lGenero = new JLabel("Genero: ");
-        this.crearArticulo.add(lGenero);
+        pGenero.add(lGenero);
+        this.crearArticulo.add(pGenero);
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>();
         model.addElement("Hombre");
         model.addElement("Mujer");
-        //TODO mirar de meter bien los generos
         JComboBox<String> cbGenero = new JComboBox<>(model);
         cbGenero.setMaximumSize(new Dimension(200, 20));
         this.crearArticulo.add(cbGenero);
 
+        JPanel pStock = new JPanel();
+        pStock.setBorder(BorderFactory.createLineBorder(Color.GRAY));
         JLabel lStock = new JLabel("Stock: ");
-        this.crearArticulo.add(lStock);
+        pStock.add(lStock);
+        this.crearArticulo.add(pStock);
         JTextField tStock = new JTextField();
         tStock.setMaximumSize(new Dimension(200, 20));
         this.crearArticulo.add(tStock);
 
+        crearArticulo.add(new JPanel());
+        crearArticulo.add(new JPanel());
+        
+        JButton bCancelar = new JButton("Cancelar");
+        this.crearArticulo.add(bCancelar);
+        bCancelar.addActionListener(e -> {
+            crearArticulo.setVisible(false);
+            this.setVisible(true);
+        });
 
         JButton bCrear = new JButton("Crear");
         this.crearArticulo.add(bCrear);
@@ -238,15 +274,7 @@ public class GUIAdmin extends JPanel {
             saFacade.altaArticulo(art, fecha, gen, descuento, Integer.parseInt(tStock.getText()));
         });
 
-        JButton bCancelar = new JButton("Cancelar");
-        this.crearArticulo.add(bCancelar);
-        bCancelar.addActionListener(e -> {
-            crearArticulo.setVisible(false);
-            this.setVisible(true);
-        });
 
-        JPanel wrapper = new JPanel();
-        crearArticulo.add(wrapper);
     }
 
     private void initAñadirSaldo() {

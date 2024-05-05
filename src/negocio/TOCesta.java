@@ -6,7 +6,6 @@ import java.util.TreeSet;
 
 public class TOCesta implements Serializable {
 
-    private int idCesta; //TODO Pensar si quitar la idCesta de aqui y que se calcule en BD
     private TreeSet<TOArticuloEnCesta> listaArticulosAñadidos;
     private int idUsuario;
 
@@ -18,10 +17,6 @@ public class TOCesta implements Serializable {
         return listaArticulosAñadidos;
     }
 
-    public int getIdCesta() {
-        return idCesta;
-    }
-
     public TOCesta setListaArticulos(TreeSet<TOArticuloEnCesta> listaArticulos) {
         this.listaArticulosAñadidos = listaArticulos;
         return this;
@@ -29,11 +24,6 @@ public class TOCesta implements Serializable {
 
     public TOCesta setIdUsuario(int idUsuario) {
         this.idUsuario = idUsuario;
-        return this;
-    }
-
-    public TOCesta setIdCesta(int idCesta) {
-        this.idCesta = idCesta;
         return this;
     }
 

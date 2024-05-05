@@ -266,7 +266,7 @@ public class GUIWindow extends JFrame {
     public void showPedido(TOPedido lastPedido) {
         JButton backButton = new JButton("Atras");
 
-        GUIPedido guiPedido = new GUIPedido(lastPedido, backButton);
+        GUIPedido guiPedido = new GUIPedido(saFacade, this, lastPedido, backButton);
 
         backButton.addActionListener(e1 -> Transitions.makeWhiteFadeTransition(guiPedido, homePanel, 1, (from, to) -> {
             mainPanel.remove(from);

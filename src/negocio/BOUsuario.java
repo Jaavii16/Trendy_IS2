@@ -1,9 +1,7 @@
 package negocio;
 
 import integracion.DAOUsuario;
-import presentacion.GUIPerfil;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.nio.file.Path;
@@ -12,7 +10,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class BOUsuario implements Observable<AuthObserver>, CestaObserver {
+public class BOUsuario implements Observable<AuthObserver> {
 
     Set<AuthObserver> observers;
     private DAOUsuario daoUsuario;
@@ -52,13 +50,14 @@ public class BOUsuario implements Observable<AuthObserver>, CestaObserver {
 
     public void actualizarSaldo(double cantidad) {
         daoUsuario.actualizarSaldo(tUsuario.getId(), cantidad);
+        tUsuario.setSaldo(tUsuario.getSaldo() + cantidad);
     }
 
     public void actualizarSuscr(Suscripciones susc) {
-        if(susc.equals(tUsuario.getSuscripcion())){
+        if (susc.equals(tUsuario.getSuscripcion())) {
             throw new RuntimeException("La suscripcion a la que desea cambiar es su suscripcion actual");
         }
-        if(tUsuario.getSaldo() - susc.getPrecio() < 0)throw new RuntimeException("No tiene saldo suficiente");
+        if (tUsuario.getSaldo() - susc.getPrecio() < 0) throw new RuntimeException("No tiene saldo suficiente");
         daoUsuario.actualizarSuscripcion(tUsuario.getId(), susc);
         tUsuario.setSuscripcion(susc);
         observers.forEach(observer -> observer.onAuthChanged(true, tUsuario.getId()));
@@ -109,7 +108,6 @@ public class BOUsuario implements Observable<AuthObserver>, CestaObserver {
 
         File file = new File("login.txt");
         file.delete();
-
     }
 
     public void actualizarSaldoAdmin(double cantidad, int id) {
@@ -120,28 +118,5 @@ public class BOUsuario implements Observable<AuthObserver>, CestaObserver {
 
     public boolean esPremium() {
         return tUsuario != null && tUsuario.getSuscripcion().equals(Suscripciones.PREMIUM);
-    }
-
-    @Override
-    public void onCestaChanged(TOCesta cesta) {
-        if (tUsuario != null) {
-            tUsuario.setIDCesta(cesta.getIdCesta());
-            daoUsuario.actualizarCesta(tUsuario.getId(), cesta.getIdCesta());
-        }
-    }
-
-    @Override
-    public void onArticuloAdded(TOArticuloEnCesta articulo) {
-
-    }
-
-    @Override
-    public void onArticuloUpdated(TOArticuloEnCesta articulo) {
-
-    }
-
-    @Override
-    public void onArticuloRemoved(TOArticuloEnCesta articulo) {
-
     }
 }
