@@ -160,9 +160,14 @@ public class GUIAdmin extends JPanel {
         JButton bCambiar = new JButton("Cambiar");
         bCambiar.setAlignmentX(CENTER_ALIGNMENT);
         this.cambiarArticulo.add(bCambiar);
+
         bCambiar.addActionListener(e -> {
             tArticulo art = new tArticulo(Integer.parseInt(tId.getText()), tNombre.getText(), tSubcategoria.getText(), Double.parseDouble(tPrecio.getText()));
-            saFacade.modificarArticulo(art);
+            try{
+                saFacade.modificarArticulo(art);
+            }catch(Exception exception){
+
+            }
             this.cambiarArticulo.setVisible(false);
             this.setVisible(true);
         });

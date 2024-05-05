@@ -93,6 +93,8 @@ public class GUIArticulo extends MainGUIPanel {
         });
         talla.add(ltalla);
         talla.add(boxtallas);
+        talla.setMaximumSize(new Dimension(100, 100));
+        centro.add(Box.createRigidArea( new Dimension(100,100) ));
         centro.add(talla);
 
         //Colores:
@@ -106,6 +108,7 @@ public class GUIArticulo extends MainGUIPanel {
         boxcolores = new JComboBox(colores);
         color.add(c);
         color.add(boxcolores);
+        color.setMaximumSize(new Dimension(100, 100));
         centro.add(color);
 
         //Unidades:

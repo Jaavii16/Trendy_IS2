@@ -2,6 +2,8 @@ package negocio;
 
 import launcher.DAOFactory;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -60,17 +62,36 @@ public class BusinessDelegate {
             return new TOAArticuloEnPedido(toArticuloEnCesta, articulo.getPrecio());
         }).collect(Collectors.toSet());
 
+        Set<TOArticuloEnReservas> reservas = boCesta.getReservas(toUsuario.getId());
         List<tStock> stocks = new ArrayList<>();
         for (TOAArticuloEnPedido art : toaArticuloEnPedidos) {
             TOArticuloEnCesta artCesta = art.getToArticuloEnCesta();
-            /*
-            if (boCategorias.esExclusivo(boArticulo.buscarArticulo(art.getToArticuloEnCesta().getIdArticulo()))) {
-                if (!toUsuario.getSuscripcion().equals(Suscripciones.PREMIUM)) {//TODO falta comprobar lo de q no falte menos de un dia para la salida y el usuario tiene reserva
+            tArticulo artt = boArticulo.buscarArticulo(artCesta.getIdArticulo());
+            Articulo arti = new Articulo(artt);
+            if (boCategorias.esExclusivo(arti)) {
+
+                if(reservas.stream().mapToInt(TOArticuloEnReservas::getIdArticulo).anyMatch(i->i == artCesta.getIdArticulo()))
+                    throw new RuntimeException("No tienes reserva de ese articulo");
+
+                if (!toUsuario.getSuscripcion().equals(Suscripciones.PREMIUM)) {
                     throw new RuntimeException("No se puede comprar el articulo exclusivo " + artCesta.getIdArticulo() + " talla " + artCesta.getTalla() + " color " + artCesta.getColor());
                 }
+
+                if(artCesta.getCantidad() > 1)
+                    throw new RuntimeException("No se puede comprar mas de una unidad de un articulo exclusivo");
+
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/aaaa");
+                try {
+                    Date date = sdf.parse(boCategorias.getFechaLanz(artCesta.getIdArticulo()));
+                    if (date.getTime() - new Date().getTime() > 1000 * 60 * 60 * 24){
+                        throw new RuntimeException("No se puede comprar el articulo exclusivo " + artCesta.getIdArticulo() + " talla " + artCesta.getTalla() + " color " + artCesta.getColor() + " porque no ha salido a la venta");
+                    }
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
+                }
             }
-            */
-            int stockAnt = getStock(artCesta.getIdArticulo(), artCesta.getColor().toString(), artCesta.getTalla().toString());
+
+            int stockAnt = bostock.getStock(artCesta.getIdArticulo(), artCesta.getColor().toString(), artCesta.getTalla().toString());
             if (stockAnt - artCesta.getCantidad() < 0) {
                 throw new RuntimeException("No hay stock suficiente de " + boArticulo.buscarArticulo(artCesta.getIdArticulo()).getNombre() + " talla " + artCesta.getTalla() + " color " + artCesta.getColor() + " para realizar el pedido. Stock disponible: " + stockAnt + " unidades.");
             }
@@ -84,7 +105,7 @@ public class BusinessDelegate {
 
         double precioTotal = toaArticuloEnPedidos.stream().mapToDouble(articuloEnPedido -> articuloEnPedido.getPrecio() * articuloEnPedido.getToArticuloEnCesta().getCantidad()).sum();
 
-        if (boUsuario.read().getSuscripcion() != Suscripciones.PRIME) { //TODO Si hay tiempo hacer un update al usuario y sacar un nuevo TUsuario de la base de datos por si se cambia desde otra sesion
+        if (boUsuario.read().getSuscripcion() != Suscripciones.PRIME) {
             precioTotal += 5;
         }
 
@@ -107,7 +128,9 @@ public class BusinessDelegate {
             bostock.modificarArticuloStock(s);
         }
 
-        //TODO Eliminar reservas
+        for(TOArticuloEnReservas res : reservas){
+            boCesta.removeArticuloDeReservas(res);
+        }
 
         boCesta.vaciarCesta(toUsuario.getId());
     }

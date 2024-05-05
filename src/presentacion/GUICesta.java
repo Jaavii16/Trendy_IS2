@@ -312,6 +312,7 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
         delete.setAlignmentX(Component.RIGHT_ALIGNMENT);
         _articulo.add(delete);
         delete.addActionListener(e -> {
+            panelReservas.remove(mensajesReservas);
             facade.removeArticuloDeReservas(toArticuloEnReservas);
             reserMap.remove(toArticuloEnReservas);
             panelReservas.remove(_articulo);

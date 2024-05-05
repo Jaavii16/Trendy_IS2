@@ -84,7 +84,7 @@ public class GUIPerfil extends MainGUIPanel implements UserObserver, PedidoObser
 
     @Override
     public void reset() {
-        //TODO
+        cl.
     }
 
     @Override
@@ -559,9 +559,9 @@ public class GUIPerfil extends MainGUIPanel implements UserObserver, PedidoObser
         panelSuscr.add(comboBoxSusc);
 
         JTextArea info = new JTextArea("INFORMACIÓN:\n\n" +
-                "NORMAL: Funcionalidades por defecto\n" +
-                "PRIME: No se pagará el envío, con valor de 5€\n" +
-                "PREMIUM: Podrá reservar artículos exclusivos y comprarlos las 24h antes de su lanzamiento");
+                "NORMAL: Funcionalidades por defecto. Precio: " + Suscripciones.NORMAL.getPrecio() + "€\n" +
+                "PRIME: No se pagará el envío, con valor de 5€. Precio: " + Suscripciones.PRIME.getPrecio() + "€\n" +
+                "PREMIUM: Podrá reservar artículos exclusivos y comprarlos las 24h antes de su lanzamiento. Precio: " + Suscripciones.PREMIUM.getPrecio() + "€");
         info.setBackground(null);
         info.setEditable(false);
         info.setLineWrap(true);

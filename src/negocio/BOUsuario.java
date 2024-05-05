@@ -31,6 +31,9 @@ public class BOUsuario implements Observable<UserObserver> {
     }
 
     public TUsuario read() {
+        if(tUsuario != null){
+            this.tUsuario = daoUsuario.getUsuario(tUsuario.getCorreo_e(), tUsuario.getContrasenya());
+        }
         return this.tUsuario;
     }
 

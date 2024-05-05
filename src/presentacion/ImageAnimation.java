@@ -33,7 +33,7 @@ public class ImageAnimation extends JPanel {
         this.initTime = Long.MAX_VALUE;
         this.animationSpeed = animationSpeed;
 
-        playSound("sounds/trendy.wav");
+        playSound("sounds/ascensor.wav");
 
         setBackground(Color.decode("0xc0c9f4"));
         setFont(new Font("Arial", Font.BOLD, 20));

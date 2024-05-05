@@ -163,4 +163,8 @@ public class BOCesta implements Observable<Observer> {
         favsObservers.forEach(favsObserver -> favsObserver.onFavoritosChanged(favoritos));
         reservasObservers.forEach(reservasObserver -> reservasObserver.onReservasChanged(reservas));
     }
+
+    public Set<TOArticuloEnReservas> getReservas(int idUsuario) {
+        return daoCesta.getReservas(idUsuario);
+    }
 }
