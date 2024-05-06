@@ -90,8 +90,7 @@ public class DAOUsuarioMySQL implements DAOUsuario {
                     + usuario.getSuscripcion() + "', '"
                     + usuario.getDireccion() + "', "
                     + usuario.getSaldo() + ", "
-                    + usuario.getAnyoNacimiento() + ", "
-                    + ")";
+                    + usuario.getAnyoNacimiento() + ")";
             try {
                 connection.createStatement().executeUpdate(sql);
             } catch (SQLException e) {

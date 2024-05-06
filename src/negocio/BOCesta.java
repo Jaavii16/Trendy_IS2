@@ -110,7 +110,7 @@ public class BOCesta implements Observable<Observer> {
     }
 
     public void addArticuloAFavoritos(TOArticuloEnFavoritos toArticuloEnFavoritos) {
-        if (isAuth) { //TODO Comprobar que no esta ya en favoritos
+        if (isAuth) { //TODO Comprobar que no esta ya en favoritos y si ya esta mostrar mensaje diciendolo
             daoCesta.añadirArticuloAFavoritos(toArticuloEnFavoritos);
             favsObservers.forEach(favsObserver -> favsObserver.onArticuloAdded(toArticuloEnFavoritos));
         } else {
