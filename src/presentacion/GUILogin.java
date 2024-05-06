@@ -119,6 +119,7 @@ public class GUILogin extends JDialog implements UserObserver {
         this._enter.addActionListener(e -> {
             try {
                 saFacade.login(_user.getText(), _contrasenya.getText());
+                JOptionPane.showMessageDialog(mainPanel, "Te has logueado con exito");
             } catch (IllegalArgumentException e1) {
                 JOptionPane.showMessageDialog(mainPanel, e1.getMessage());
             }

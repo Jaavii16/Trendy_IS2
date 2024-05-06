@@ -36,13 +36,16 @@ public class GUIForgotPassword extends JPanel {
 
             if (_contrasenya.getText().equals(_repContrasenya.getText())) {
                 TUsuario loginUser = crearUsuario();
-                saFacade.update(loginUser);
-                JOptionPane.showMessageDialog(null, "Contraseña cambiada con éxito");
-                parent.reset();
+                try{
+                    saFacade.update(loginUser);
+                    JOptionPane.showMessageDialog(null, "Contraseña cambiada con éxito");
+                    parent.reset();
+                }catch(RuntimeException ex){
+                    JOptionPane.showMessageDialog(this, "No se ha podido actualizar la contraseña");
+                }
             } else {
                 JOptionPane.showMessageDialog(null, "Las contraseñas no coinciden");
             }
-
         });
 
         this._cancel.addActionListener(e -> {

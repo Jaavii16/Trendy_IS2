@@ -12,15 +12,6 @@ public class GUIRegister extends JPanel {
     private final SAFacade saFacade;
     private JButton _cancel;
     private JButton _createAccount;
-    private JLabel nombre;
-    private JLabel apellidos;
-    private JLabel contrasenya;
-    private JLabel repContrasenya;
-    private JLabel correo;
-    private JLabel pais;
-    private JLabel anyoNac;
-    private JLabel sexo;
-    private JLabel direccion;
     private JTextField _nombre;
     private JTextField _apellidos;
     private JPasswordField _contrasenya;
@@ -31,7 +22,6 @@ public class GUIRegister extends JPanel {
     private JTextField _direccion;
     private DefaultComboBoxModel<Character> sexoModelo;
     private JComboBox<Character> comboBoxSexo;
-    private SAUsuarioImp saUsuario;
     private TUsuario tUsuario;
 
     private GUILogin _parent;
@@ -133,7 +123,11 @@ public class GUIRegister extends JPanel {
             contraRep = _repContrasenya.getText();
             if (contra.equals(contraRep)) {
                 tUsuario = crearUsuario();
-                saFacade.create(tUsuario);
+                try{
+                    saFacade.create(tUsuario);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(mainPanel, "Ha habido un problema al crear la cuenta: " + ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+                }
             } else {
                 JOptionPane.showMessageDialog(mainPanel, "La contraseña no coincide");
             }

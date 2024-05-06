@@ -7,7 +7,6 @@ import java.awt.*;
 
 public class GUIArticulo extends MainGUIPanel {
     //Al haberle dado a un artículo de una categoría
-
     private Articulo art;
     private JPanel partview;
     private JButton atras;
@@ -164,7 +163,12 @@ public class GUIArticulo extends MainGUIPanel {
                             BOStock.Talla.valueOf(((String) boxtallas.getSelectedItem()).toUpperCase()),
                             BOStock.Color.valueOf(((String) boxcolores.getSelectedItem()).toUpperCase())
                     );
-                    sa.addArticuloAReservas(artEnReservas);
+                    try{
+                        sa.addArticuloAReservas(artEnReservas);
+                        JOptionPane.showMessageDialog(this, "Añadido a reservas con éxito");
+                    }catch(Exception ex){
+                        JOptionPane.showMessageDialog(this, "No se ha podido añadir a reservas");
+                    }
                 } else {
                     JOptionPane.showMessageDialog(this, "Solo para usuarios con suscripcion premium");
                 }
@@ -174,20 +178,31 @@ public class GUIArticulo extends MainGUIPanel {
         } else {
             cesta = new JButton("Añadir a cesta");
             cesta.addActionListener((e) -> {
-                TOArticuloEnCesta artEnCesta = new TOArticuloEnCesta();
-                artEnCesta.setCantidad((int) uds.getValue());
-                artEnCesta.setColor(BOStock.Color.valueOf(((String) boxcolores.getSelectedItem()).toUpperCase()));
-                artEnCesta.setTalla(BOStock.Talla.valueOf(((String) boxtallas.getSelectedItem()).toUpperCase()));
-                artEnCesta.setIdArticulo(art.getID());
-                sa.addArticuloACesta(artEnCesta);
+                try{
+                    TOArticuloEnCesta artEnCesta = new TOArticuloEnCesta();
+                    artEnCesta.setCantidad((int) uds.getValue());
+                    artEnCesta.setColor(BOStock.Color.valueOf(((String) boxcolores.getSelectedItem()).toUpperCase()));
+                    artEnCesta.setTalla(BOStock.Talla.valueOf(((String) boxtallas.getSelectedItem()).toUpperCase()));
+                    artEnCesta.setIdArticulo(art.getID());
+                    sa.addArticuloACesta(artEnCesta);
+                    JOptionPane.showMessageDialog(this, "Añadido a la cesta correctamente");
+                }catch(Exception ex){
+                    JOptionPane.showMessageDialog(this, "No se ha podido añadir a la cesta");
+                }
             });
             end.add(cesta);
         }
 
         favoritos = new JButton("Añadir a favoritos");
         favoritos.addActionListener(e -> {
-            TOArticuloEnFavoritos artEnFavs = new TOArticuloEnFavoritos(art.getID(), sa.getUsuario().getId());
-            sa.addArticuloAFavoritos(artEnFavs);
+            try{
+                TOArticuloEnFavoritos artEnFavs = new TOArticuloEnFavoritos(art.getID(), sa.getUsuario().getId());
+                sa.addArticuloAFavoritos(artEnFavs);
+                JOptionPane.showMessageDialog(this, "Añadido a favoritos con éxito");
+            }catch(Exception ex){
+                JOptionPane.showMessageDialog(this, "No se ha podido añadir a favoritos");
+            }
+
         });
         end.add(favoritos);
     }

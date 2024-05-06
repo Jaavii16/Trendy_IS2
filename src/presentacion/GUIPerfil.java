@@ -78,7 +78,10 @@ public class GUIPerfil extends MainGUIPanel implements UserObserver, PedidoObser
 
     @Override
     public void update() {
-        //TODO
+        boolean iniciado = (saFacade.getUsuario()!= null);
+        if(iniciado){
+            onUserDataChanged(iniciado, saFacade.getUsuario().getId());
+        }
     }
 
     @Override
@@ -251,7 +254,11 @@ public class GUIPerfil extends MainGUIPanel implements UserObserver, PedidoObser
         JButton log_out = new JButton("Logout");
         buttonPanel.add(log_out);
         log_out.addActionListener((e -> {
-            saFacade.logout();
+            try{
+                saFacade.logout();
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Ha habido un error al cerrar sesion: " + ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
+            }
             window.goHome();
             revalidate();
             repaint();
@@ -449,25 +456,30 @@ public class GUIPerfil extends MainGUIPanel implements UserObserver, PedidoObser
         tablaPedidos.getColumn("ID").setCellEditor(new ButtonEditor(new JCheckBox(), v -> {
             int row = tablaPedidos.getSelectedRow();
             int idPedido = (Integer) pedidosModel.getValueAt(row, 0);
-            TOPedido toPedido = saFacade.getAllPedidos().stream().filter(toPedido1 -> toPedido1.getID() == idPedido).findFirst().orElse(null);
+            try {
+                TOPedido toPedido = saFacade.getAllPedidos().stream().filter(toPedido1 -> toPedido1.getID() == idPedido).findFirst().orElse(null);
 
-            JButton backButton = new JButton("Atras");
+                JButton backButton = new JButton("Atras");
 
-            GUIPedido guiPedido = new GUIPedido(saFacade, window, toPedido, backButton);
+                GUIPedido guiPedido = new GUIPedido(saFacade, window, toPedido, backButton);
 
-            backButton.addActionListener(e1 -> Transitions.makeWhiteFadeTransition(guiPedido, panelFiltrosTabla, 1, (from, to) -> {
-                panelPedidos.remove(from);
-                panelPedidos.add(to);
-                revalidate();
-                repaint();
-            }));
+                backButton.addActionListener(e1 -> Transitions.makeWhiteFadeTransition(guiPedido, panelFiltrosTabla, 1, (from, to) -> {
+                    panelPedidos.remove(from);
+                    panelPedidos.add(to);
+                    revalidate();
+                    repaint();
+                }));
 
-            Transitions.makeWhiteFadeTransition(panelFiltrosTabla, guiPedido, 1, (from, to) -> {
-                panelPedidos.remove(from);
-                panelPedidos.add(to);
-                revalidate();
-                repaint();
-            });
+                Transitions.makeWhiteFadeTransition(panelFiltrosTabla, guiPedido, 1, (from, to) -> {
+                    panelPedidos.remove(from);
+                    panelPedidos.add(to);
+                    revalidate();
+                    repaint();
+                });
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "No existe el pedido con ID " + idPedido, "ERROR", JOptionPane.ERROR_MESSAGE);
+            }
         }));
 
         JScrollPane scrollPane = new JScrollPane(tablaPedidos);
@@ -514,7 +526,7 @@ public class GUIPerfil extends MainGUIPanel implements UserObserver, PedidoObser
             try {
                 saFacade.actualizarSaldo(cantidad);
                 this.tUsuario = saFacade.getUsuario();
-                tUsuario.setSaldo(tUsuario.getSaldo() + cantidad);
+                //tUsuario.setSaldo(tUsuario.getSaldo());
                 if (this.tUsuario != null) {
                     double nuevoSaldo = this.tUsuario.getSaldo();
                     saldo.setText(nuevoSaldo + "");
@@ -549,7 +561,7 @@ public class GUIPerfil extends MainGUIPanel implements UserObserver, PedidoObser
 
         StringBuilder sb = new StringBuilder();
         for (Suscripciones s : Suscripciones.values()) {
-            sb.append(s.name()).append(": ").append(s.getInfo(s)).append(". Precio: ").append(s.getPrecio()).append("\n");
+            sb.append(s.name()).append(": ").append(s.getInfo()).append(" Precio: ").append(s.getPrecio()).append("€\n");
         }
         String texto = sb.toString();
 
@@ -573,7 +585,7 @@ public class GUIPerfil extends MainGUIPanel implements UserObserver, PedidoObser
                 Suscripciones susc = (Suscripciones) comboBoxSusc.getSelectedItem();
                 saFacade.actualizarSuscr(susc);
                 if (this.saFacade.getUsuario() != null) {
-                    double nuevoSaldo = this.saFacade.getUsuario().getSaldo() - Suscripciones.obtenerValorPorOrdinal(comboBoxSusc.getSelectedIndex());
+                    double nuevoSaldo = this.saFacade.getUsuario().getSaldo();
                     saFacade.getUsuario().setSaldo(nuevoSaldo);
                     saldo.setText(nuevoSaldo + "");
                 }

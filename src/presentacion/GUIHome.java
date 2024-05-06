@@ -97,7 +97,7 @@ public class GUIHome extends MainGUIPanel implements UserObserver {
         jlUsuarios.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         jpStatsTotal.add(jlUsuarios);
 
-        AtomicInteger stock = new AtomicInteger();
+        AtomicInteger numArticulos = new AtomicInteger();
         Set<Integer> ids = new HashSet<>();
         try {
             saFachade.getCategorias().forEach(cat -> {
@@ -105,7 +105,7 @@ public class GUIHome extends MainGUIPanel implements UserObserver {
                     saFachade.buscaArticulosCategoria(cat).forEach(art -> {
                         if (!ids.contains(art.getID())) {
                             ids.add(art.getID());
-                            stock.addAndGet(1);
+                            numArticulos.addAndGet(1);
                         }
                     });
                 } catch (Exception e) {
@@ -113,7 +113,7 @@ public class GUIHome extends MainGUIPanel implements UserObserver {
             });
         } catch (Exception e) {
         }
-        JLabel jlArticulos = new JLabel("Numero de articulos: " + stock);
+        JLabel jlArticulos = new JLabel("Numero de articulos: " + numArticulos);
         jlArticulos.setAlignmentX(JComponent.CENTER_ALIGNMENT);
         jpStatsTotal.add(jlArticulos);
 

@@ -36,7 +36,7 @@ public enum Suscripciones {
         throw new IllegalArgumentException("Ordinal no válido: " + ordinal);
     }
 
-    public String getInfo(Suscripciones susc) {
-        return susc.info;
+    public String getInfo() {
+        return info;
     }
 }
