@@ -71,7 +71,7 @@ public class TOArticuloEnCesta implements Comparable<TOArticuloEnCesta>, java.io
 
     @Override
     public int compareTo(TOArticuloEnCesta o) {
-        if (this.equals(o)) //TODO Pensar si esto va asi o si quitar el equals
+        if (this.equals(o))
             return 0;
         return fechaAñadido.compareTo(o.fechaAñadido);
     }

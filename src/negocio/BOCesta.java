@@ -110,7 +110,7 @@ public class BOCesta implements Observable<Observer> {
     }
 
     public void addArticuloAFavoritos(TOArticuloEnFavoritos toArticuloEnFavoritos) {
-        if (isAuth) { //TODO Comprobar que no esta ya en favoritos y si ya esta mostrar mensaje diciendolo
+        if (isAuth) {
             daoCesta.añadirArticuloAFavoritos(toArticuloEnFavoritos);
             favsObservers.forEach(favsObserver -> favsObserver.onArticuloAdded(toArticuloEnFavoritos));
         } else {
@@ -128,7 +128,7 @@ public class BOCesta implements Observable<Observer> {
     }
 
     public void addArticuloAReservas(TOArticuloEnReservas artEnReservas) {
-        if (isAuth) { //TODO Comprobar que no esta ya en reservas
+        if (isAuth) {
             if (!this.reservas.contains(artEnReservas)) {
                 daoCesta.añadirArticuloAReservas(artEnReservas);
                 reservasObservers.forEach(reservasObserver -> reservasObserver.onArticuloAdded(artEnReservas));

@@ -294,7 +294,7 @@ public class GUIAdmin extends JPanel {
                 double descuento = 0.0;
                 if (!Objects.equals(tDescuento.getText(), "")) descuento = Double.parseDouble(tDescuento.getText());
                 double precio = Double.parseDouble(tPrecio.getText());
-                double precioDescuento = precio - precio*descuento;
+                double precioDescuento = precio - precio * descuento;
                 tArticulo art = new tArticulo(Integer.parseInt(tId.getText()), tNombre.getText(), tSubcategoria.getText(), precioDescuento);
                 saFacade.altaArticulo(art, fecha, gen, descuento, Integer.parseInt(tStock.getText()));
                 JOptionPane.showMessageDialog(this, "Artículo creado correctamente");
@@ -389,7 +389,7 @@ public class GUIAdmin extends JPanel {
         this.cambiarSuscripcion.add(bCambiar);
         bCambiar.addActionListener(e -> {
             try {
-                saFacade.actualizarSuscrAdmin(Integer.parseInt(tId.getText()), cbSuscripcion.getSelectedIndex()); //TODO Cambiar
+                saFacade.actualizarSuscrAdmin(Integer.parseInt(tId.getText()), cbSuscripcion.getSelectedIndex());
             } catch (RuntimeException ex) {
                 JOptionPane.showMessageDialog(this, "No se ha podido actualizar el saldo");
             }

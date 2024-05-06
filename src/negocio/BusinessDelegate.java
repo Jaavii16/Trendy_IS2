@@ -323,12 +323,12 @@ public class BusinessDelegate {
     }
 
     public void addArticuloAReservas(TOArticuloEnReservas artEnReservas) {
-        if (boUsuario.esPremium()) //TODO Comprobar el stock
+        if (boUsuario.esPremium())
             boCesta.addArticuloAReservas(artEnReservas);
     }
 
     public void removeArticuloDeReservas(TOArticuloEnReservas artEnReservas) {
-        if (boUsuario.esPremium()) //TODO Sumar stock
+        if (boUsuario.esPremium())
             boCesta.removeArticuloDeReservas(artEnReservas);
     }
 

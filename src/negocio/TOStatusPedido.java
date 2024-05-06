@@ -1,5 +1,5 @@
 package negocio;
 
-public enum TOStatusPedido { //TODO Preguntar si podemos tratar esto como transfer
+public enum TOStatusPedido {
     REPARTO, ENTREGADO, CANCELADO
 }

@@ -31,7 +31,7 @@ public class BOUsuario implements Observable<UserObserver> {
     }
 
     public TUsuario read() {
-        if(tUsuario != null){
+        if (tUsuario != null) {
             this.tUsuario = daoUsuario.getUsuario(tUsuario.getCorreo_e(), tUsuario.getContrasenya());
         }
         return this.tUsuario;
@@ -70,7 +70,7 @@ public class BOUsuario implements Observable<UserObserver> {
 
     public void actualizarSuscrAdmin(int userID, int id) {
         if (tUsuario.admin)
-            daoUsuario.actualizarSuscripcion(userID, null); //TODO Cambiar
+            daoUsuario.actualizarSuscripcion(userID, null);
         else throw new IllegalStateException("Tienes que ser admin para poder hacer esto");
     }
 

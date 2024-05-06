@@ -42,7 +42,7 @@ public class SAPedidosImp extends AbstractSA implements SAPedidos {
 
     @Override
     public void cancelarPedido(int ID) {
-        businessDelegate.cancelarPedido(ID); //TODO Preguntar cual de los dos es mejor (y si el business delegate deberia tener un metodo cancelarPedido o solo usar cambiarStatus)
+        businessDelegate.cancelarPedido(ID);
         //businessDelegate.cambiarStatus(ID, TOStatusPedido.CANCELADO);
     }
 

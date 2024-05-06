@@ -20,7 +20,7 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
     JPanel mainPanel;
     private HashMap<TOArticuloEnCesta, JPanel> panelMap;
     private HashMap<TOArticuloEnFavoritos, JPanel> favsMap;
-    private HashMap<TOArticuloEnReservas, JPanel> reserMap; //TODO Pensar si hacer TreeMap con las fechas de lanzamiento
+    private HashMap<TOArticuloEnReservas, JPanel> reserMap;
     private JPanel panelCesta;
     private JPanel panelFavs;
     private JPanel panelReservas;
@@ -107,10 +107,10 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
         JButton pedir = new JButton("Realizar pedido");
         pedir.setAlignmentX(Component.CENTER_ALIGNMENT);
         pedir.addActionListener((e -> {
-            try{
+            try {
                 this.facade.crearPedido();
-                JOptionPane.showMessageDialog(this,"¡Pedido realizado con éxito!");
-            }catch(RuntimeException ex){
+                JOptionPane.showMessageDialog(this, "¡Pedido realizado con éxito!");
+            } catch (RuntimeException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage());
             }
         }));
@@ -171,7 +171,7 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
         _articulo.add(new JLabel(facade.buscarArticulo(articulo.getIdArticulo()).getNombre()));
         _articulo.add(new JLabel("/" + articulo.getTalla()));
         _articulo.add(new JLabel("/" + articulo.getColor()));
-        _articulo.add(new JLabel("/" + articulo.getCantidad() + "Uds.")); //TODO Añadir color (y a lo mejor hacer en un JTable)
+        _articulo.add(new JLabel("/" + articulo.getCantidad() + "Uds."));
         addButtons(_articulo, articulo);
         panelMap.put(articulo, _articulo);
         panelCesta.removeAll();
@@ -201,20 +201,20 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
         JButton anyadir = new JButton("Confirmar");
         panel.add(anyadir);
         anyadir.addActionListener((e -> {
-            int uds = (int) unidades.getValue(); //TODO Comprobar stock?
+            int uds = (int) unidades.getValue();
             if (uds == 0) {
-                try{
+                try {
                     facade.removeArticuloDeCesta(art);
                     JOptionPane.showMessageDialog(this, "Artículo eliminado de la cesta");
-                }catch(RuntimeException ex){
+                } catch (RuntimeException ex) {
                     JOptionPane.showMessageDialog(this, "No se ha podido eliminar el articulo de la cesta");
                 }
 
             } else {
                 art.setCantidad(uds);
-                try{
+                try {
                     facade.actualizarArticuloEnCesta(art);
-                }catch (RuntimeException ex){
+                } catch (RuntimeException ex) {
                     JOptionPane.showMessageDialog(this, "No se ha podido cambiar el numero de unidades en la cesta");
                 }
 
@@ -225,9 +225,9 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
 
     @Override
     public void update() {
-        try{
+        try {
             facade.updateCesta();
-        }catch(RuntimeException ex){
+        } catch (RuntimeException ex) {
             JOptionPane.showMessageDialog(this, "No se ha podido actualizar la cesta");
         }
     }
@@ -308,12 +308,12 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
                     delete.setAlignmentX(Component.RIGHT_ALIGNMENT);
                     articulo.add(delete);
                     delete.addActionListener((e -> {
-                        try{
+                        try {
                             facade.removeArticuloDeFavoritos(art);
                             JOptionPane.showMessageDialog(this, "Articulo eliminado correctamente");
                             favsMap.remove(art);
                             panelFavs.remove(articulo);
-                        }catch (RuntimeException ex){
+                        } catch (RuntimeException ex) {
                             JOptionPane.showMessageDialog(this, "No se ha podido eliminar el articulo de la lista de favoritos");
                         }
                     }));
@@ -337,13 +337,13 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
         delete.setAlignmentX(Component.RIGHT_ALIGNMENT);
         _articulo.add(delete);
         delete.addActionListener(e -> {
-            try{
+            try {
                 panelReservas.remove(mensajesReservas);
                 facade.removeArticuloDeReservas(toArticuloEnReservas);
                 reserMap.remove(toArticuloEnReservas);
                 panelReservas.remove(_articulo);
                 JOptionPane.showMessageDialog(this, "La reserva se ha eliminado correctamente");
-            }catch (RuntimeException ex){
+            } catch (RuntimeException ex) {
                 JOptionPane.showMessageDialog(this, "No se ha podido eliminar la reserva");
             }
 
@@ -363,7 +363,6 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
                     toArticuloEnCesta.setColor(toArticuloEnReservas.getColor());
                     toArticuloEnCesta.setTalla(toArticuloEnReservas.getTalla());
                     facade.addArticuloACesta(toArticuloEnCesta);
-                    //TODO Cambiar esto por addReservaACesta para hacer checks de fechas y tal
                 });
             } else {
                 Duration tiempoEspera = Duration.of(fechaLanzamiento.getTime() - fechaActual.getTime(), ChronoUnit.MILLIS);
@@ -395,7 +394,7 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
     }
 
     @Override
-    public void onReservasChanged(Set<TOArticuloEnReservas> reservas) { //TODO Alinear
+    public void onReservasChanged(Set<TOArticuloEnReservas> reservas) {
         panelReservas.removeAll();//elimino lo antiguo
         reserMap.clear();
 
@@ -426,12 +425,12 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
                     delete.setAlignmentX(Component.RIGHT_ALIGNMENT);
                     articulo.add(delete);
                     delete.addActionListener((e -> {
-                        try{
+                        try {
                             facade.removeArticuloDeReservas(art);
                             reserMap.remove(art);
                             panelReservas.remove(articulo);
                             JOptionPane.showMessageDialog(this, "Reserva eliminada con éxito");
-                        }catch(RuntimeException ex){
+                        } catch (RuntimeException ex) {
                             JOptionPane.showMessageDialog(this, "No se ha podido eliminar la reserva del articulo");
                         }
 

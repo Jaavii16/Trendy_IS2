@@ -78,8 +78,8 @@ public class GUIPerfil extends MainGUIPanel implements UserObserver, PedidoObser
 
     @Override
     public void update() {
-        boolean iniciado = (saFacade.getUsuario()!= null);
-        if(iniciado){
+        boolean iniciado = (saFacade.getUsuario() != null);
+        if (iniciado) {
             onUserDataChanged(iniciado, saFacade.getUsuario().getId());
         }
     }
@@ -254,7 +254,7 @@ public class GUIPerfil extends MainGUIPanel implements UserObserver, PedidoObser
         JButton log_out = new JButton("Logout");
         buttonPanel.add(log_out);
         log_out.addActionListener((e -> {
-            try{
+            try {
                 saFacade.logout();
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Ha habido un error al cerrar sesion: " + ex.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
@@ -594,7 +594,7 @@ public class GUIPerfil extends MainGUIPanel implements UserObserver, PedidoObser
             } catch (RuntimeException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             } finally {
-                cl.show(cards, "Panel_ini"); //TODO Pensar si ponerlo solo si se ha actualizado correctamente
+                cl.show(cards, "Panel_ini");
             }
         }));
     }

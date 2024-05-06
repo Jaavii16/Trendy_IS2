@@ -27,7 +27,7 @@ public class DAOUsuarioMySQL implements DAOUsuario {
                             .setApellidos(rS.getString("apellidos"))
                             .setPais(rS.getString("pais"))
                             .setAnyoNacimiento(rS.getInt("anyo_nacimiento"))
-                            .setSexo((char) rS.getByte("sexo"))//TODO revisar si funciona
+                            .setSexo((char) rS.getByte("sexo"))
                             .setSuscripcion(Suscripciones.valueOf(rS.getString("suscripcion_id")))
                             .setDireccion(rS.getString("Dirección"))
                             .setSaldo(rS.getDouble("saldo"))
@@ -57,7 +57,7 @@ public class DAOUsuarioMySQL implements DAOUsuario {
                             .setApellidos(rS.getString("apellidos"))
                             .setPais(rS.getString("pais"))
                             .setAnyoNacimiento(rS.getInt("anyo_nacimiento"))
-                            .setSexo((char) rS.getByte("sexo"))//TODO revisar q funcione esa funcion
+                            .setSexo((char) rS.getByte("sexo"))
                             .setSuscripcion(Suscripciones.valueOf(rS.getString("suscripcion_id")))
                             .setDireccion(rS.getString("Dirección"))
                             .setSaldo(rS.getDouble("saldo"))

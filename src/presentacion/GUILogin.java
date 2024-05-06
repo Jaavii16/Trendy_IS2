@@ -32,7 +32,7 @@ public class GUILogin extends JDialog implements UserObserver {
     }
 
     public void initGUI() {
-        File img = new File("resources/imgs/trendy_logo.png"); //TODO Usar getResource
+        File img = new File("resources/imgs/trendy_logo.png");
 
         try {
             BufferedImage imgBuffered = ImageIO.read(img);

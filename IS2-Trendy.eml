@@ -2,5 +2,15 @@
 <component inherit-compiler-output="true" inheritJdk="true">
 	<output-test url="file://$MODULE_DIR$/out/test/IS2-Trendy"/>
 	<exclude-output/>
-	<contentEntry url="file://$MODULE_DIR$"/>
+	<contentEntry url="file://$MODULE_DIR$">
+		<testFolder url="file://$MODULE_DIR$/tests"/>
+		<excludeFolder url="file://$MODULE_DIR$/.idea/dataSources"/>
+		<excludeFolder url="file://$MODULE_DIR$/trendy-storage"/>
+	</contentEntry>
+	<lib name="JUnit5.8.1" scope="TEST"/>
+	<levels>
+		<level name="mysql.connector.java" value="project"/>
+		<level name="apache.commons.lang3" value="project"/>
+		<level name="jdatepicker" value="project"/>
+	</levels>
 </component>

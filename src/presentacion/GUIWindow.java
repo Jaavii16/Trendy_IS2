@@ -90,7 +90,7 @@ public class GUIWindow extends JFrame {
             Random random = new Random();
             int loadingTimeMs = random.nextInt(4000, 7000);
 
-            File img = new File("resources/imgs/trendy_logo.png"); //TODO Usar getResource
+            File img = new File("resources/imgs/trendy_logo.png");
             BufferedImage imgBuffered = ImageIO.read(img);
 
             // Define los bordes a recortar
@@ -304,10 +304,9 @@ public class GUIWindow extends JFrame {
     public void goToArticulo(int idArticulo) {
         searchPanel.goToArticulo(idArticulo);
         buttonAction(changePanelAction()).accept(searchPanel);
-
     }
 
-    public void updateArticulos(){
+    public void updateArticulos() {
         this.searchPanel.update();
     }
 }

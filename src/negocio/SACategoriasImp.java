@@ -24,7 +24,7 @@ public class SACategoriasImp extends AbstractSA implements SACategorias {
     }
 
     @Override
-    public void actualizaExclusivos() { //FIXME @Irene @Rocio esto no se usa
+    public void actualizaExclusivos() {
         businessDelegate.actualizaExclusivos();
     }
 
