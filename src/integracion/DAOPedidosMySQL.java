@@ -50,7 +50,7 @@ public class DAOPedidosMySQL implements DAOPedidos {
                             .setID(rS.getInt("Id"))
                             .setDireccion(rS.getString("direccion"))
                             .setTOAArticulosEnPedido(getTOACestaPedido(connection.createStatement().executeQuery("SELECT * FROM ArtículosEnPedido WHERE ID_pedido = " + ID)))
-                            .setStatus(rS.getString("status"))
+                            .setStatus(rS.getString("status").toUpperCase())
                             .setFecha(rS.getDate("fecha"));
                 } else {
                     throw new RuntimeException("No se ha encontrado el pedido con ID " + ID);
@@ -102,7 +102,7 @@ public class DAOPedidosMySQL implements DAOPedidos {
                     .setDireccion(rS.getString("direccion"))
                     .setID(rS.getInt("Id"))
                     .setTOAArticulosEnPedido(getTOACestaPedido(connection.createStatement().executeQuery("SELECT * FROM ArtículosEnPedido WHERE ID_pedido = " + rS.getInt("Id"))))
-                    .setStatus(rS.getString("status"))
+                    .setStatus(rS.getString("status").toUpperCase())
                     .setFecha(rS.getDate("fecha")));
         }
         return pedidos;
@@ -151,10 +151,10 @@ public class DAOPedidosMySQL implements DAOPedidos {
                             .setDireccion(rS.getString("direccion"))
                             .setIDUsuario(rS.getInt("id_usuario"))
                             .setTOAArticulosEnPedido(getTOACestaPedido(connection.createStatement().executeQuery("SELECT * FROM ArtículosEnPedido WHERE ID_pedido = " + rS.getInt("Id"))))
-                            .setStatus(rS.getString("status"))
+                            .setStatus(rS.getString("status").toUpperCase())
                             .setFecha(rS.getDate("fecha"));
                 } else {
-                    throw new RuntimeException("No se ha podido encontrar el ultimo pedido de la base de datos");
+                    return null;
                 }
             } catch (SQLException e) {
                 throw new RuntimeException("Error SQL " + e.getErrorCode(), e);

@@ -47,10 +47,16 @@ public class GUIWindow extends JFrame {
             }
         });
 
-        setIconAndPlayIntroAnimation();
-        initPanels();
-        autoLogin();
-        waitForAnimation();
+        try {
+            setIconAndPlayIntroAnimation();
+            initPanels();
+            autoLogin();
+            waitForAnimation();
+        } catch (Exception e) {
+            introAnimationThread.interrupt();
+            JOptionPane.showMessageDialog(SwingUtilities.getWindowAncestor(this), e.getMessage(), "Error al cargar Trendy", JOptionPane.ERROR_MESSAGE);
+            System.exit(1);
+        }
     }
 
     private void autoLogin() {
@@ -82,7 +88,7 @@ public class GUIWindow extends JFrame {
     private void setIconAndPlayIntroAnimation() {
         try {
             Random random = new Random();
-            int loadingTimeMs = random.nextInt(1000, 3000);
+            int loadingTimeMs = random.nextInt(4000, 7000);
 
             File img = new File("resources/imgs/trendy_logo.png"); //TODO Usar getResource
             BufferedImage imgBuffered = ImageIO.read(img);
@@ -134,6 +140,7 @@ public class GUIWindow extends JFrame {
         JLabel trendy = new JLabel("Trendy");
         trendy.setFont(new Font("Arial", Font.BOLD, 30));
         trendy.setHorizontalAlignment(SwingConstants.CENTER);
+        trendy.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         mainPanel.add(trendy, BorderLayout.NORTH);
 
         Consumer<JScrollPane> changePanel = changePanelAction();
@@ -146,7 +153,7 @@ public class GUIWindow extends JFrame {
         controlPanel.setLayout(new GridLayout(1, 0));
         controlPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        homePanel = new GUIHome(this, saFacade);
+        homePanel = new GUIHome(saFacade, this);
         userPanel = new GUIPerfil(saFacade, this);
         cestaPanel = new GUICesta(saFacade, this);
         searchPanel = new GUIPpalCategorias(saFacade);
@@ -175,6 +182,7 @@ public class GUIWindow extends JFrame {
         buttonCreator.apply(cestaIcon, cestaPanel, buttonAction);
         buttonCreator.apply(userIcon, userPanel, (panel) -> {
             if (saFacade.getUsuario() == null) {
+                authDialog.reset();
                 authDialog.open(this);
             } else {
                 buttonAction.accept(panel);

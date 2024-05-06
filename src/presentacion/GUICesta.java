@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.*;
 
-public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserver, ReservasObserver, AuthObserver {
+public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserver, ReservasObserver, UserObserver {
 
     private final GUIWindow mainWindow;
     SAFacade facade;
@@ -189,8 +189,7 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
     }
 
     private void addButtons(JPanel panel, TOArticuloEnCesta art) {
-        int stock = facade.getStock(art.getIdArticulo(), art.getColor().name(), art.getTalla().name());
-        SpinnerNumberModel cantidad = new SpinnerNumberModel(art.getCantidad(), 0, stock, 1);
+        SpinnerNumberModel cantidad = new SpinnerNumberModel(art.getCantidad(), 0, 100, 1);
         JSpinner unidades = new JSpinner(cantidad);
         unidades.setMaximumSize(new Dimension(50, 20));
         panel.add(unidades);
@@ -444,7 +443,7 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
     }
 
     @Override
-    public void onAuthChanged(boolean isAuth, int idUsuario) {
+    public void onUserDataChanged(boolean isAuth, int idUsuario) {
         if (buttonPanel != null) mainPanel.remove(buttonPanel);
         //PANEL DE LOS BOTONES
         buttonPanel = new JPanel();

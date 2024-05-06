@@ -2,11 +2,13 @@ package presentacion;
 
 import negocio.SAFacade;
 import negocio.TOStatusPedido;
+import negocio.TUsuario;
 import negocio.tArticulo;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
+import java.util.Comparator;
 import java.util.Objects;
 
 
@@ -32,6 +34,12 @@ public class GUIAdmin extends JPanel {
 
         setBorder(new TitledBorder("Admin"));
 
+        crearArticulo = new JPanel();
+        añadirSaldo = new JPanel();
+        cambiarSuscripcion = new JPanel();
+        cambiarEstadoPedido = new JPanel();
+        cambiarArticulo = new JPanel();
+
         initCrearArticulo();
         initAñadirSaldo();
         initCambiarSuscripcion();
@@ -53,6 +61,7 @@ public class GUIAdmin extends JPanel {
         bCrearArticulo = new JButton("Crear Articulo");
         bCrearArticulo.setAlignmentX(CENTER_ALIGNMENT);
         bCrearArticulo.addActionListener(e -> {
+            initCrearArticulo();
             cambiarArticulo.setVisible(false);
             añadirSaldo.setVisible(false);
             cambiarSuscripcion.setVisible(false);
@@ -64,6 +73,7 @@ public class GUIAdmin extends JPanel {
         bAñadirSaldo = new JButton("Añadir Saldo");
         bAñadirSaldo.setAlignmentX(CENTER_ALIGNMENT);
         bAñadirSaldo.addActionListener(e -> {
+            initAñadirSaldo();
             cambiarArticulo.setVisible(false);
             crearArticulo.setVisible(false);
             cambiarSuscripcion.setVisible(false);
@@ -75,6 +85,7 @@ public class GUIAdmin extends JPanel {
         bCambiarSuscripcion = new JButton("Cambiar Suscripcion");
         bCambiarSuscripcion.setAlignmentX(CENTER_ALIGNMENT);
         bCambiarSuscripcion.addActionListener(e -> {
+            initCambiarSuscripcion();
             cambiarArticulo.setVisible(false);
             crearArticulo.setVisible(false);
             añadirSaldo.setVisible(false);
@@ -86,6 +97,7 @@ public class GUIAdmin extends JPanel {
         bCambiarEstadoPedido = new JButton("Cambiar Estado Pedido");
         bCambiarEstadoPedido.setAlignmentX(CENTER_ALIGNMENT);
         bCambiarEstadoPedido.addActionListener(e -> {
+            initCambiarEstadoPedido();
             cambiarArticulo.setVisible(false);
             crearArticulo.setVisible(false);
             añadirSaldo.setVisible(false);
@@ -98,6 +110,7 @@ public class GUIAdmin extends JPanel {
         bcambiarArticulo = new JButton("Cambiar Articulo");
         bcambiarArticulo.setAlignmentX(CENTER_ALIGNMENT);
         bcambiarArticulo.addActionListener(e -> {
+            initCambiarArticulo();
             crearArticulo.setVisible(false);
             añadirSaldo.setVisible(false);
             cambiarSuscripcion.setVisible(false);
@@ -110,7 +123,8 @@ public class GUIAdmin extends JPanel {
     }
 
     private void initCambiarArticulo() {
-        cambiarArticulo = new JPanel();
+        cambiarArticulo.removeAll();
+
         cambiarArticulo.setLayout(new BoxLayout(cambiarArticulo, BoxLayout.Y_AXIS));
         cambiarArticulo.setBorder(new TitledBorder("Cambiar Articulo"));
         cambiarArticulo.setVisible(false);
@@ -170,7 +184,8 @@ public class GUIAdmin extends JPanel {
 
         //TArticulo
 
-        crearArticulo = new JPanel();
+        crearArticulo.removeAll();
+
         crearArticulo.setLayout(new GridLayout(0, 2));
         crearArticulo.setBorder(new TitledBorder("Crear Articulo"));
         crearArticulo.setVisible(false);
@@ -254,7 +269,7 @@ public class GUIAdmin extends JPanel {
 
         crearArticulo.add(new JPanel());
         crearArticulo.add(new JPanel());
-        
+
         JButton bCancelar = new JButton("Cancelar");
         this.crearArticulo.add(bCancelar);
         bCancelar.addActionListener(e -> {
@@ -279,43 +294,59 @@ public class GUIAdmin extends JPanel {
 
     private void initAñadirSaldo() {
 
-        añadirSaldo = new JPanel();
-        añadirSaldo.setLayout(new BoxLayout(añadirSaldo, BoxLayout.Y_AXIS));
+        añadirSaldo.removeAll();
+        
         añadirSaldo.setBorder(new TitledBorder("Añadir Saldo"));
         añadirSaldo.setVisible(false);
 
+        JPanel grid = new JPanel();
+        grid.setLayout(new GridLayout(0, 2));
+
+        añadirSaldo.add(grid);
+        añadirSaldo.add(new JPanel());
+
+        JPanel pId = new JPanel();
+        pId.setLayout(new BoxLayout(pId, BoxLayout.Y_AXIS));
         JLabel lId = new JLabel("ID: ");
-        this.añadirSaldo.add(lId);
-        JTextField tId = new JTextField();
+        pId.add(lId);
+        grid.add(pId);
+
+        JComboBox<Integer> tId = new JComboBox<>(saFacade.readAll().stream().mapToInt(TUsuario::getId).boxed().sorted(Comparator.reverseOrder()).toArray(Integer[]::new));
         tId.setMaximumSize(new Dimension(200, 20));
-        this.añadirSaldo.add(tId);
+        grid.add(tId);
 
+        JPanel pSaldo = new JPanel();
+        pSaldo.setLayout(new BoxLayout(pSaldo, BoxLayout.Y_AXIS));
         JLabel lSaldo = new JLabel("Saldo: ");
-        this.añadirSaldo.add(lSaldo);
-        JTextField tSaldo = new JTextField();
-        tSaldo.setMaximumSize(new Dimension(200, 20));
-        this.añadirSaldo.add(tSaldo);
+        pSaldo.add(lSaldo);
+        grid.add(pSaldo);
 
-        JButton bAñadir = new JButton("Añadir");
-        this.añadirSaldo.add(bAñadir);
-        bAñadir.addActionListener(e -> {
-            saFacade.actualizarSaldoAdmin(Double.parseDouble(tSaldo.getText()), Integer.parseInt(tId.getText()));
-        });
+        JSpinner tSaldo = new JSpinner(new SpinnerNumberModel(0.0, 0.0, 1000.0, 5.0));
+        tSaldo.setMaximumSize(new Dimension(200, 20));
+        grid.add(tSaldo);
 
         JButton bCancelar = new JButton("Cancelar");
-        this.añadirSaldo.add(bCancelar);
+        grid.add(bCancelar);
         bCancelar.addActionListener(e -> {
             añadirSaldo.setVisible(false);
             this.setVisible(true);
         });
 
+        JButton bAñadir = new JButton("Añadir");
+        grid.add(bAñadir);
+        bAñadir.addActionListener(e -> {
+            saFacade.actualizarSaldoAdmin((Double) tSaldo.getModel().getValue(), (Integer) tId.getSelectedItem());
+        });
+
         JPanel wrapper = new JPanel();
         añadirSaldo.add(wrapper);
+
     }
 
     private void initCambiarSuscripcion() {
 
-        cambiarSuscripcion = new JPanel();
+        cambiarSuscripcion.removeAll();
+
         cambiarSuscripcion.setLayout(new BoxLayout(cambiarSuscripcion, BoxLayout.Y_AXIS));
         cambiarSuscripcion.setBorder(new TitledBorder("Cambiar Suscripcion"));
         cambiarSuscripcion.setVisible(false);
@@ -351,7 +382,8 @@ public class GUIAdmin extends JPanel {
     }
 
     private void initCambiarEstadoPedido() {
-        cambiarEstadoPedido = new JPanel();
+        cambiarEstadoPedido.removeAll();
+
         cambiarEstadoPedido.setVisible(false);
         cambiarEstadoPedido.setLayout(new BoxLayout(cambiarEstadoPedido, BoxLayout.Y_AXIS));
         cambiarEstadoPedido.setBorder(new TitledBorder("Cambiar Estado Pedido"));

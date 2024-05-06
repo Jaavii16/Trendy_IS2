@@ -120,8 +120,8 @@ public class GUIRegister extends JPanel {
 
         _cancel = new JButton("Cancelar");
         _cancel.addActionListener((e) -> {
+            reset();
             _parent.reset();
-
         });
         _cancel.setAlignmentX(Component.CENTER_ALIGNMENT);
         mainPanel.add(_cancel);
@@ -173,5 +173,16 @@ public class GUIRegister extends JPanel {
         JLabel label = new JLabel(text);
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
         container.add(label);
+    }
+
+    public void reset() {
+        _nombre.setText("");
+        _apellidos.setText("");
+        _correo.setText("");
+        _contrasenya.setText("");
+        _repContrasenya.setText("");
+        _pais.setText("");
+        _anyoNac.setText("");
+        _direccion.setText("");
     }
 }

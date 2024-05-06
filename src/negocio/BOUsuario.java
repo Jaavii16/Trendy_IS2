@@ -10,9 +10,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class BOUsuario implements Observable<AuthObserver> {
+public class BOUsuario implements Observable<UserObserver> {
 
-    Set<AuthObserver> observers;
+    Set<UserObserver> observers;
     private DAOUsuario daoUsuario;
     private TUsuario tUsuario;
 
@@ -23,7 +23,7 @@ public class BOUsuario implements Observable<AuthObserver> {
 
     public TUsuario create(TUsuario tUsuario) {
         this.tUsuario = daoUsuario.crearUsuario(tUsuario);
-        observers.forEach(observer -> observer.onAuthChanged(true, this.tUsuario.getId()));
+        observers.forEach(observer -> observer.onUserDataChanged(true, this.tUsuario.getId()));
 
         saveLogin();
 
@@ -41,7 +41,7 @@ public class BOUsuario implements Observable<AuthObserver> {
 
     public void update(TUsuario tUsuario) {
         daoUsuario.actualizarUsuario(tUsuario, tUsuario.getId());
-        observers.forEach(e -> e.onAuthChanged(true, tUsuario.getId()));
+        observers.forEach(e -> e.onUserDataChanged(true, tUsuario.getId()));
     }
 
     public void delete(int id) {
@@ -51,6 +51,8 @@ public class BOUsuario implements Observable<AuthObserver> {
     public void actualizarSaldo(double cantidad) {
         daoUsuario.actualizarSaldo(tUsuario.getId(), cantidad);
         tUsuario.setSaldo(tUsuario.getSaldo() + cantidad);
+
+        observers.forEach(observer -> observer.onUserDataChanged(true, tUsuario.getId()));
     }
 
     public void actualizarSuscr(Suscripciones susc) {
@@ -60,7 +62,7 @@ public class BOUsuario implements Observable<AuthObserver> {
         if (tUsuario.getSaldo() - susc.getPrecio() < 0) throw new RuntimeException("No tiene saldo suficiente");
         daoUsuario.actualizarSuscripcion(tUsuario.getId(), susc);
         tUsuario.setSuscripcion(susc);
-        observers.forEach(observer -> observer.onAuthChanged(true, tUsuario.getId()));
+        observers.forEach(observer -> observer.onUserDataChanged(true, tUsuario.getId()));
     }
 
     public void actualizarSuscrAdmin(int userID, int id) {
@@ -70,19 +72,19 @@ public class BOUsuario implements Observable<AuthObserver> {
     }
 
     @Override
-    public void addObserver(AuthObserver observer) {
+    public void addObserver(UserObserver observer) {
         observers.add(observer);
     }
 
     @Override
-    public void removeObserver(AuthObserver observer) {
+    public void removeObserver(UserObserver observer) {
         observers.remove(observer);
     }
 
     public void login(String correo, String contraseña) {
         this.tUsuario = daoUsuario.getUsuario(correo, contraseña);
         if (tUsuario != null) {
-            EventQueue.invokeLater(() -> observers.forEach(observer -> observer.onAuthChanged(true, tUsuario.getId())));
+            EventQueue.invokeLater(() -> observers.forEach(observer -> observer.onUserDataChanged(true, tUsuario.getId())));
             saveLogin();
         } else
             throw new IllegalArgumentException("Usuario no encontrado con esas credenciales");
@@ -104,7 +106,7 @@ public class BOUsuario implements Observable<AuthObserver> {
 
     public void logout() {
         tUsuario = null;
-        observers.forEach(observer -> observer.onAuthChanged(false, 0));
+        observers.forEach(observer -> observer.onUserDataChanged(false, 0));
 
         File file = new File("login.txt");
         file.delete();

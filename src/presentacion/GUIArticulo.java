@@ -111,8 +111,8 @@ public class GUIArticulo extends MainGUIPanel {
         //Unidades:
         JPanel unidades = new JPanel();
         JLabel lunidades = new JLabel("Unidades a comprar");
-        int stock = this.sa.getStock(this.art.getID(), (String) boxcolores.getSelectedItem(), String.valueOf(this.tallaselect));
-        uds = new JSpinner(new SpinnerNumberModel(1, 1, stock, 1));
+        //Se añaden a la cesta, otra cosa es lo que se puedan comprar
+        uds = new JSpinner(new SpinnerNumberModel(1, 1, 100, 1));
         unidades.add(lunidades);
         unidades.add(uds);
         centro.add(unidades);

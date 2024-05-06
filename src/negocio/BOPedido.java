@@ -37,14 +37,25 @@ public class BOPedido implements Observable<PedidoObserver> {
     }
 
     public void cambiarStatus(int ID, TOStatusPedido statusPedido) {
+        var oldPedido = daoPedidos.getPedido(ID);
         daoPedidos.cambiarStatus(ID, statusPedido);
         var pedido = daoPedidos.getPedido(ID);
+
+        if (oldPedido.getStatus().equals(pedido.getStatus())) {
+            throw new RuntimeException("El pedido ya tiene el estado " + statusPedido.toString());
+        }
+
+        pedido.setStatus(statusPedido.toString());
         observers.forEach(observer -> observer.onPedidoUpdated(pedido));
     }
 
     public void cancelarPedido(int ID) {
+        TOPedido pedido = daoPedidos.getPedido(ID);
+        if (pedido.getStatus().equals(TOStatusPedido.CANCELADO.toString())) {
+            throw new RuntimeException("El pedido ya ha sido cancelado");
+        }
         daoPedidos.cambiarStatus(ID, TOStatusPedido.CANCELADO);
-        var pedido = daoPedidos.getPedido(ID);
+        pedido.setStatus(TOStatusPedido.CANCELADO.toString());
         observers.forEach(observer -> observer.onPedidoUpdated(pedido));
     }
 

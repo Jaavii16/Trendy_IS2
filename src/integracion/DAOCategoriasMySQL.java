@@ -90,7 +90,7 @@ public class DAOCategoriasMySQL implements DAOCategorias {
                 String fechal = rs.getString("FechaLanzamiento");
                 if (fechaMenor(fechal, fechaActual)) {
                     String cat = rs.getString("Categoria");
-                    if(!cat.toUpperCase().equals("EXCLUSIVOS")){
+                    if (!cat.toUpperCase().equals("EXCLUSIVOS")) {
                         actualizaCatExclusivosPasados("", cat);
                     }
                     borraExclusivosPasados(fechal);
@@ -102,8 +102,8 @@ public class DAOCategoriasMySQL implements DAOCategorias {
         }
     }
 
-    private void actualizaCatExclusivosPasados(String fecha, String cat){
-        try (Connection connection = database.DBConnection.connect()) {
+    private void actualizaCatExclusivosPasados(String fecha, String cat) {
+        try (Connection connection = DBConnection.connect()) {
             String sql = "UPDATE ClasificacionArticulos SET " +
                     "FechaLanzamiento = '" + fecha +
                     "' WHERE Categoria = '" + cat + "'";
@@ -117,7 +117,7 @@ public class DAOCategoriasMySQL implements DAOCategorias {
         }
     }
 
-    private void borraExclusivosPasados(String fecha){
+    private void borraExclusivosPasados(String fecha) {
         try (Connection c = DBConnection.connect();
              Statement st = c.createStatement();
 

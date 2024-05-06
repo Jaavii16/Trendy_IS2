@@ -1,6 +1,6 @@
 package presentacion;
 
-import database.DBConnection;
+import integracion.DBConnection;
 import negocio.*;
 
 import javax.swing.*;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class GUIHome extends MainGUIPanel implements AuthObserver {
+public class GUIHome extends MainGUIPanel implements UserObserver {
 
     private final GUIWindow mainWindow;
     private JPanel contentPanel;
@@ -28,7 +28,7 @@ public class GUIHome extends MainGUIPanel implements AuthObserver {
     private JPanel jpLastPedido;
     private JLabel jlWelcome;
 
-    public GUIHome(GUIWindow mainWindow, SAFacade saFachade) {
+    public GUIHome(SAFacade saFachade, GUIWindow mainWindow) {
         super();
         this.mainWindow = mainWindow;
         this.saFachade = saFachade;
@@ -118,11 +118,9 @@ public class GUIHome extends MainGUIPanel implements AuthObserver {
 
         putArticulosExclusivos();
 
-        JScrollPane jspArticulosExclusivos = new JScrollPane(jpArticulosExclusivos, VERTICAL_SCROLLBAR_NEVER, HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        jpArticulosExclusivos.setBorder(new TitledBorder("Articulos exclusivos"));
 
-        jspArticulosExclusivos.setBorder(new TitledBorder("Articulos exclusivos"));
-
-        contentPanel.add(jspArticulosExclusivos);
+        contentPanel.add(jpArticulosExclusivos);
 
         jpLastPedido = new JPanel();
 
@@ -143,9 +141,11 @@ public class GUIHome extends MainGUIPanel implements AuthObserver {
         List<Articulo> exclusivos = saFachade.buscaArticulosCategoria("Exclusivos");
 
         if (exclusivos.isEmpty()) {
-            jpArticulosExclusivos.add(new JLabel("No hay articulos exclusivos"));
+            JPanel noHay = new JPanel();
+            JLabel noHayArticulosExclusivos = new JLabel("No hay articulos exclusivos");
+            noHay.add(noHayArticulosExclusivos);
+            jpArticulosExclusivos.add(noHay);
         } else {
-
             exclusivos.forEach(articulo -> {
                 JPanel jpArticulo = new JPanel(new BorderLayout());
                 jpArticulo.setBorder(BorderFactory.createLineBorder(Color.BLACK));
@@ -163,7 +163,7 @@ public class GUIHome extends MainGUIPanel implements AuthObserver {
                 jpArticulo.addMouseListener(new MouseAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
-                        new Thread(() -> mainWindow.goToArticulo(articulo.getID())).start();
+                        mainWindow.goToArticulo(articulo.getID());
                     }
 
                     @Override
@@ -197,14 +197,20 @@ public class GUIHome extends MainGUIPanel implements AuthObserver {
         jpLastPedido.removeAll();
 
         JPanel jpLastPedidoPanel = new JPanel();
-        jpLastPedidoPanel.setLayout(new BorderLayout());
+        jpLastPedidoPanel.setLayout(new BoxLayout(jpLastPedidoPanel, BoxLayout.Y_AXIS));
 
+        JPanel noHay = new JPanel();
         JLabel noHayPedidos = new JLabel("No hay pedidos");
         noHayPedidos.setFont(new Font("Arial", Font.BOLD, 20));
-        jpLastPedidoPanel.add(noHayPedidos, BorderLayout.NORTH);
+        noHay.add(noHayPedidos);
+        jpLastPedidoPanel.add(noHay);
+
         JButton crearPedidoButton = new JButton("Hacer pedido");
         crearPedidoButton.addActionListener(e -> mainWindow.showCesta());
-        jpLastPedidoPanel.add(crearPedidoButton, BorderLayout.SOUTH);
+        crearPedidoButton.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+        jpLastPedidoPanel.add(crearPedidoButton);
+
+        jpLastPedidoPanel.add(new JPanel());
 
         jpLastPedido.add(jpLastPedidoPanel);
     }
@@ -287,7 +293,7 @@ public class GUIHome extends MainGUIPanel implements AuthObserver {
     }
 
     @Override
-    public void onAuthChanged(boolean isAuth, int idUsuario) {
+    public void onUserDataChanged(boolean isAuth, int idUsuario) {
         if (saFachade.getUsuario() != null) {
             jlWelcome.setText("Hola, " + saFachade.getUsuario().getNombre());
         } else {

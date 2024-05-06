@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.function.Consumer;
 
-public class GUIPerfil extends MainGUIPanel implements AuthObserver, PedidoObserver {
+public class GUIPerfil extends MainGUIPanel implements UserObserver, PedidoObserver {
 
     private SAFacade saFacade;
     private TUsuario tUsuario;
@@ -60,6 +60,7 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver, PedidoObser
     private JDatePicker fechaFin;
     private CardLayout cl;
     private JPanel panelMod;
+    private Collection<TOPedido> pedidos;
 
     public GUIPerfil(SAFacade facade, GUIWindow guiWindow) {
         saFacade = facade;
@@ -71,6 +72,7 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver, PedidoObser
 
 
     private void setComboBox() {
+        sexModel.removeAllElements();
         sexModel.addElement('M');
         sexModel.addElement('F');
     }
@@ -86,7 +88,7 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver, PedidoObser
     }
 
     @Override
-    public void onAuthChanged(boolean isAuth, int idUsuario) { //TODO Poner TUsuario en parametros
+    public void onUserDataChanged(boolean isAuth, int idUsuario) { //TODO Actualizar panel Inicio con el nuevo saldo
         if (isAuth && saFacade.getUsuario().getAdmin()) {
             if (!botonAdmin) {
                 buttonPanel.add(goToAdmin);
@@ -288,6 +290,7 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver, PedidoObser
         texto_ayuda.setLineWrap(true);
         texto_ayuda.setWrapStyleWord(true);
         texto_ayuda.setEditable(false);
+        texto_ayuda.getCaret().deinstall(texto_ayuda);
         texto_ayuda.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
         modPanel.add(texto_ayuda);
 
@@ -429,11 +432,11 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver, PedidoObser
 
         panelFiltrosTabla.add(filtros, BorderLayout.PAGE_START);
 
-        status.addActionListener(e -> updateTable());
+        status.addActionListener(e -> filterTable());
 
-        fechaInicio.addActionListener(e -> updateTable());
+        fechaInicio.addActionListener(e -> filterTable());
 
-        fechaFin.addActionListener(e -> updateTable());
+        fechaFin.addActionListener(e -> filterTable());
 
         pedidosModel = new DefaultTableModel() {
             @Override
@@ -485,17 +488,21 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver, PedidoObser
         panelPedidos.add(panelFiltrosTabla);
     }
 
-    private void updateTable() {
+    private void filterTable() {
         TOStatusPedido toStatusPedido = (TOStatusPedido) status.getSelectedItem();
         Date fechaInicioDate = (Date) fechaInicio.getModel().getValue();
         Date fechaFinDate = (Date) fechaFin.getModel().getValue();
-        Collection<TOPedido> pedidos = saFacade.getPedidosUsuario();
-        pedidos = pedidos.stream().filter(toPedido -> fechaInicioDate == null || toPedido.getFecha().after(fechaInicioDate))
+        var pedidosToShow = pedidos.stream().filter(toPedido -> fechaInicioDate == null || toPedido.getFecha().after(Date.from(fechaInicioDate.toInstant().minus(1, java.time.temporal.ChronoUnit.DAYS))))
                 .filter(toPedido -> fechaFinDate == null || toPedido.getFecha().before(fechaFinDate))
                 .filter(toPedido -> toStatusPedido == null || toPedido.getStatus().equals(toStatusPedido.toString().toLowerCase()))
                 .toList();
         pedidosModel.setRowCount(0);
-        pedidos.forEach(toPedido -> pedidosModel.addRow(new Object[]{toPedido.getID(), toPedido.getFecha(), toPedido.getStatus().toUpperCase(), toPedido.getTOAArticulosEnPedido().getArticulosSet().stream().mapToDouble(TOAArticuloEnPedido::getPrecio).sum()}));
+        pedidosToShow.forEach(toPedido -> pedidosModel.addRow(new Object[]{toPedido.getID(), toPedido.getFecha(), toPedido.getStatus().toUpperCase(), toPedido.getTOAArticulosEnPedido().getArticulosSet().stream().mapToDouble(TOAArticuloEnPedido::getPrecio).sum()}));
+    }
+
+    private void updateTable() {
+        pedidos = saFacade.getPedidosUsuario();
+        filterTable();
     }
 
     private void configurarPanelSaldo(JPanel cards, JPanel panelSaldo) {
@@ -557,6 +564,9 @@ public class GUIPerfil extends MainGUIPanel implements AuthObserver, PedidoObser
                 "PREMIUM: Podrá reservar artículos exclusivos y comprarlos las 24h antes de su lanzamiento");
         info.setBackground(null);
         info.setEditable(false);
+        info.setLineWrap(true);
+        info.setWrapStyleWord(true);
+        info.getCaret().deinstall(info);
         panelSuscr.add(info);
 
         JPanel panelVacio = new JPanel();

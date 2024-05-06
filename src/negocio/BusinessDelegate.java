@@ -36,7 +36,7 @@ public class BusinessDelegate {
             boCesta.addObserver(fo);
             añadido = true;
         }
-        if (observer instanceof AuthObserver ao) {
+        if (observer instanceof UserObserver ao) {
             boUsuario.addObserver(ao);
             añadido = true;
         }
@@ -69,10 +69,10 @@ public class BusinessDelegate {
                     throw new RuntimeException("No se puede comprar el articulo exclusivo " + artCesta.getIdArticulo() + " talla " + artCesta.getTalla() + " color " + artCesta.getColor());
                 }
             }
-             */
+            */
             int stockAnt = getStock(artCesta.getIdArticulo(), artCesta.getColor().toString(), artCesta.getTalla().toString());
             if (stockAnt - artCesta.getCantidad() < 0) {
-                throw new RuntimeException("No hay stock suficiente de " + artCesta.getIdArticulo() + " talla " + artCesta.getTalla() + " color " + artCesta.getColor() + " para realizar el pedido");
+                throw new RuntimeException("No hay stock suficiente de " + boArticulo.buscarArticulo(artCesta.getIdArticulo()).getNombre() + " talla " + artCesta.getTalla() + " color " + artCesta.getColor() + " para realizar el pedido. Stock disponible: " + stockAnt + " unidades.");
             }
             tStock newStock = new tStock(
                     artCesta.getIdArticulo(),
@@ -289,7 +289,7 @@ public class BusinessDelegate {
             boCesta.removeObserver(co);
         else if (observer instanceof FavsObserver fo)
             boCesta.removeObserver(fo);
-        else if (observer instanceof AuthObserver ao)
+        else if (observer instanceof UserObserver ao)
             boUsuario.removeObserver(ao);
         else
             throw new IllegalArgumentException("Observer no soportado");

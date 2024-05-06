@@ -1,9 +1,6 @@
 package presentacion;
 
-import negocio.SAFacade;
-import negocio.TOAArticuloEnPedido;
-import negocio.TOPedido;
-import negocio.tArticulo;
+import negocio.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -37,7 +34,7 @@ public class GUIPedido extends JPanel {
             jpArticulo.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             jpArticulo.setPreferredSize(new Dimension(100, 100));
             jpArticulo.setBackground(Color.WHITE);
-            JTextArea jtaNombre = new JTextArea(articulo.getNombre() + " " + toaArticuloEnPedido.getToArticuloEnCesta().getTalla() + " " + toaArticuloEnPedido.getToArticuloEnCesta().getColor() + " x" + toaArticuloEnPedido.getToArticuloEnCesta().getCantidad());
+            JTextArea jtaNombre = new JTextArea(articulo.getNombre() + " " + toaArticuloEnPedido.getToArticuloEnCesta().getTalla() + " " + toaArticuloEnPedido.getToArticuloEnCesta().getColor());
             jtaNombre.setEditable(false);
             jtaNombre.setLineWrap(true);
             jtaNombre.setWrapStyleWord(true);
@@ -45,11 +42,13 @@ public class GUIPedido extends JPanel {
             jtaNombre.setBackground(null);
             jpArticulo.add(jtaNombre, BorderLayout.CENTER);
             jpArticulo.add(new JLabel(articulo.getSubcat()), BorderLayout.NORTH);
-            jpArticulo.add(new JLabel(toaArticuloEnPedido.getPrecio() + "€"), BorderLayout.SOUTH);
+            jpArticulo.add(new JLabel(toaArticuloEnPedido.getPrecio() + "€ x" + toaArticuloEnPedido.getToArticuloEnCesta().getCantidad()), BorderLayout.SOUTH);
             jpArticulo.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                    new Thread(() -> mainWindow.goToArticulo(articulo.getID())).start();
+                    mainWindow.goToArticulo(articulo.getID());
+                    revalidate();
+                    repaint();
                 }
 
                 @Override
@@ -78,6 +77,40 @@ public class GUIPedido extends JPanel {
 
         this.add(articulosPanel);
 
-        this.add(backButton);
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.add(backButton);
+        buttonsPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, backButton.getPreferredSize().height));
+
+        if (toPedido.getStatus().equalsIgnoreCase("REPARTO")) {
+            JButton confirmButton = new JButton("Confirmar recepción");
+            confirmButton.addActionListener(e -> {
+                int sel = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que quieres confirmar la recepción del pedido?", "Confirmar recepción", JOptionPane.YES_NO_OPTION);
+
+                if (sel != JOptionPane.YES_OPTION) {
+                    return;
+                }
+
+                saFacade.cambiarStatus(toPedido.getID(), TOStatusPedido.ENTREGADO);
+                estadoLabel.setText("Estado: ENTREGADO");
+            });
+            buttonsPanel.add(confirmButton);
+        }
+
+        if (toPedido.getStatus().equalsIgnoreCase("REPARTO") || toPedido.getStatus().equalsIgnoreCase("ENTREGADO")) {
+            JButton cancelButton = new JButton("Cancelar/devolver");
+            cancelButton.addActionListener(e -> {
+                int sel = JOptionPane.showConfirmDialog(this, "¿Estás seguro de que quieres cancelar el pedido?", "Cancelar pedido", JOptionPane.YES_NO_OPTION);
+
+                if (sel != JOptionPane.YES_OPTION) {
+                    return;
+                }
+
+                saFacade.cancelarPedido(toPedido.getID());
+                estadoLabel.setText("Estado: CANCELADO");
+            });
+            buttonsPanel.add(cancelButton);
+        }
+
+        this.add(buttonsPanel);
     }
 }
