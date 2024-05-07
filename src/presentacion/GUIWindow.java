@@ -48,6 +48,7 @@ public class GUIWindow extends JFrame {
         });
 
         try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             setIconAndPlayIntroAnimation();
             initPanels();
             autoLogin();

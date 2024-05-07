@@ -131,6 +131,7 @@ public class BOCesta implements Observable<Observer> {
         if (isAuth) {
             if (!this.reservas.contains(artEnReservas)) {
                 daoCesta.añadirArticuloAReservas(artEnReservas);
+                reservas.add(artEnReservas);
                 reservasObservers.forEach(reservasObserver -> reservasObserver.onArticuloAdded(artEnReservas));
             }
         } else {
@@ -141,6 +142,7 @@ public class BOCesta implements Observable<Observer> {
     public void removeArticuloDeReservas(TOArticuloEnReservas artEnReservas) {
         if (isAuth) {
             daoCesta.eliminarArticuloDeReservas(artEnReservas);
+            reservas.remove(artEnReservas);
             reservasObservers.forEach(reservasObserver -> reservasObserver.onArticuloRemoved(artEnReservas));
         } else {
             throw new IllegalStateException("Para eliminar de reservas hay que estar autenticado");

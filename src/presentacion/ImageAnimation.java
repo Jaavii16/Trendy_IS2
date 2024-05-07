@@ -152,7 +152,7 @@ public class ImageAnimation extends JPanel {
             volumeShifter.setVolume(0.05F);
 
             // Empieza la cancion en el microsegundo:
-            audio.setMicrosecondPosition(177_000_000);
+            //audio.setMicrosecondPosition(177_000_000);
             // Inicia la reproducción del sonido
             audio.start();
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {

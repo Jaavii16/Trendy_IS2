@@ -38,6 +38,7 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
     private JPanel buttonPanel;
 
     private List<MutablePair<JLabel, Duration>> fechasEspera = new ArrayList<>();
+    private JPanel mensaje;
 
     public GUICesta(SAFacade saFacade, GUIWindow mainWindow) {
         this.facade = saFacade;
@@ -331,6 +332,11 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
         JPanel _articulo = new JPanel();
         _articulo.setLayout(new BoxLayout(_articulo, BoxLayout.X_AXIS));
         _articulo.add(new JLabel(facade.buscarArticulo(toArticuloEnReservas.getIdArticulo()).getNombre()));
+
+        if (reserMap.isEmpty()) {
+            panelReservas.remove(mensaje);
+        }
+
         reserMap.put(toArticuloEnReservas, _articulo);
         panelReservas.add(_articulo);
         JButton delete = new JButton("Eliminar reserva");
@@ -385,7 +391,7 @@ public class GUICesta extends MainGUIPanel implements CestaObserver, FavsObserve
         reserMap.remove(toArticuloEnReservas);
         panelReservas.remove(eliminar);
         if (reserMap.isEmpty()) {
-            JPanel mensaje = new JPanel();
+            mensaje = new JPanel();
             mensaje.add(mensajesReservas);
             panelReservas.add(mensaje);
         }

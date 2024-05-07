@@ -67,7 +67,7 @@ class SAFacadeTest {
 
     @Test
     void esExclusivo() {
-        /*
+
         // Crear un artículo de ejemplo con fecha de lanzamiento
         tArticulo articulo = new tArticulo(999999, "Articulo de ejemplo", "Calcetines", 10.0);
         String fechal = "01/01/2022"; // Fecha de lanzamiento de ejemplo
@@ -77,12 +77,12 @@ class SAFacadeTest {
         saFacade.altaArticulo(articulo, fechal, genero, descuento, stock);
 
         // Prueba de esExclusivo
-        boolean isExclusivo = saFacade.esExclusivo(articulo);
+        boolean isExclusivo = saFacade.esExclusivo(new Articulo(articulo));
         Assertions.assertTrue(isExclusivo, "esExclusivo test failed");
 
         // Limpiar después de la prueba
         saFacade.bajaArticulo(articulo);
-         */
+
     }
 
     @Test
